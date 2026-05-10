@@ -3,7 +3,7 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { BadgeCheck } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
+import { activateProfile } from "@/lib/actions";
 
 const initialForm = {
   full_name: "",
@@ -31,45 +31,13 @@ export function OnboardingForm() {
     setLoading(true);
     setError("");
 
-    const supabase = createClient();
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
+    const formData = new FormData();
+    Object.entries(form).forEach(([key, value]) => formData.set(key, value));
 
-    if (userError || !user) {
-      router.push("/login");
-      return;
-    }
+    const result = await activateProfile(formData);
 
-    const payload = {
-      user_id: user.id,
-      full_name: form.full_name,
-      role: form.role,
-      company: form.company,
-      location: form.location,
-      focus: form.focus,
-      skills: form.skills
-        .split(",")
-        .map((skill) => skill.trim())
-        .filter(Boolean),
-      building: form.building,
-      looking_for: form.looking_for
-        .split(",")
-        .map((item) => item.trim())
-        .filter(Boolean),
-      can_help_with: form.can_help_with,
-      open_to: form.open_to,
-      availability: form.availability || "A coordinar",
-      last_interaction: "Paisaporte activado",
-      linkedin_url: form.linkedin_url || null,
-      qr_base_url: `${window.location.origin}/p/${user.id}`,
-    };
-
-    const { error: profileError } = await supabase.from("profiles").insert(payload);
-
-    if (profileError) {
-      setError(profileError.message);
+    if (!result.ok) {
+      setError(result.error ?? "No pudimos activar tu Paisaporte.");
       setLoading(false);
       return;
     }

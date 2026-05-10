@@ -1,7 +1,108 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { createClient } from "@/lib/supabase/server";
 import { requireAdmin, requireMember } from "@/lib/community";
+
+type ActionResult = {
+  error?: string;
+  ok: boolean;
+};
+
+export async function requestWaitlistAccess(formData: FormData): Promise<ActionResult> {
+  const supabase = await createClient();
+  const email = requiredString(formData, "email").toLowerCase();
+  const fullName = requiredString(formData, "full_name");
+  const company = requiredString(formData, "company");
+  const reason = requiredString(formData, "reason");
+
+  if (reason.length < 10 || reason.length > 300) {
+    return {
+      error: "Contanos un poco mas, entre 10 y 300 caracteres.",
+      ok: false,
+    };
+  }
+
+  const { error } = await supabase.from("whitelist_requests").insert({
+    company,
+    email,
+    full_name: fullName,
+    reason,
+    status: "pending",
+  });
+
+  if (error) {
+    return {
+      error:
+        error.code === "23505"
+          ? "Ese email ya esta en la lista."
+          : "No pudimos guardar la solicitud. Proba de nuevo.",
+      ok: false,
+    };
+  }
+
+  revalidatePath("/admin");
+  revalidatePath("/admin/waitlist");
+
+  return { ok: true };
+}
+
+export async function activateProfile(formData: FormData): Promise<ActionResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    return {
+      error: "Tu sesion expiro. Volve a entrar con magic link.",
+      ok: false,
+    };
+  }
+
+  const fullName = requiredString(formData, "full_name");
+  const role = requiredString(formData, "role");
+  const company = requiredString(formData, "company");
+
+  const { error } = await supabase.from("profiles").insert({
+    availability: stringValue(formData, "availability") || "A coordinar",
+    building: stringValue(formData, "building"),
+    can_help_with: requiredString(formData, "can_help_with"),
+    company,
+    focus: requiredString(formData, "focus"),
+    full_name: fullName,
+    is_active: true,
+    is_admin: false,
+    last_interaction: "Paisaporte activado",
+    linkedin_url: stringValue(formData, "linkedin_url") || null,
+    location: stringValue(formData, "location") || "Buenos Aires",
+    looking_for: listValue(formData, "looking_for"),
+    open_to: requiredString(formData, "open_to"),
+    qr_base_url: `/p/${user.id}`,
+    role,
+    skills: listValue(formData, "skills"),
+    user_id: user.id,
+  });
+
+  if (error) {
+    return {
+      error:
+        error.code === "23505"
+          ? "Este usuario ya tiene Paisaporte activo."
+          : "Tu email todavia no esta aprobado para activar Paisaporte.",
+      ok: false,
+    };
+  }
+
+  revalidatePath("/club");
+  revalidatePath("/directory");
+  revalidatePath("/passport");
+  revalidatePath("/admin");
+  revalidatePath("/admin/members");
+
+  return { ok: true };
+}
 
 export async function rsvpToEvent(formData: FormData) {
   const eventId = requiredString(formData, "event_id");
@@ -203,6 +304,13 @@ function requiredString(formData: FormData, key: string) {
 function stringValue(formData: FormData, key: string) {
   const value = formData.get(key);
   return typeof value === "string" ? value.trim() : "";
+}
+
+function listValue(formData: FormData, key: string) {
+  return stringValue(formData, key)
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
 }
 
 function numberValue(formData: FormData, key: string) {

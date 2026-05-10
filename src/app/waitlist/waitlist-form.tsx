@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { Send } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
+import { requestWaitlistAccess } from "@/lib/actions";
 
 const initialForm = {
   full_name: "",
@@ -21,16 +21,13 @@ export function WaitlistForm() {
     setStatus("loading");
     setMessage("");
 
-    const supabase = createClient();
-    const { error } = await supabase.from("whitelist_requests").insert(form);
+    const formData = new FormData();
+    Object.entries(form).forEach(([key, value]) => formData.set(key, value));
+    const result = await requestWaitlistAccess(formData);
 
-    if (error) {
+    if (!result.ok) {
       setStatus("error");
-      setMessage(
-        error.code === "23505"
-          ? "Ese email ya esta en la lista."
-          : "No pudimos guardar la solicitud. Proba de nuevo.",
-      );
+      setMessage(result.error ?? "No pudimos guardar la solicitud. Proba de nuevo.");
       return;
     }
 
