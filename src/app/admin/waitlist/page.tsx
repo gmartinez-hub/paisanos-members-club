@@ -1,6 +1,7 @@
 import { Check, ShieldCheck, X } from "lucide-react";
 import { AdminShell } from "@/components/admin-shell";
-import { Panel, PrimaryButton, SecondaryButton, StatusBadge } from "@/components/ui";
+import { Panel, PrimaryButton, SecondaryLink, StatusBadge } from "@/components/ui";
+import { approveWaitlistRequest, rejectWaitlistRequest } from "@/lib/actions";
 import { requireAdmin } from "@/lib/community";
 
 export default async function AdminWaitlistPage() {
@@ -26,18 +27,33 @@ export default async function AdminWaitlistPage() {
                 <p className="mt-4 max-w-3xl text-sm leading-6 text-ink-muted">{person.reason}</p>
               </div>
               <div className="grid content-center gap-2">
-                <PrimaryButton>
-                  <Check size={17} />
-                  Aprobar e invitar
-                </PrimaryButton>
-                <SecondaryButton>
-                  <ShieldCheck size={17} />
-                  Pedir mas info
-                </SecondaryButton>
-                <button className="inline-flex h-11 items-center justify-center gap-2 rounded-sm border border-line px-4 text-sm font-semibold text-signal-dark">
-                  <X size={17} />
-                  Rechazar
-                </button>
+                {person.status === "pending" ? (
+                  <>
+                    <form action={approveWaitlistRequest}>
+                      <input name="request_id" type="hidden" value={person.id} />
+                      <PrimaryButton>
+                        <Check size={17} />
+                        Aprobar
+                      </PrimaryButton>
+                    </form>
+                    <SecondaryLink href={`mailto:${person.email}?subject=Paisanos Members Club`}>
+                      <ShieldCheck size={17} />
+                      Pedir mas info
+                    </SecondaryLink>
+                    <form action={rejectWaitlistRequest}>
+                      <input name="request_id" type="hidden" value={person.id} />
+                      <button className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-sm border border-line px-4 text-sm font-semibold text-signal-dark">
+                        <X size={17} />
+                        Rechazar
+                      </button>
+                    </form>
+                  </>
+                ) : (
+                  <SecondaryLink href={`mailto:${person.email}?subject=Paisanos Members Club`}>
+                    <ShieldCheck size={17} />
+                    Contactar
+                  </SecondaryLink>
+                )}
               </div>
             </div>
           </Panel>

@@ -45,6 +45,12 @@ export type EventRow = {
   created_at: string;
   tags: string[];
   checkin_label: string;
+  source: "paisanos" | "luma";
+  luma_url: string | null;
+  luma_event_id: string | null;
+  registration_mode: "paisanos" | "luma";
+  checkin_mode: "paisanos" | "luma" | "hybrid";
+  sync_status: "not_configured" | "manual" | "synced" | "error";
 };
 
 export type RsvpRow = {
@@ -103,6 +109,15 @@ export type EventView = {
   host: string;
   tags: string[];
   userRsvpStatus?: RsvpRow["status"];
+  source: EventRow["source"];
+  sourceLabel: string;
+  lumaUrl: string | null;
+  lumaEventId: string | null;
+  registrationMode: EventRow["registration_mode"];
+  checkinMode: EventRow["checkin_mode"];
+  syncStatus: EventRow["sync_status"];
+  usesLumaRegistration: boolean;
+  usesLumaCheckIn: boolean;
 };
 
 export type FeedbackProcessView = {
@@ -311,7 +326,12 @@ async function enrichEvents(
       description: event.description ?? "",
       date: formatDate(event.event_date),
       time: formatTime(event.event_date),
-      point: event.checkin_label && event.active_token ? event.active_token.slice(0, 3).toUpperCase() : "PMC",
+      point:
+        event.source === "luma"
+          ? "Luma"
+          : event.checkin_label && event.active_token
+            ? event.active_token.slice(0, 3).toUpperCase()
+            : "PMC",
       location: event.location ?? "A confirmar",
       status: statusLabel(event.status),
       rawStatus: event.status,
@@ -322,6 +342,15 @@ async function enrichEvents(
       host: event.speaker_name ?? "Paisanos",
       tags: event.tags ?? [],
       userRsvpStatus: viewerRsvp?.status,
+      source: event.source ?? "paisanos",
+      sourceLabel: event.source === "luma" ? "Luma" : "Paisanos",
+      lumaUrl: event.luma_url ?? null,
+      lumaEventId: event.luma_event_id ?? null,
+      registrationMode: event.registration_mode ?? "paisanos",
+      checkinMode: event.checkin_mode ?? "paisanos",
+      syncStatus: event.sync_status ?? "not_configured",
+      usesLumaRegistration: event.registration_mode === "luma",
+      usesLumaCheckIn: event.checkin_mode === "luma" || event.checkin_mode === "hybrid",
     };
   }) satisfies EventView[];
 }

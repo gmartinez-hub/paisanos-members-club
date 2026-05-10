@@ -1,10 +1,10 @@
 import { ClipboardCheck, MessageSquareText, Plus, UsersRound } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
-import { MetricTile, Panel, PrimaryButton, StatusBadge } from "@/components/ui";
+import { MetricTile, Panel, PrimaryLink, StatusBadge } from "@/components/ui";
 import { getFeedbackProcesses, requireMember } from "@/lib/community";
 
 export default async function FeedbackPage() {
-  const { supabase } = await requireMember();
+  const { profile, supabase } = await requireMember();
   const feedbackProcesses = await getFeedbackProcesses(supabase);
   const responses = feedbackProcesses.reduce((sum, process) => sum + process.responses, 0);
   const targets = feedbackProcesses.reduce((sum, process) => sum + process.selectedMembers, 0);
@@ -12,12 +12,13 @@ export default async function FeedbackPage() {
   return (
     <AppShell
       eyebrow="Research del club"
+      isAdmin={profile.is_admin}
       title="Feedback"
       actions={
-        <PrimaryButton>
+        <PrimaryLink href="/opportunities">
           <Plus size={17} />
           Proponer demo
-        </PrimaryButton>
+        </PrimaryLink>
       }
     >
       <div className="grid gap-4 md:grid-cols-3">

@@ -21,12 +21,14 @@ const navItems = [
 export function AppShell({
   children,
   eyebrow,
+  isAdmin = false,
   title,
   actions,
 }: {
   actions?: React.ReactNode;
   children: React.ReactNode;
   eyebrow: string;
+  isAdmin?: boolean;
   title: string;
 }) {
   return (
@@ -61,13 +63,15 @@ export function AppShell({
             })}
           </nav>
 
-          <Link
-            className="inline-flex h-10 items-center gap-2 rounded-sm bg-foreground px-3 text-sm font-semibold text-paper transition hover:bg-signal hover:text-foreground"
-            href="/admin"
-          >
-            <Compass size={17} />
-            Admin
-          </Link>
+          {isAdmin ? (
+            <Link
+              className="inline-flex h-10 items-center gap-2 rounded-sm bg-foreground px-3 text-sm font-semibold text-paper transition hover:bg-signal hover:text-foreground"
+              href="/admin"
+            >
+              <Compass size={17} />
+              Admin
+            </Link>
+          ) : null}
         </div>
       </div>
 

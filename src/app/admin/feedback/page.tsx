@@ -1,6 +1,5 @@
-import { ClipboardCheck, Plus, Send } from "lucide-react";
 import { AdminShell } from "@/components/admin-shell";
-import { Panel, PrimaryButton, SecondaryButton, StatusBadge } from "@/components/ui";
+import { Panel, StatusBadge } from "@/components/ui";
 import { getFeedbackProcesses, getMembers, requireAdmin } from "@/lib/community";
 
 export default async function AdminFeedbackPage() {
@@ -14,12 +13,6 @@ export default async function AdminFeedbackPage() {
     <AdminShell
       eyebrow="Research"
       title="Procesos de feedback"
-      actions={
-        <PrimaryButton>
-          <Plus size={17} />
-          Nuevo proceso
-        </PrimaryButton>
-      }
     >
       <div className="grid gap-4 xl:grid-cols-[1fr_390px]">
         <Panel className="p-5">
@@ -38,10 +31,9 @@ export default async function AdminFeedbackPage() {
                   {process.responses}/{process.selectedMembers} respuestas · vence {process.deadline}
                     </p>
                   </div>
-                  <SecondaryButton>
-                    <ClipboardCheck size={17} />
-                    Revisar
-                  </SecondaryButton>
+                  <span className="rounded-sm border border-line px-3 py-2 text-sm font-semibold text-ink-muted">
+                    Lectura
+                  </span>
                 </div>
               </article>
             ))}
@@ -52,8 +44,7 @@ export default async function AdminFeedbackPage() {
           <h2 className="text-xl font-semibold">Selector de miembros</h2>
           <div className="mt-5 grid gap-3">
             {members.slice(0, 5).map((member) => (
-              <label className="flex items-center gap-3 rounded-sm border border-line bg-background p-3 text-sm" key={member.id}>
-                <input type="checkbox" defaultChecked={member.feedbackGiven >= 1} />
+              <div className="flex items-center gap-3 rounded-sm border border-line bg-background p-3 text-sm" key={member.id}>
                 <span className="grid size-9 place-items-center rounded-sm bg-runway text-xs font-bold text-paper">
                   {member.avatar}
                 </span>
@@ -61,12 +52,11 @@ export default async function AdminFeedbackPage() {
                   <span className="block font-semibold">{member.name}</span>
                   <span className="block text-ink-muted">{member.focus}</span>
                 </span>
-              </label>
+              </div>
             ))}
-            <PrimaryButton>
-              <Send size={17} />
-              Enviar invitacion a feedback
-            </PrimaryButton>
+            <p className="rounded-sm border border-line bg-background px-3 py-3 text-sm leading-6 text-ink-muted">
+              En P1 conectamos seleccion y envio de invitaciones. En V1 operativa, esta vista solo muestra targets y respuestas reales.
+            </p>
           </div>
         </Panel>
       </div>

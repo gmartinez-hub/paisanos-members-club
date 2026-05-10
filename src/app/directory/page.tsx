@@ -1,33 +1,42 @@
+import Link from "next/link";
 import { Search, SlidersHorizontal, UsersRound } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
-import { SecondaryButton } from "@/components/ui";
 import { getMembers, requireMember, type MemberView } from "@/lib/community";
 
-export default async function DirectoryPage() {
-  const { supabase } = await requireMember();
-  const members = await getMembers(supabase);
-  const topics = Array.from(new Set(members.flatMap((member) => member.skills))).slice(0, 10);
+export default async function DirectoryPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ q?: string; topic?: string }>;
+}) {
+  const { profile, supabase } = await requireMember();
+  const params = await searchParams;
+  const query = params?.q?.trim().toLowerCase() ?? "";
+  const topic = params?.topic?.trim() ?? "";
+  const allMembers = await getMembers(supabase);
+  const topics = Array.from(new Set(allMembers.flatMap((member) => member.skills))).slice(0, 10);
+  const members = allMembers.filter((member) => matchesDirectoryFilter(member, query, topic));
 
   return (
     <AppShell
       eyebrow="Mapa vivo"
+      isAdmin={profile.is_admin}
       title="Personas, contexto y posibles cruces"
-      actions={
-        <SecondaryButton>
-          <SlidersHorizontal size={17} />
-          Filtros
-        </SecondaryButton>
-      }
     >
       <section className="grid gap-6 border-y-2 border-foreground py-6 lg:grid-cols-[360px_minmax(0,1fr)]">
         <div>
-          <div className="flex items-center gap-3 border-b-2 border-foreground pb-3">
+          <form action="/directory" className="flex items-center gap-3 border-b-2 border-foreground pb-3">
             <Search className="text-signal" size={22} />
             <input
+              defaultValue={params?.q ?? ""}
               className="w-full bg-transparent text-lg font-black outline-none placeholder:text-ink-muted"
+              name="q"
               placeholder="Buscar persona, tema o proyecto"
             />
-          </div>
+            {topic ? <input name="topic" type="hidden" value={topic} /> : null}
+            <button className="grid size-10 shrink-0 place-items-center rounded-sm bg-foreground text-paper transition hover:bg-signal hover:text-foreground">
+              <SlidersHorizontal size={17} />
+            </button>
+          </form>
 
           {topics.length ? (
             <div className="mt-6">
@@ -36,14 +45,20 @@ export default async function DirectoryPage() {
               </p>
               <div className="mt-3 flex flex-wrap gap-2">
                 {topics.map((topic) => (
-                  <button
+                  <Link
                     className="rounded-sm border border-foreground bg-paper px-3 py-2 text-xs font-black uppercase tracking-[0.12em] transition hover:bg-stamp"
+                    href={`/directory?topic=${encodeURIComponent(topic)}`}
                     key={topic}
                   >
                     {topic}
-                  </button>
+                  </Link>
                 ))}
               </div>
+              {query || topic ? (
+                <Link className="mt-4 inline-block text-sm font-black underline decoration-signal decoration-4 underline-offset-4" href="/directory">
+                  Limpiar busqueda
+                </Link>
+              ) : null}
             </div>
           ) : null}
 
@@ -51,7 +66,7 @@ export default async function DirectoryPage() {
             <UsersRound className="mb-4 text-signal" size={22} />
             <p className="text-4xl font-black leading-none">{members.length}</p>
             <p className="mt-2 text-sm leading-6 text-ink-muted">
-              Miembros demo con contexto editable. La unidad no es categoria: es intencion, aporte y necesidad.
+              Miembros activos con contexto editable. La unidad no es categoria: es intencion, aporte y necesidad.
             </p>
           </div>
         </div>
@@ -71,6 +86,31 @@ export default async function DirectoryPage() {
       </section>
     </AppShell>
   );
+}
+
+function matchesDirectoryFilter(member: MemberView, query: string, topic: string) {
+  const topicMatch = topic ? member.skills.includes(topic) : true;
+
+  if (!query) {
+    return topicMatch;
+  }
+
+  const haystack = [
+    member.name,
+    member.role,
+    member.company,
+    member.location,
+    member.focus,
+    member.building,
+    member.canHelpWith,
+    member.lookingFor,
+    member.openTo,
+    ...member.skills,
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  return topicMatch && haystack.includes(query);
 }
 
 function DirectoryRow({ member }: { member: MemberView }) {

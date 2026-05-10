@@ -10,11 +10,19 @@ plataforma privada antes, durante y despues de un evento.
 
 1. Auth por invitacion
 2. Paisaporte digital
-3. Eventos, RSVP y lista de asistentes
-4. Check-in QR con fallback manual
+3. Eventos con modo por fuente: Luma o Paisanos
+4. RSVP/check-in nativo solo cuando el evento no dependa de Luma
 5. Admin basico para miembros, invitaciones y eventos
 6. Feedback/propuestas en version minima
 7. Analytics y fake doors para decidir V2
+
+## P0 actual
+
+1. Luma sigue siendo la fuente operativa segura para eventos existentes.
+2. Paisanos App agrega identidad, contexto, directorio, radar y continuidad.
+3. El admin no se muestra a miembros comunes; solo aparece para perfiles admin.
+4. Los botones visibles deben navegar, escribir datos o explicar que son lectura.
+5. La migracion de Luma a flujos nativos es evento por evento, no un corte abrupto.
 
 ## V2
 

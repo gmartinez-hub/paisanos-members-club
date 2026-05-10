@@ -1,27 +1,67 @@
 import { Plus, Radar, Sparkles } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
-import { Panel, PrimaryButton, StatusBadge } from "@/components/ui";
+import { Panel, PrimaryButton, PrimaryLink, StatusBadge } from "@/components/ui";
+import { createContribution } from "@/lib/actions";
 import { requireMember } from "@/lib/community";
 
 export default async function OpportunitiesPage() {
-  const { supabase } = await requireMember();
+  const { profile, supabase, user } = await requireMember();
   const { data: opportunities } = await supabase
     .from("contributions")
-    .select("id,type,title,description,category,status")
-    .eq("status", "approved")
+    .select("id,type,title,description,category,status,user_id")
+    .or(`status.eq.approved,user_id.eq.${user.id}`)
     .order("created_at", { ascending: false });
 
   return (
     <AppShell
       eyebrow="Radar de oportunidades"
+      isAdmin={profile.is_admin}
       title="Radar"
       actions={
-        <PrimaryButton>
+        <PrimaryLink href="/opportunities#nueva-propuesta">
           <Plus size={17} />
           Nueva propuesta
-        </PrimaryButton>
+        </PrimaryLink>
       }
     >
+      <section id="nueva-propuesta" className="border-y-2 border-foreground py-5">
+        <div className="grid gap-6 lg:grid-cols-[320px_minmax(0,1fr)]">
+          <div>
+            <h2 className="text-3xl font-black">Proponer algo al club</h2>
+            <p className="mt-3 text-sm leading-6 text-ink-muted">
+              Eventos, demos o recursos pasan por curaduria Paisanos antes de verse en el Radar.
+            </p>
+          </div>
+          <form action={createContribution} className="grid gap-4">
+            <div className="grid gap-4 md:grid-cols-[220px_minmax(0,1fr)]">
+              <label className="grid gap-2 text-sm font-black text-foreground">
+                Tipo
+                <select className="rounded-sm border border-line bg-background px-3 py-3 text-foreground outline-none" name="type">
+                  <option value="solution">Demo / recurso</option>
+                  <option value="event_proposal">Evento</option>
+                </select>
+              </label>
+              <Field label="Titulo" name="title" placeholder="Demo, recurso o evento recomendado" />
+            </div>
+            <Field label="Categoria" name="category" placeholder="Producto, AI, founders, comunidad" />
+            <label className="grid gap-2 text-sm font-black text-foreground">
+              Contexto
+              <textarea
+                className="min-h-28 resize-none rounded-sm border border-line bg-background px-3 py-3 text-foreground outline-none"
+                maxLength={300}
+                name="description"
+                placeholder="Que es, por que suma y que tipo de feedback o participacion buscas."
+                required
+              />
+            </label>
+            <PrimaryButton>
+              <Plus size={17} />
+              Enviar a revision
+            </PrimaryButton>
+          </form>
+        </div>
+      </section>
+
       <div className="grid gap-4 lg:grid-cols-3">
         {(opportunities ?? []).length ? (
           (opportunities ?? []).map((item) => (
@@ -52,5 +92,27 @@ export default async function OpportunitiesPage() {
         )}
       </div>
     </AppShell>
+  );
+}
+
+function Field({
+  label,
+  name,
+  placeholder,
+}: {
+  label: string;
+  name: string;
+  placeholder: string;
+}) {
+  return (
+    <label className="grid gap-2 text-sm font-black text-foreground">
+      {label}
+      <input
+        className="rounded-sm border border-line bg-background px-3 py-3 text-foreground outline-none"
+        name={name}
+        placeholder={placeholder}
+        required
+      />
+    </label>
   );
 }

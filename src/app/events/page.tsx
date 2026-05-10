@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { CalendarDays, Plus, TicketCheck, UsersRound } from "lucide-react";
+import { CalendarDays, ExternalLink, Plus, TicketCheck, UsersRound } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
-import { MetricTile, PrimaryButton, StatusBadge } from "@/components/ui";
+import { MetricTile, PrimaryLink, StatusBadge } from "@/components/ui";
 import { rsvpToEvent, cancelRsvp } from "@/lib/actions";
 import { getEvents, requireMember, type EventView } from "@/lib/community";
 
 export default async function EventsPage() {
-  const { supabase, user } = await requireMember();
+  const { profile, supabase, user } = await requireMember();
   const events = await getEvents(supabase, { viewerId: user.id });
   const nextEvent = events[0];
   const totalRsvps = events.reduce((sum, event) => sum + event.confirmed, 0);
@@ -14,12 +14,13 @@ export default async function EventsPage() {
   return (
     <AppShell
       eyebrow="Agenda del club"
+      isAdmin={profile.is_admin}
       title="Encuentros para mover proyectos"
       actions={
-        <PrimaryButton>
+        <PrimaryLink href="/opportunities">
           <Plus size={17} />
-          Proponer evento
-        </PrimaryButton>
+          Proponer en Radar
+        </PrimaryLink>
       }
     >
       <div className="grid gap-4 md:grid-cols-3">
@@ -52,6 +53,7 @@ function EventRow({ event }: { event: EventView }) {
       <div>
         <div className="mb-3 flex flex-wrap items-center gap-2">
           <StatusBadge>{event.status}</StatusBadge>
+          <StatusBadge>{event.sourceLabel}</StatusBadge>
           {event.tags.map((tag) => (
             <span className="text-xs font-black uppercase tracking-[0.12em] text-ink-muted" key={tag}>
               {tag}
@@ -78,12 +80,25 @@ function EventRow({ event }: { event: EventView }) {
           <p className="text-xs font-black uppercase tracking-[0.18em] text-stamp">Confirmados</p>
           <p className="mt-2 text-4xl font-black">{event.confirmed}/{event.capacity}</p>
         </div>
-        <form action={isConfirmed ? cancelRsvp : rsvpToEvent}>
-          <input name="event_id" type="hidden" value={event.id} />
-          <button className="flex h-11 w-full items-center justify-center rounded-sm bg-signal px-4 text-sm font-black text-foreground transition hover:bg-stamp">
-            {isConfirmed ? "Cancelar RSVP" : "Hacer RSVP"}
-          </button>
-        </form>
+        {event.usesLumaRegistration ? (
+          event.lumaUrl ? (
+            <PrimaryLink href={event.lumaUrl} target="_blank">
+              <ExternalLink size={17} />
+              Anotarme en Luma
+            </PrimaryLink>
+          ) : (
+            <p className="rounded-sm border border-line bg-background px-3 py-3 text-sm font-semibold text-ink-muted">
+              Registro en Luma pendiente
+            </p>
+          )
+        ) : (
+          <form action={isConfirmed ? cancelRsvp : rsvpToEvent}>
+            <input name="event_id" type="hidden" value={event.id} />
+            <button className="flex h-11 w-full items-center justify-center rounded-sm bg-signal px-4 text-sm font-black text-foreground transition hover:bg-stamp">
+              {isConfirmed ? "Cancelar RSVP" : "Hacer RSVP"}
+            </button>
+          </form>
+        )}
       </div>
     </article>
   );

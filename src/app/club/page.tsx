@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { PassportCard } from "@/components/passport-card";
-import { PrimaryButton, SecondaryButton, StatusBadge } from "@/components/ui";
+import { PrimaryLink, SecondaryLink, StatusBadge } from "@/components/ui";
 import {
   getEvents,
   getFeedbackProcesses,
@@ -55,23 +55,20 @@ export default async function ClubPage() {
   return (
     <AppShell
       eyebrow="Members Club"
+      isAdmin={profile.is_admin}
       title="Que las ideas no queden en el aire"
       actions={
         <div className="flex flex-wrap gap-2">
           {nextEvent ? (
-            <Link href={`/events/${nextEvent.id}`}>
-              <PrimaryButton>
-                <QrCode size={17} />
-                Abrir encuentro
-              </PrimaryButton>
-            </Link>
+            <PrimaryLink href={`/events/${nextEvent.id}`}>
+              <QrCode size={17} />
+              Abrir encuentro
+            </PrimaryLink>
           ) : null}
-          <Link href="/passport">
-            <SecondaryButton>
-              <BadgeCheck size={17} />
-              Ver Paisaporte
-            </SecondaryButton>
-          </Link>
+          <SecondaryLink href="/passport">
+            <BadgeCheck size={17} />
+            Ver Paisaporte
+          </SecondaryLink>
         </div>
       }
     >
@@ -114,7 +111,10 @@ export default async function ClubPage() {
                       {nextEvent.subtitle}. La idea no es llenar una sala: es armar cruces que muevan proyectos.
                     </p>
                   </div>
-                  <StatusBadge>{nextEvent.status}</StatusBadge>
+                  <div className="flex flex-wrap gap-2">
+                    <StatusBadge>{nextEvent.status}</StatusBadge>
+                    <StatusBadge>{nextEvent.sourceLabel}</StatusBadge>
+                  </div>
                 </div>
 
                 <div className="mt-6 grid gap-3 sm:grid-cols-3">

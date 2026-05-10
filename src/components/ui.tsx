@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 
 export function MetricTile({
@@ -37,11 +38,61 @@ export function PrimaryButton({ children }: { children: React.ReactNode }) {
   );
 }
 
+export function PrimaryLink({
+  children,
+  href,
+  target,
+}: {
+  children: React.ReactNode;
+  href: string;
+  target?: "_blank";
+}) {
+  return (
+    <Link
+      className="inline-flex h-11 items-center justify-center gap-2 rounded-sm bg-foreground px-4 text-sm font-black text-paper transition hover:bg-signal hover:text-foreground"
+      href={href}
+      rel={target ? "noreferrer" : undefined}
+      target={target}
+    >
+      {children}
+    </Link>
+  );
+}
+
 export function SecondaryButton({ children }: { children: React.ReactNode }) {
   return (
     <button className="inline-flex h-11 items-center justify-center gap-2 rounded-sm border border-foreground bg-paper px-4 text-sm font-black text-foreground transition hover:bg-stamp">
       {children}
     </button>
+  );
+}
+
+export function SecondaryLink({
+  children,
+  href,
+  target,
+}: {
+  children: React.ReactNode;
+  href: string;
+  target?: "_blank";
+}) {
+  return (
+    <Link
+      className="inline-flex h-11 items-center justify-center gap-2 rounded-sm border border-foreground bg-paper px-4 text-sm font-black text-foreground transition hover:bg-stamp"
+      href={href}
+      rel={target ? "noreferrer" : undefined}
+      target={target}
+    >
+      {children}
+    </Link>
+  );
+}
+
+export function MutedNote({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="rounded-sm border border-line bg-background px-3 py-3 text-sm leading-6 text-ink-muted">
+      {children}
+    </p>
   );
 }
 

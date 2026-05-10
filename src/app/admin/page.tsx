@@ -9,7 +9,7 @@ import {
   UsersRound,
 } from "lucide-react";
 import { AdminShell } from "@/components/admin-shell";
-import { MetricTile, PrimaryButton, SecondaryButton, StatusBadge } from "@/components/ui";
+import { MetricTile, PrimaryLink, SecondaryLink, StatusBadge } from "@/components/ui";
 import { getEvents, getFeedbackProcesses, getMembers, requireAdmin } from "@/lib/community";
 
 export default async function AdminPage() {
@@ -31,18 +31,14 @@ export default async function AdminPage() {
       title="Admin Paisanos"
       actions={
         <div className="flex flex-wrap gap-2">
-          <Link href="/admin/events">
-            <PrimaryButton>
-              <Plane size={17} />
-              Crear evento
-            </PrimaryButton>
-          </Link>
-          <Link href="/admin/check-in">
-            <SecondaryButton>
-              <TicketCheck size={17} />
-              Abrir check-in
-            </SecondaryButton>
-          </Link>
+          <PrimaryLink href="/admin/events">
+            <Plane size={17} />
+            Crear evento
+          </PrimaryLink>
+          <SecondaryLink href="/admin/check-in">
+            <TicketCheck size={17} />
+            Abrir check-in
+          </SecondaryLink>
         </div>
       }
     >

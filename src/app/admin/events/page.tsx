@@ -1,6 +1,6 @@
-import { CalendarDays, Plus, Save } from "lucide-react";
+import { ExternalLink, Save } from "lucide-react";
 import { AdminShell } from "@/components/admin-shell";
-import { PrimaryButton, SecondaryButton, StatusBadge } from "@/components/ui";
+import { PrimaryButton, SecondaryLink, StatusBadge } from "@/components/ui";
 import { createEvent } from "@/lib/actions";
 import { getEvents, requireAdmin } from "@/lib/community";
 
@@ -12,12 +12,6 @@ export default async function AdminEventsPage() {
     <AdminShell
       eyebrow="Operacion"
       title="Gestion de eventos"
-      actions={
-        <PrimaryButton>
-          <Plus size={17} />
-          Nuevo evento
-        </PrimaryButton>
-      }
     >
       <div className="grid gap-8 xl:grid-cols-[1fr_420px]">
         <section className="border-t-2 border-foreground pt-5">
@@ -28,6 +22,7 @@ export default async function AdminEventsPage() {
                 <div>
                   <div className="mb-2 flex items-center gap-2">
                     <StatusBadge>{event.status}</StatusBadge>
+                    <StatusBadge>{event.sourceLabel}</StatusBadge>
                     <span className="text-sm text-ink-muted">{event.point}</span>
                   </div>
                   <h3 className="font-black">{event.title}</h3>
@@ -35,10 +30,12 @@ export default async function AdminEventsPage() {
                     {event.date} · {event.location}
                   </p>
                 </div>
-                <SecondaryButton>
-                  <CalendarDays size={17} />
-                  Editar
-                </SecondaryButton>
+                {event.lumaUrl ? (
+                  <SecondaryLink href={event.lumaUrl} target="_blank">
+                    <ExternalLink size={17} />
+                    Ver Luma
+                  </SecondaryLink>
+                ) : null}
               </article>
             ))}
           </div>
@@ -49,6 +46,15 @@ export default async function AdminEventsPage() {
           <form action={createEvent} className="mt-5 grid gap-4">
             <Field label="Titulo" name="title" placeholder="Founders Night" />
             <Field label="Subtitulo" name="subtitle" placeholder="Mesa chica para builders" />
+            <label className="grid gap-2 text-sm font-black text-foreground">
+              Fuente del evento
+              <select className="rounded-sm border border-line bg-background px-3 py-3 text-foreground outline-none" name="source" defaultValue="luma">
+                <option value="luma">Luma: registro y puerta fuera de Paisanos</option>
+                <option value="paisanos">Paisanos: RSVP y check-in nativos</option>
+              </select>
+            </label>
+            <Field label="URL de Luma" name="luma_url" placeholder="https://luma.com/..." required={false} type="url" />
+            <Field label="ID de Luma" name="luma_event_id" placeholder="Opcional para sync futura" required={false} />
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Fecha" name="date" type="date" />
               <Field label="Hora" name="time" type="time" />

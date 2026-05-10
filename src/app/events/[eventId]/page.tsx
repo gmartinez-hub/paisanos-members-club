@@ -1,8 +1,7 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CheckCircle2, QrCode, ScanLine, UsersRound } from "lucide-react";
+import { CheckCircle2, ExternalLink, QrCode, ScanLine, UsersRound } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
-import { MetricTile, PrimaryButton, SecondaryButton, StatusBadge } from "@/components/ui";
+import { MetricTile, PrimaryButton, PrimaryLink, SecondaryLink, StatusBadge } from "@/components/ui";
 import { cancelRsvp, rsvpToEvent } from "@/lib/actions";
 import { getEventAttendees, getEventById, requireMember } from "@/lib/community";
 
@@ -12,7 +11,7 @@ export default async function EventDetailPage({
   params: Promise<{ eventId: string }>;
 }) {
   const { eventId } = await params;
-  const { supabase, user } = await requireMember();
+  const { profile, supabase, user } = await requireMember();
   const [event, attendees] = await Promise.all([
     getEventById(supabase, eventId, { viewerId: user.id }),
     getEventAttendees(supabase, eventId),
@@ -27,22 +26,32 @@ export default async function EventDetailPage({
   return (
     <AppShell
       eyebrow="Encuentro"
+      isAdmin={profile.is_admin}
       title={event.title}
       actions={
         <div className="flex flex-wrap gap-2">
-          <form action={isConfirmed ? cancelRsvp : rsvpToEvent}>
-            <input name="event_id" type="hidden" value={event.id} />
-            <PrimaryButton>
-              <QrCode size={17} />
-              {isConfirmed ? "Cancelar RSVP" : "Hacer RSVP"}
-            </PrimaryButton>
-          </form>
-          <Link href="/admin/check-in">
-            <SecondaryButton>
+          {event.usesLumaRegistration ? (
+            event.lumaUrl ? (
+              <PrimaryLink href={event.lumaUrl} target="_blank">
+                <ExternalLink size={17} />
+                Anotarme en Luma
+              </PrimaryLink>
+            ) : null
+          ) : (
+            <form action={isConfirmed ? cancelRsvp : rsvpToEvent}>
+              <input name="event_id" type="hidden" value={event.id} />
+              <PrimaryButton>
+                <QrCode size={17} />
+                {isConfirmed ? "Cancelar RSVP" : "Hacer RSVP"}
+              </PrimaryButton>
+            </form>
+          )}
+          {profile.is_admin && !event.usesLumaCheckIn ? (
+            <SecondaryLink href="/admin/check-in">
               <ScanLine size={17} />
               Modo staff
-            </SecondaryButton>
-          </Link>
+            </SecondaryLink>
+          ) : null}
         </div>
       }
     >
@@ -56,6 +65,9 @@ export default async function EventDetailPage({
       <section className="grid gap-6 border-y-2 border-foreground py-6 lg:grid-cols-[minmax(0,1fr)_280px]">
         <div>
           <StatusBadge>{event.status}</StatusBadge>
+          <span className="ml-2 inline-flex">
+            <StatusBadge>{event.sourceLabel}</StatusBadge>
+          </span>
           <h2 className="mt-4 max-w-3xl text-3xl font-black leading-none">{event.subtitle}</h2>
           <p className="mt-4 max-w-3xl text-sm leading-6 text-ink-muted">{event.description}</p>
           <div className="mt-6 grid gap-3 md:grid-cols-3">
@@ -103,9 +115,9 @@ export default async function EventDetailPage({
         <section>
           <h2 className="mb-4 text-3xl font-black">Despues del evento</h2>
           <div className="grid gap-4 border-y-2 border-foreground py-5">
-            <Info label="Continuidad" value="Enviar feedback y registrar aprendizajes" />
-            <Info label="Paisaporte" value="El check-in suma historial real al miembro" />
-            <Info label="Admin" value="Staff puede marcar asistencia desde /admin/check-in" />
+          <Info label="Continuidad" value="Enviar feedback y registrar aprendizajes" />
+            <Info label="Paisaporte" value={event.usesLumaCheckIn ? "El historial se importa desde Luma" : "El check-in suma historial real al miembro"} />
+            <Info label="Operativa" value={event.usesLumaCheckIn ? "Registro y puerta se gestionan desde Luma" : "Staff puede marcar asistencia desde /admin/check-in"} />
           </div>
         </section>
       </div>

@@ -1,7 +1,7 @@
-import { BadgeCheck, Download, History, Link2, QrCode, ShieldCheck } from "lucide-react";
+import { BadgeCheck, History, Link2, ShieldCheck } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { PassportCard } from "@/components/passport-card";
-import { MetricTile, PrimaryButton, SecondaryButton } from "@/components/ui";
+import { MetricTile } from "@/components/ui";
 import { getEvents, getMembers, profileToMember, requireMember } from "@/lib/community";
 
 export default async function PassportPage() {
@@ -18,19 +18,8 @@ export default async function PassportPage() {
   return (
     <AppShell
       eyebrow="Identidad del miembro"
+      isAdmin={profile.is_admin}
       title="Paisaporte"
-      actions={
-        <div className="flex flex-wrap gap-2">
-          <PrimaryButton>
-            <QrCode size={17} />
-            Mostrar QR
-          </PrimaryButton>
-          <SecondaryButton>
-            <Download size={17} />
-            Descargar
-          </SecondaryButton>
-        </div>
-      }
     >
       <div className="grid gap-6 xl:grid-cols-[420px_minmax(0,1fr)]">
         <PassportCard member={currentMember} />
