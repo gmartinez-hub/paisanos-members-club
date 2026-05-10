@@ -10,12 +10,12 @@ import {
 } from "lucide-react";
 
 const navItems = [
-  { href: "/club", label: "Club", icon: LayoutDashboard },
-  { href: "/passport", label: "Paisaporte", icon: Fingerprint },
-  { href: "/events", label: "Eventos", icon: Plane },
-  { href: "/directory", label: "Directorio", icon: UsersRound },
-  { href: "/feedback", label: "Feedback", icon: ClipboardCheck },
-  { href: "/opportunities", label: "Radar", icon: Radar },
+  { href: "/club",          label: "Club",       icon: LayoutDashboard },
+  { href: "/passport",      label: "Paisaporte", icon: Fingerprint },
+  { href: "/events",        label: "Eventos",    icon: Plane },
+  { href: "/directory",     label: "Directorio", icon: UsersRound },
+  { href: "/feedback",      label: "Feedback",   icon: ClipboardCheck },
+  { href: "/opportunities", label: "Radar",      icon: Radar },
 ];
 
 export function AppShell({
@@ -33,55 +33,65 @@ export function AppShell({
 }) {
   return (
     <main className="route-grid min-h-screen bg-background text-foreground">
-      <div className="sticky top-0 z-30 border-b border-line bg-background/92 backdrop-blur">
-        <div className="mx-auto flex w-full max-w-[1480px] flex-wrap items-center justify-between gap-3 px-4 py-3">
-          <Link className="flex items-center gap-3" href="/club">
-            <span className="grid size-10 place-items-center rounded-sm bg-foreground text-lg font-black text-paper">
+
+      {/* ── TOP BAR — boarding gate aesthetic ── */}
+      <div className="sticky top-0 z-30 border-b border-line bg-background/94 backdrop-blur">
+        <div className="mx-auto flex w-full max-w-[1480px] items-center justify-between gap-3 px-4 py-3">
+
+          {/* Brand */}
+          <Link className="flex flex-shrink-0 items-center gap-3" href="/club">
+            <span className="grid h-9 w-9 place-items-center rounded-sm bg-runway font-sans text-base font-black text-stamp">
               P
             </span>
             <span>
-              <span className="block text-[11px] font-black uppercase tracking-[0.18em] text-signal">
+              <span className="block font-mono text-[9px] font-medium uppercase tracking-[0.2em] text-ink-muted">
                 Paisanos
               </span>
-              <span className="block text-sm font-semibold">Members Club</span>
+              <span className="block font-sans text-sm font-black text-foreground">
+                Members Club
+              </span>
             </span>
           </Link>
 
-          <nav className="flex max-w-full gap-1 overflow-x-auto">
+          {/* Navigation */}
+          <nav className="flex max-w-full gap-0.5 overflow-x-auto">
             {navItems.map((item) => {
               const Icon = item.icon;
               return (
                 <Link
-                  className="inline-flex h-10 shrink-0 items-center gap-2 rounded-sm px-3 text-sm font-semibold text-ink-muted transition hover:bg-foreground hover:text-paper"
-                  href={item.href}
                   key={item.href}
+                  href={item.href}
+                  className="inline-flex h-9 flex-shrink-0 items-center gap-1.5 rounded-sm px-3 font-mono text-[10px] font-medium uppercase tracking-[0.1em] text-ink-muted transition hover:bg-runway hover:text-stamp"
                 >
-                  <Icon size={17} />
+                  <Icon size={14} className="opacity-80" />
                   {item.label}
                 </Link>
               );
             })}
           </nav>
 
+          {/* Admin access */}
           {isAdmin ? (
             <Link
-              className="inline-flex h-10 items-center gap-2 rounded-sm bg-foreground px-3 text-sm font-semibold text-paper transition hover:bg-signal hover:text-foreground"
               href="/admin"
+              className="flex-shrink-0 inline-flex h-9 items-center gap-1.5 rounded-sm border border-line px-3 font-mono text-[10px] font-medium uppercase tracking-[0.1em] text-ink-muted transition hover:border-foreground hover:text-foreground"
             >
-              <Compass size={17} />
+              <Compass size={14} className="opacity-70" />
               Admin
             </Link>
           ) : null}
         </div>
       </div>
 
+      {/* ── PAGE CONTENT ── */}
       <div className="mx-auto grid w-full max-w-[1480px] gap-6 px-4 py-6">
         <header className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-signal">
+            {/* Eyebrow — boarding pass field label aesthetic */}
+            <p className="font-mono text-[9px] font-medium uppercase tracking-[0.22em] text-stamp-fg">
               {eyebrow}
             </p>
-            <h1 className="mt-1 max-w-4xl text-4xl font-black leading-none sm:text-6xl">
+            <h1 className="mt-1 max-w-4xl font-sans text-4xl font-black leading-none sm:text-6xl">
               {title}
             </h1>
           </div>

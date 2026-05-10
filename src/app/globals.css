@@ -1,106 +1,235 @@
 @import "tailwindcss";
 
+/* ═══════════════════════════════════════════════════════════
+   TOKENS — Argentine flag pastels + Indiana Jones parchment
+   ═══════════════════════════════════════════════════════════ */
 :root {
-  --background: #f7f7f4;
-  --foreground: #111111;
-  --paper: #ffffff;
-  --ink-muted: #66645f;
-  --line: #dedbd2;
-  --signal: #ff3bbd;
-  --signal-dark: #111111;
-  --sky: #00a6ff;
-  --runway: #111111;
-  --stamp: #c9ff3d;
+  --background: #edf4f9;
+  --paper:      #ffffff;
+  --foreground: #0c1a26;
+  --ink-muted:  #4a6878;
+  --line:       #b8d0e2;
+  --stamp:      #c8ec7c;
+  --stamp-fg:   #3a6000;
+  --signal:     #f0a8c8;
+  --signal-dark:#802060;
+  --sky:        #7ab8cc;
+  --runway:     #0c1a26;
+  --parch:      #f0e6cc;
+  --parch-2:    #e2d4b0;
+  --a-ink:      #5c3e20;
+  --a-line:     #c8aa70;
+  --a-och:      #f2d898;
+  --a-och-t:    #6a3c00;
+  --a-cel:      #cce4f0;
+  --a-cel-t:    #1a4a64;
+  --a-sag:      #c8e4c0;
+  --a-sag-t:    #1e4820;
+  --a-mal:      #e8ccd4;
+  --a-mal-t:    #5a1828;
+  --a-ter:      #f0d0c0;
+  --a-ter-t:    #6a1808;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-paper: var(--paper);
-  --color-ink-muted: var(--ink-muted);
-  --color-line: var(--line);
-  --color-signal: var(--signal);
+  --color-background:  var(--background);
+  --color-paper:       var(--paper);
+  --color-foreground:  var(--foreground);
+  --color-ink-muted:   var(--ink-muted);
+  --color-line:        var(--line);
+  --color-stamp:       var(--stamp);
+  --color-stamp-fg:    var(--stamp-fg);
+  --color-signal:      var(--signal);
   --color-signal-dark: var(--signal-dark);
-  --color-sky: var(--sky);
-  --color-runway: var(--runway);
-  --color-stamp: var(--stamp);
-  --font-sans: "Inter", "Helvetica Neue", Arial, sans-serif;
-  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --color-sky:         var(--sky);
+  --color-runway:      var(--runway);
+  --color-parch:       var(--parch);
+  --color-parch-2:     var(--parch-2);
+  --color-a-och:       var(--a-och);
+  --color-a-och-t:     var(--a-och-t);
+  --color-a-cel:       var(--a-cel);
+  --color-a-cel-t:     var(--a-cel-t);
+  --color-a-sag:       var(--a-sag);
+  --color-a-sag-t:     var(--a-sag-t);
+  --color-a-mal:       var(--a-mal);
+  --color-a-mal-t:     var(--a-mal-t);
+  --color-a-ter:       var(--a-ter);
+  --color-a-ter-t:     var(--a-ter-t);
+  --font-sans:  var(--font-display);
+  --font-mono:  var(--font-mono);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-display, "Helvetica Neue", Arial, sans-serif);
 }
 
-::selection {
-  background: rgba(255, 59, 189, 0.24);
-}
+::selection { background: rgba(200, 236, 124, 0.28); }
+
+/* ── BOARDING PASS UTILITIES ── */
 
 .ticket-edge {
   background-image:
     radial-gradient(circle at 0 24px, transparent 0 13px, var(--paper) 14px),
     radial-gradient(circle at 100% 24px, transparent 0 13px, var(--paper) 14px);
-  background-position:
-    left top,
-    right top;
+  background-position: left top, right top;
   background-repeat: repeat-y;
   background-size: 28px 56px;
 }
 
+.ticket-edge-bg {
+  background-image:
+    radial-gradient(circle at 0 24px, transparent 0 13px, var(--background) 14px),
+    radial-gradient(circle at 100% 24px, transparent 0 13px, var(--background) 14px);
+  background-position: left top, right top;
+  background-repeat: repeat-y;
+  background-size: 28px 56px;
+}
+
+.ticket-edge-parch {
+  background-image:
+    radial-gradient(circle at 0 24px, transparent 0 13px, var(--parch) 14px),
+    radial-gradient(circle at 100% 24px, transparent 0 13px, var(--parch) 14px);
+  background-position: left top, right top;
+  background-repeat: repeat-y;
+  background-size: 28px 56px;
+}
+
+/* Horizontal perforation with punched holes */
+.perforation {
+  position: relative;
+  border-top: 1.5px dashed var(--line);
+}
+.perforation::before,
+.perforation::after {
+  content: '';
+  position: absolute;
+  top: 50%; transform: translateY(-50%);
+  width: 17px; height: 17px; border-radius: 50%;
+  background: var(--background);
+  border: 1px solid var(--line);
+  z-index: 2;
+}
+.perforation::before { left: -9px; }
+.perforation::after  { right: -9px; }
+
+.perforation-dark {
+  position: relative;
+  border-top: 1.5px dashed rgba(255,255,255,.12);
+}
+.perforation-dark::before,
+.perforation-dark::after {
+  content: '';
+  position: absolute;
+  top: 50%; transform: translateY(-50%);
+  width: 17px; height: 17px; border-radius: 50%;
+  background: var(--background);
+  z-index: 2;
+}
+.perforation-dark::before { left: -9px; }
+.perforation-dark::after  { right: -9px; }
+
+.perforation-parch {
+  position: relative;
+  border-top: 1.5px dashed var(--a-line);
+}
+.perforation-parch::before,
+.perforation-parch::after {
+  content: '';
+  position: absolute;
+  top: 50%; transform: translateY(-50%);
+  width: 17px; height: 17px; border-radius: 50%;
+  background: var(--parch);
+  border: 1px solid var(--a-line);
+  z-index: 2;
+}
+.perforation-parch::before { left: -9px; }
+.perforation-parch::after  { right: -9px; }
+
+.boarding-stamp { transform: rotate(-8deg); }
+
+.mrz-line {
+  font-family: var(--font-mono, monospace);
+  font-size: 7.5px;
+  letter-spacing: 0.04em;
+  color: rgba(12,26,38,.13);
+  line-height: 1.7;
+  user-select: none;
+}
+
+.barcode {
+  height: 20px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--foreground) 0,    var(--foreground) 2px,
+    transparent 2px,        transparent 4px,
+    var(--foreground) 4px,  var(--foreground) 5px,
+    transparent 5px,        transparent 8px,
+    var(--foreground) 8px,  var(--foreground) 10px,
+    transparent 10px,       transparent 13px,
+    var(--foreground) 13px, var(--foreground) 14px,
+    transparent 14px,       transparent 17px,
+    var(--foreground) 17px, var(--foreground) 19px,
+    transparent 19px,       transparent 22px,
+    var(--foreground) 22px, var(--foreground) 23px
+  );
+  background-size: 23px 100%;
+  opacity: 0.07;
+}
+
+/* ── MAP / COORDINATE UTILITIES ── */
+
 .route-grid {
   background-image:
-    linear-gradient(rgba(17, 17, 17, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(17, 17, 17, 0.045) 1px, transparent 1px);
+    linear-gradient(rgba(12,26,38,.042) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(12,26,38,.042) 1px, transparent 1px);
   background-size: 42px 42px;
 }
 
-.speedmark {
-  position: relative;
+.coord-grid {
+  background-image:
+    linear-gradient(rgba(90,60,16,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(90,60,16,.03) 1px, transparent 1px);
+  background-size: 60px 60px;
 }
 
+.topo-lines {
+  background-image:
+    radial-gradient(circle at 25% 20%, transparent 38px,  rgba(90,60,16,.052) 38px,  rgba(90,60,16,.052) 39px,  transparent 39px),
+    radial-gradient(circle at 25% 20%, transparent 76px,  rgba(90,60,16,.038) 76px,  rgba(90,60,16,.038) 77px,  transparent 77px),
+    radial-gradient(circle at 25% 20%, transparent 114px, rgba(90,60,16,.024) 114px, rgba(90,60,16,.024) 115px, transparent 115px),
+    radial-gradient(circle at 25% 20%, transparent 152px, rgba(90,60,16,.015) 152px, rgba(90,60,16,.015) 153px, transparent 153px),
+    radial-gradient(circle at 78% 72%, transparent 44px,  rgba(90,60,16,.042) 44px,  rgba(90,60,16,.042) 45px,  transparent 45px),
+    radial-gradient(circle at 78% 72%, transparent 82px,  rgba(90,60,16,.028) 82px,  rgba(90,60,16,.028) 83px,  transparent 83px),
+    radial-gradient(circle at 78% 72%, transparent 120px, rgba(90,60,16,.016) 120px, rgba(90,60,16,.016) 121px, transparent 121px);
+}
+
+/* ── SURFACE UTILITIES ── */
+
+.paisa-noise {
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(12,26,38,.055) 1px, transparent 0),
+    linear-gradient(135deg, rgba(240,168,200,.10), transparent 44%),
+    linear-gradient(315deg, rgba(200,236,124,.14), transparent 38%);
+  background-size: 16px 16px, 100% 100%, 100% 100%;
+}
+
+.speedmark { position: relative; }
 .speedmark::after {
   content: "";
   position: absolute;
   inset: 0 -48px auto auto;
-  width: 180px;
-  height: 100%;
-  background: linear-gradient(
-    135deg,
-    transparent 0 35%,
-    rgba(0, 166, 255, 0.16) 35% 54%,
-    rgba(255, 59, 189, 0.22) 54% 68%,
-    transparent 68%
-  );
+  width: 180px; height: 100%;
+  background: linear-gradient(135deg, transparent 0 35%, rgba(122,184,204,.15) 35% 54%, rgba(200,236,124,.18) 54% 68%, transparent 68%);
   pointer-events: none;
 }
+.speedmark > * { position: relative; z-index: 1; }
 
-.speedmark > * {
-  position: relative;
-  z-index: 1;
-}
+.marker { background: linear-gradient(transparent 58%, var(--stamp) 58%); }
 
-.boarding-stamp {
-  transform: rotate(-8deg);
-}
-
+/* Legacy vertical perforation */
 .perforation {
   background-image: linear-gradient(to bottom, var(--line) 42%, transparent 42%);
   background-size: 1px 14px;
-}
-
-.paisa-noise {
-  background-image:
-    radial-gradient(circle at 1px 1px, rgba(17, 17, 17, 0.09) 1px, transparent 0),
-    linear-gradient(135deg, rgba(255, 59, 189, 0.12), transparent 42%),
-    linear-gradient(315deg, rgba(201, 255, 61, 0.18), transparent 36%);
-  background-size:
-    16px 16px,
-    100% 100%,
-    100% 100%;
-}
-
-.marker {
-  background: linear-gradient(transparent 58%, var(--stamp) 58%);
 }
