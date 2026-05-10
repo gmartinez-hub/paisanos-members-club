@@ -1,26 +1,106 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f7f7f4;
+  --foreground: #111111;
+  --paper: #ffffff;
+  --ink-muted: #66645f;
+  --line: #dedbd2;
+  --signal: #ff3bbd;
+  --signal-dark: #111111;
+  --sky: #00a6ff;
+  --runway: #111111;
+  --stamp: #c9ff3d;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-paper: var(--paper);
+  --color-ink-muted: var(--ink-muted);
+  --color-line: var(--line);
+  --color-signal: var(--signal);
+  --color-signal-dark: var(--signal-dark);
+  --color-sky: var(--sky);
+  --color-runway: var(--runway);
+  --color-stamp: var(--stamp);
+  --font-sans: "Inter", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+}
+
+::selection {
+  background: rgba(255, 59, 189, 0.24);
+}
+
+.ticket-edge {
+  background-image:
+    radial-gradient(circle at 0 24px, transparent 0 13px, var(--paper) 14px),
+    radial-gradient(circle at 100% 24px, transparent 0 13px, var(--paper) 14px);
+  background-position:
+    left top,
+    right top;
+  background-repeat: repeat-y;
+  background-size: 28px 56px;
+}
+
+.route-grid {
+  background-image:
+    linear-gradient(rgba(17, 17, 17, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(17, 17, 17, 0.045) 1px, transparent 1px);
+  background-size: 42px 42px;
+}
+
+.speedmark {
+  position: relative;
+}
+
+.speedmark::after {
+  content: "";
+  position: absolute;
+  inset: 0 -48px auto auto;
+  width: 180px;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    transparent 0 35%,
+    rgba(0, 166, 255, 0.16) 35% 54%,
+    rgba(255, 59, 189, 0.22) 54% 68%,
+    transparent 68%
+  );
+  pointer-events: none;
+}
+
+.speedmark > * {
+  position: relative;
+  z-index: 1;
+}
+
+.boarding-stamp {
+  transform: rotate(-8deg);
+}
+
+.perforation {
+  background-image: linear-gradient(to bottom, var(--line) 42%, transparent 42%);
+  background-size: 1px 14px;
+}
+
+.paisa-noise {
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(17, 17, 17, 0.09) 1px, transparent 0),
+    linear-gradient(135deg, rgba(255, 59, 189, 0.12), transparent 42%),
+    linear-gradient(315deg, rgba(201, 255, 61, 0.18), transparent 36%);
+  background-size:
+    16px 16px,
+    100% 100%,
+    100% 100%;
+}
+
+.marker {
+  background: linear-gradient(transparent 58%, var(--stamp) 58%);
 }

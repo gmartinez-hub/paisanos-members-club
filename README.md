@@ -1,36 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Paisanos Members Club
 
-## Getting Started
+Web app privada para convertir la comunidad Paisanos en un sistema de
+Paisaporte, eventos, check-in, conexiones y feedback.
 
-First, run the development server:
+## Stack
+
+- Next.js 16 App Router
+- React 19
+- Tailwind CSS 4
+- Supabase Auth + Postgres + Storage
+- Vercel
+- PostHog, pendiente de key
+
+## Local
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+La app corre en [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Env
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Crear `.env.local` desde `.env.example`:
 
-## Learn More
+```bash
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_POSTHOG_KEY=
+NEXT_PUBLIC_POSTHOG_HOST=https://us.i.posthog.com
+```
 
-To learn more about Next.js, take a look at the following resources:
+No agregar service role keys al frontend.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Supabase
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Proyecto creado:
 
-## Deploy on Vercel
+- Name: `paisanos-members-club`
+- Ref: `fdwwedinoxmctekpdcid`
+- Region: `sa-east-1`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Migraciones locales:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `supabase/migrations/20260509191500_initial_schema.sql`
+- `supabase/migrations/20260509193500_harden_initial_schema.sql`
+
+## Scripts
+
+```bash
+npm run lint
+npm run build
+```
+
+## Producto
+
+Ver:
+
+- `docs/product-plan.md`
+- `docs/visual-direction.md`
+
+## Flujos funcionales
+
+- `/waitlist`: guarda solicitudes reales en `whitelist_requests`.
+- `/login`: envia magic link con Supabase Auth.
+- `/onboarding`: crea el `profiles` del usuario logueado.
+- `/club`: home privada conectada a eventos, perfil, feedback y radar reales.
+- `/events`: lista eventos publicados y permite RSVP real.
+- `/events/[eventId]`: detalle de evento con asistentes reales.
+- `/passport`: identidad del miembro conectada a `profiles`.
+- `/directory`: mapa vivo de miembros activos.
+- `/admin`: consola protegida por `profiles.is_admin`.
+- `/admin/events`: crea eventos reales.
+- `/admin/check-in`: marca check-ins reales para RSVP confirmados.
+
+## Bootstrap admin
+
+1. Entrar por `/login`.
+2. Completar `/onboarding`.
+3. En Supabase SQL Editor, promover el usuario:
+
+```sql
+update public.profiles
+set is_admin = true
+where user_id = (
+  select id from auth.users where email = 'tu@email.com'
+);
+```
