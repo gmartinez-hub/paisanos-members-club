@@ -22,6 +22,8 @@ export default async function EventDetailPage({
   }
 
   const isConfirmed = event.userRsvpStatus === "confirmed";
+  const isWaitlisted = event.userRsvpStatus === "waitlist";
+  const hasNativeRsvp = isConfirmed || isWaitlisted;
 
   return (
     <AppShell
@@ -38,11 +40,11 @@ export default async function EventDetailPage({
               </PrimaryLink>
             ) : null
           ) : (
-            <form action={isConfirmed ? cancelRsvp : rsvpToEvent}>
+            <form action={hasNativeRsvp ? cancelRsvp : rsvpToEvent}>
               <input name="event_id" type="hidden" value={event.id} />
               <PrimaryButton>
                 <QrCode size={17} />
-                {isConfirmed ? "Cancelar RSVP" : "Hacer RSVP"}
+                {hasNativeRsvp ? "Cancelar RSVP" : event.isFull ? "Entrar en espera" : "Hacer RSVP"}
               </PrimaryButton>
             </form>
           )}
@@ -59,7 +61,7 @@ export default async function EventDetailPage({
         <MetricTile icon={UsersRound} label="Confirmados" value={`${event.confirmed}`} caption={`Capacidad ${event.capacity}`} />
         <MetricTile icon={CheckCircle2} label="Check-ins" value={`${event.checkedIn}`} caption="Durante el evento" />
         <MetricTile icon={QrCode} label="Punto" value={event.point} caption="Token por evento" />
-        <MetricTile icon={ScanLine} label="Pendientes" value={`${Math.max(event.confirmed - event.checkedIn, 0)}`} caption="Para staff" />
+        <MetricTile icon={ScanLine} label="Espera" value={`${event.waitlisted}`} caption={isWaitlisted ? "Estas en espera" : "Lista activa"} />
       </div>
 
       <section className="grid gap-6 border-y-2 border-foreground py-6 lg:grid-cols-[minmax(0,1fr)_280px]">

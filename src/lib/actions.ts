@@ -107,13 +107,42 @@ export async function activateProfile(formData: FormData): Promise<ActionResult>
 export async function rsvpToEvent(formData: FormData) {
   const eventId = requiredString(formData, "event_id");
   const { supabase, user } = await requireMember();
+  const event = await getActionEvent(supabase, eventId);
+
+  if (!event) {
+    throw new Error("Evento no encontrado.");
+  }
+
+  if (event.registration_mode !== "paisanos") {
+    throw new Error("Este evento gestiona registros fuera de Paisanos.");
+  }
+
+  if (!["published", "active"].includes(event.status)) {
+    throw new Error("Este evento todavia no esta abierto para RSVP.");
+  }
+
+  const { data: existingRsvp } = await supabase
+    .from("rsvps")
+    .select("status")
+    .eq("event_id", eventId)
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (existingRsvp?.status === "confirmed") {
+    revalidateEventPaths(eventId);
+    return;
+  }
+
+  const status = (await eventIsFull(supabase, eventId, event.max_capacity))
+    ? "waitlist"
+    : "confirmed";
 
   const { error } = await supabase.from("rsvps").upsert(
     {
       cancelled_at: null,
-      confirmed_at: new Date().toISOString(),
+      confirmed_at: status === "confirmed" ? new Date().toISOString() : null,
       event_id: eventId,
-      status: "confirmed",
+      status,
       user_id: user.id,
     },
     { onConflict: "event_id,user_id" },
@@ -150,6 +179,31 @@ export async function checkInMember(formData: FormData) {
   const eventId = requiredString(formData, "event_id");
   const userId = requiredString(formData, "user_id");
   const { supabase } = await requireAdmin();
+  const event = await getActionEvent(supabase, eventId);
+
+  if (!event) {
+    throw new Error("Evento no encontrado.");
+  }
+
+  if (event.checkin_mode === "luma") {
+    throw new Error("Este evento usa check-in en Luma.");
+  }
+
+  if (!["published", "active"].includes(event.status)) {
+    throw new Error("Este evento no esta abierto para check-in.");
+  }
+
+  const { data: rsvp } = await supabase
+    .from("rsvps")
+    .select("status")
+    .eq("event_id", eventId)
+    .eq("user_id", userId)
+    .eq("status", "confirmed")
+    .maybeSingle();
+
+  if (!rsvp) {
+    throw new Error("El miembro necesita RSVP confirmado para hacer check-in.");
+  }
 
   const { error } = await supabase.from("check_ins").upsert(
     {
@@ -289,6 +343,50 @@ function revalidateEventPaths(eventId: string) {
   revalidatePath("/passport");
   revalidatePath("/admin");
   revalidatePath("/admin/check-in");
+}
+
+async function getActionEvent(supabase: Awaited<ReturnType<typeof createClient>>, eventId: string) {
+  const { data, error } = await supabase
+    .from("events")
+    .select("id,status,max_capacity,registration_mode,checkin_mode")
+    .eq("id", eventId)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data as
+    | {
+        checkin_mode: "paisanos" | "luma" | "hybrid";
+        id: string;
+        max_capacity: number | null;
+        registration_mode: "paisanos" | "luma";
+        status: "draft" | "published" | "active" | "closed";
+      }
+    | null;
+}
+
+async function eventIsFull(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  eventId: string,
+  maxCapacity: number | null,
+) {
+  if (!maxCapacity || maxCapacity <= 0) {
+    return false;
+  }
+
+  const { count, error } = await supabase
+    .from("rsvps")
+    .select("id", { count: "exact", head: true })
+    .eq("event_id", eventId)
+    .eq("status", "confirmed");
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return (count ?? 0) >= maxCapacity;
 }
 
 function requiredString(formData: FormData, key: string) {

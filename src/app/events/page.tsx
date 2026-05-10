@@ -47,6 +47,8 @@ export default async function EventsPage() {
 
 function EventRow({ event }: { event: EventView }) {
   const isConfirmed = event.userRsvpStatus === "confirmed";
+  const isWaitlisted = event.userRsvpStatus === "waitlist";
+  const hasNativeRsvp = isConfirmed || isWaitlisted;
 
   return (
     <article className="grid gap-5 border-b-2 border-foreground py-6 last:border-b-0 lg:grid-cols-[minmax(0,1fr)_220px]">
@@ -79,6 +81,11 @@ function EventRow({ event }: { event: EventView }) {
         <div className="rounded-sm bg-foreground p-4 text-paper">
           <p className="text-xs font-black uppercase tracking-[0.18em] text-stamp">Confirmados</p>
           <p className="mt-2 text-4xl font-black">{event.confirmed}/{event.capacity}</p>
+          {event.waitlisted ? (
+            <p className="mt-2 text-xs font-black uppercase tracking-[0.14em] text-paper/70">
+              {event.waitlisted} en espera
+            </p>
+          ) : null}
         </div>
         {event.usesLumaRegistration ? (
           event.lumaUrl ? (
@@ -92,11 +99,16 @@ function EventRow({ event }: { event: EventView }) {
             </p>
           )
         ) : (
-          <form action={isConfirmed ? cancelRsvp : rsvpToEvent}>
+          <form action={hasNativeRsvp ? cancelRsvp : rsvpToEvent}>
             <input name="event_id" type="hidden" value={event.id} />
             <button className="flex h-11 w-full items-center justify-center rounded-sm bg-signal px-4 text-sm font-black text-foreground transition hover:bg-stamp">
-              {isConfirmed ? "Cancelar RSVP" : "Hacer RSVP"}
+              {hasNativeRsvp ? "Cancelar RSVP" : event.isFull ? "Entrar en espera" : "Hacer RSVP"}
             </button>
+            {isWaitlisted ? (
+              <p className="mt-2 text-xs font-semibold text-ink-muted">
+                Estas en lista de espera.
+              </p>
+            ) : null}
           </form>
         )}
       </div>

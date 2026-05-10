@@ -103,12 +103,15 @@ export type EventView = {
   status: string;
   rawStatus: EventRow["status"];
   capacity: number;
+  availableSeats: number | null;
   confirmed: number;
   checkedIn: number;
+  isFull: boolean;
   noShows: number;
   host: string;
   tags: string[];
   userRsvpStatus?: RsvpRow["status"];
+  waitlisted: number;
   source: EventRow["source"];
   sourceLabel: string;
   lumaUrl: string | null;
@@ -314,10 +317,13 @@ async function enrichEvents(
   return events.map((event) => {
     const eventRsvps = rsvps.filter((rsvp) => rsvp.event_id === event.id);
     const confirmed = eventRsvps.filter((rsvp) => rsvp.status === "confirmed").length;
+    const waitlisted = eventRsvps.filter((rsvp) => rsvp.status === "waitlist").length;
     const checkedIn = checkIns.filter((checkIn) => checkIn.event_id === event.id).length;
     const viewerRsvp = viewerId
       ? eventRsvps.find((rsvp) => rsvp.user_id === viewerId)
       : undefined;
+    const capacity = event.max_capacity ?? 0;
+    const availableSeats = capacity > 0 ? Math.max(capacity - confirmed, 0) : null;
 
     return {
       id: event.id,
@@ -335,13 +341,16 @@ async function enrichEvents(
       location: event.location ?? "A confirmar",
       status: statusLabel(event.status),
       rawStatus: event.status,
-      capacity: event.max_capacity ?? 0,
+      capacity,
+      availableSeats,
       confirmed,
       checkedIn,
+      isFull: availableSeats === 0,
       noShows: Math.max(confirmed - checkedIn, 0),
       host: event.speaker_name ?? "Paisanos",
       tags: event.tags ?? [],
       userRsvpStatus: viewerRsvp?.status,
+      waitlisted,
       source: event.source ?? "paisanos",
       sourceLabel: event.source === "luma" ? "Luma" : "Paisanos",
       lumaUrl: event.luma_url ?? null,
