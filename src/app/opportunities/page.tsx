@@ -43,7 +43,7 @@ export default async function OpportunitiesPage() {
               </label>
               <Field label="Titulo" name="title" placeholder="Demo, recurso o evento recomendado" />
             </div>
-            <Field label="Categoria" name="category" placeholder="Producto, AI, founders, comunidad" />
+            <Field label="Categoria" name="category" placeholder="Producto, AI, founders, research" />
             <label className="grid gap-2 text-sm font-black text-foreground">
               Contexto
               <textarea

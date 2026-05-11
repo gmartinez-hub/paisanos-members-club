@@ -1,60 +1,97 @@
 import { ExternalLink, Save } from "lucide-react";
 import { AdminShell } from "@/components/admin-shell";
 import { PrimaryButton, SecondaryLink, StatusBadge } from "@/components/ui";
-import { createEvent } from "@/lib/actions";
+import { createEvent, syncLumaGuests } from "@/lib/actions";
+import { isLumaApiConfigured, isLumaWebhookConfigured } from "@/lib/luma";
 import { getEvents, requireAdmin } from "@/lib/community";
 
 export default async function AdminEventsPage() {
   const { supabase } = await requireAdmin();
   const events = await getEvents(supabase, { includeDrafts: true });
+  const lumaApiReady = isLumaApiConfigured();
+  const lumaWebhookReady = isLumaWebhookConfigured();
 
   return (
     <AdminShell
       eyebrow="Operacion"
       title="Gestion de eventos"
     >
-      <div className="grid gap-8 xl:grid-cols-[1fr_420px]">
-        <section className="border-t-2 border-foreground pt-5">
-          <h2 className="mb-4 text-3xl font-black">Eventos cargados</h2>
-          <div className="grid gap-0 border-y-2 border-foreground">
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_430px]">
+        <section className="grid gap-4">
+          <div className="grid gap-3 border border-a-line bg-parch-2 p-4 md:grid-cols-3">
+            <LumaState label="API Luma" ready={lumaApiReady} />
+            <LumaState label="Webhook Luma" ready={lumaWebhookReady} />
+            <LumaState label="Modo externo" ready />
+          </div>
+
+          <div className="flex items-end justify-between gap-4 border-t border-a-line pt-5">
+            <div>
+              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-a-och-t">Ops board</p>
+              <h2 className="mt-1 text-3xl font-black text-a-ink">Eventos cargados</h2>
+            </div>
+            <StatusBadge>{events.length} total</StatusBadge>
+          </div>
+
+          <div className="grid gap-3">
             {events.map((event) => (
-              <article className="grid gap-3 border-b border-line py-4 last:border-b-0 md:grid-cols-[1fr_150px]" key={event.id}>
+              <article className="ticket-edge-parch border border-a-line bg-parch-2 p-4" key={event.id}>
                 <div>
-                  <div className="mb-2 flex items-center gap-2">
+                  <div className="mb-3 flex flex-wrap items-center gap-2">
                     <StatusBadge>{event.status}</StatusBadge>
                     <StatusBadge>{event.sourceLabel}</StatusBadge>
-                    <span className="text-sm text-ink-muted">{event.point}</span>
+                    <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-a-ink/55">{event.point}</span>
                   </div>
-                  <h3 className="font-black">{event.title}</h3>
-                  <p className="mt-1 text-sm text-ink-muted">
+                  <h3 className="text-xl font-black text-a-ink">{event.title}</h3>
+                  <p className="mt-1 text-sm text-a-ink/70">
                     {event.date} · {event.location}
                   </p>
                 </div>
-                {event.lumaUrl ? (
-                  <SecondaryLink href={event.lumaUrl} target="_blank">
-                    <ExternalLink size={17} />
-                    Ver Luma
-                  </SecondaryLink>
-                ) : null}
+                <div className="mt-4 grid gap-3 border-t border-a-line pt-3 md:grid-cols-[1fr_auto]">
+                  <div className="grid gap-1 font-mono text-[9px] uppercase tracking-[0.14em] text-a-ink/55 sm:grid-cols-3">
+                    <span>RSVP {event.confirmed}/{event.capacity || "-"}</span>
+                    <span>SYNC {event.syncStatus}</span>
+                    <span>{event.lumaLastSyncedAt ?? "Sin sync"}</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {event.lumaUrl ? (
+                      <SecondaryLink href={event.lumaUrl} target="_blank">
+                        <ExternalLink size={17} />
+                        Ver Luma
+                      </SecondaryLink>
+                    ) : null}
+                    {event.source === "luma" ? (
+                      <form action={syncLumaGuests}>
+                        <input name="event_id" type="hidden" value={event.id} />
+                        <button
+                          className="inline-flex h-10 items-center justify-center rounded-sm border border-a-line px-3 font-mono text-[10px] font-medium uppercase tracking-[0.08em] text-a-ink disabled:cursor-not-allowed disabled:opacity-45"
+                          disabled={!lumaApiReady || !event.lumaEventId}
+                        >
+                          Sync guests
+                        </button>
+                      </form>
+                    ) : null}
+                  </div>
+                </div>
               </article>
             ))}
           </div>
         </section>
 
-        <section className="border-t-2 border-foreground pt-5">
-          <h2 className="text-3xl font-black">Crear evento real</h2>
+        <section className="border border-a-line bg-parch-2 p-5">
+          <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-a-och-t">Nuevo vuelo</p>
+          <h2 className="mt-1 text-3xl font-black text-a-ink">Crear evento</h2>
           <form action={createEvent} className="mt-5 grid gap-4">
             <Field label="Titulo" name="title" placeholder="Founders Night" />
             <Field label="Subtitulo" name="subtitle" placeholder="Mesa chica para builders" />
             <label className="grid gap-2 text-sm font-black text-foreground">
               Fuente del evento
-              <select className="rounded-sm border border-line bg-background px-3 py-3 text-foreground outline-none" name="source" defaultValue="luma">
-                <option value="luma">Luma: registro y puerta fuera de Paisanos</option>
+              <select className="rounded-sm border border-line bg-background px-3 py-3 text-foreground outline-none" name="source" defaultValue="paisanos">
                 <option value="paisanos">Paisanos: RSVP y check-in nativos</option>
+                <option value="luma">Luma externo: registro fuera de Paisanos</option>
               </select>
             </label>
             <Field label="URL de Luma" name="luma_url" placeholder="https://luma.com/..." required={false} type="url" />
-            <Field label="ID de Luma" name="luma_event_id" placeholder="Opcional para sync futura" required={false} />
+            <Field label="ID de Luma" name="luma_event_id" placeholder="evt-... para sync futura" required={false} />
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Fecha" name="date" type="date" />
               <Field label="Hora" name="time" type="time" />
@@ -86,6 +123,15 @@ export default async function AdminEventsPage() {
         </section>
       </div>
     </AdminShell>
+  );
+}
+
+function LumaState({ label, ready }: { label: string; ready: boolean }) {
+  return (
+    <div className="border-t border-a-line pt-3">
+      <p className="font-mono text-[8px] uppercase tracking-[0.16em] text-a-ink/45">{label}</p>
+      <p className="mt-1 text-lg font-black text-a-ink">{ready ? "Listo" : "Pendiente"}</p>
+    </div>
   );
 }
 

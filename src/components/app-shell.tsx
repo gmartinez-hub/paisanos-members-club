@@ -1,22 +1,5 @@
 import Link from "next/link";
-import {
-  ClipboardCheck,
-  Compass,
-  Fingerprint,
-  LayoutDashboard,
-  Plane,
-  Radar,
-  UsersRound,
-} from "lucide-react";
-
-const navItems = [
-  { href: "/club",          label: "Club",       icon: LayoutDashboard },
-  { href: "/passport",      label: "Paisaporte", icon: Fingerprint },
-  { href: "/events",        label: "Eventos",    icon: Plane },
-  { href: "/directory",     label: "Directorio", icon: UsersRound },
-  { href: "/feedback",      label: "Feedback",   icon: ClipboardCheck },
-  { href: "/opportunities", label: "Radar",      icon: Radar },
-];
+import { MemberNav } from "@/components/shell-nav";
 
 export function AppShell({
   children,
@@ -32,7 +15,7 @@ export function AppShell({
   title: string;
 }) {
   return (
-    <main className="route-grid min-h-screen bg-background text-foreground">
+    <main className="route-grid min-h-[100dvh] bg-background text-foreground">
 
       {/* ── TOP BAR — boarding gate aesthetic ── */}
       <div className="sticky top-0 z-30 border-b border-line bg-background/94 backdrop-blur">
@@ -54,29 +37,17 @@ export function AppShell({
           </Link>
 
           {/* Navigation */}
-          <nav className="flex max-w-full gap-0.5 overflow-x-auto">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="inline-flex h-9 flex-shrink-0 items-center gap-1.5 rounded-sm px-3 font-mono text-[10px] font-medium uppercase tracking-[0.1em] text-ink-muted transition hover:bg-runway hover:text-stamp"
-                >
-                  <Icon size={14} className="opacity-80" />
-                  {item.label}
-                </Link>
-              );
-            })}
-          </nav>
+          <MemberNav />
 
           {/* Admin access */}
           {isAdmin ? (
             <Link
               href="/admin"
-              className="flex-shrink-0 inline-flex h-9 items-center gap-1.5 rounded-sm border border-line px-3 font-mono text-[10px] font-medium uppercase tracking-[0.1em] text-ink-muted transition hover:border-foreground hover:text-foreground"
+              className="inline-flex h-9 flex-shrink-0 items-center gap-1.5 rounded-sm border border-line px-3 font-mono text-[10px] font-medium uppercase tracking-[0.1em] text-ink-muted transition-colors hover:border-foreground hover:text-foreground"
             >
-              <Compass size={14} className="opacity-70" />
+              <span aria-hidden="true" className="grid h-5 min-w-7 place-items-center rounded-sm border border-line px-1 text-[8px]">
+                IJ
+              </span>
               Admin
             </Link>
           ) : null}

@@ -1,21 +1,5 @@
 import Link from "next/link";
-import {
-  ClipboardCheck,
-  LayoutDashboard,
-  Plane,
-  ShieldCheck,
-  TicketCheck,
-  UsersRound,
-} from "lucide-react";
-
-const adminItems = [
-  { href: "/admin",              label: "Resumen",     icon: LayoutDashboard },
-  { href: "/admin/members",      label: "Miembros",    icon: UsersRound },
-  { href: "/admin/events",       label: "Eventos",     icon: Plane },
-  { href: "/admin/check-in",     label: "Check-in",    icon: TicketCheck },
-  { href: "/admin/waitlist",     label: "Whitelist",   icon: ShieldCheck },
-  { href: "/admin/feedback",     label: "Feedback",    icon: ClipboardCheck },
-];
+import { AdminNav } from "@/components/shell-nav";
 
 function CompassRose({ className }: { className?: string }) {
   return (
@@ -72,11 +56,11 @@ export function AdminShell({
   title: string;
 }) {
   return (
-    <main className="coord-grid min-h-screen bg-parch text-foreground">
+    <main className="coord-grid min-h-[100dvh] bg-parch text-foreground">
       <div className="mx-auto grid w-full max-w-[1480px] gap-4 px-4 py-4 lg:grid-cols-[220px_minmax(0,1fr)]">
 
         {/* ── SIDEBAR — Indiana Jones parchment + topo lines ── */}
-        <aside className="lg:sticky lg:top-4 lg:h-[calc(100vh-32px)]">
+        <aside className="lg:sticky lg:top-4 lg:h-[calc(100dvh-32px)]">
           <div className="topo-lines ticket-edge-parch relative flex h-full flex-col justify-between overflow-hidden rounded-sm border border-a-line bg-parch-2">
 
             {/* Brand header */}
@@ -96,40 +80,13 @@ export function AdminShell({
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 p-3">
-              <p className="mb-2 px-2 font-mono text-[8px] font-medium uppercase tracking-[0.22em] text-a-ink opacity-40">
-                Operación
-              </p>
-              <div className="grid gap-0.5">
-                {adminItems.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className="flex items-center gap-2.5 rounded-sm px-3 py-2.5 font-mono text-[11px] font-medium text-a-ink transition hover:bg-a-och/40 hover:text-a-och-t"
-                    >
-                      <Icon size={15} className="opacity-70 flex-shrink-0" />
-                      {item.label}
-                    </Link>
-                  );
-                })}
-              </div>
-
-              {/* Coordinate label — Indiana Jones touch */}
-              <div className="mt-6 px-2">
-                <p className="font-mono text-[8px] leading-5 text-a-ink opacity-25 tracking-[0.12em]">
-                  34°36′S 58°22′W<br />
-                  Buenos Aires · ARG
-                </p>
-              </div>
-            </nav>
+            <AdminNav />
 
             {/* Footer */}
             <div className="border-t border-a-line p-4">
               <Link
                 href="/club"
-                className="block rounded-sm border border-a-ink/30 px-3 py-2.5 text-center font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-a-ink transition hover:bg-a-ink hover:text-parch"
+                className="block rounded-sm border border-a-ink/30 px-3 py-2.5 text-center font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-a-ink transition-colors hover:bg-a-ink hover:text-parch"
               >
                 Ver app de miembros
               </Link>

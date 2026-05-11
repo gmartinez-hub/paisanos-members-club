@@ -7,6 +7,7 @@ type SupabaseServerClient = Awaited<ReturnType<typeof createClient>>;
 export type ProfileRow = {
   id: string;
   user_id: string;
+  email: string | null;
   full_name: string;
   role: string;
   company: string;
@@ -51,6 +52,9 @@ export type EventRow = {
   registration_mode: "paisanos" | "luma";
   checkin_mode: "paisanos" | "luma" | "hybrid";
   sync_status: "not_configured" | "manual" | "synced" | "error";
+  luma_last_synced_at: string | null;
+  luma_last_webhook_at: string | null;
+  luma_sync_error: string | null;
 };
 
 export type RsvpRow = {
@@ -119,6 +123,9 @@ export type EventView = {
   registrationMode: EventRow["registration_mode"];
   checkinMode: EventRow["checkin_mode"];
   syncStatus: EventRow["sync_status"];
+  lumaLastSyncedAt: string | null;
+  lumaLastWebhookAt: string | null;
+  lumaSyncError: string | null;
   usesLumaRegistration: boolean;
   usesLumaCheckIn: boolean;
 };
@@ -311,14 +318,40 @@ async function enrichEvents(
     .select("event_id,user_id,checked_in_at")
     .in("event_id", eventIds);
 
+  const lumaEventIds = events
+    .filter((event) => event.source === "luma" && event.luma_event_id)
+    .map((event) => event.id);
+  const { data: lumaGuestData } = lumaEventIds.length
+    ? await supabase
+        .from("luma_guest_snapshots")
+        .select("event_id,approval_status,checked_in_at")
+        .in("event_id", lumaEventIds)
+    : { data: [] };
+
   const rsvps = (rsvpData ?? []) as RsvpRow[];
   const checkIns = (checkInData ?? []) as CheckInRow[];
+  const lumaGuests = (lumaGuestData ?? []) as Array<{
+    approval_status: string | null;
+    checked_in_at: string | null;
+    event_id: string;
+  }>;
 
   return events.map((event) => {
     const eventRsvps = rsvps.filter((rsvp) => rsvp.event_id === event.id);
-    const confirmed = eventRsvps.filter((rsvp) => rsvp.status === "confirmed").length;
-    const waitlisted = eventRsvps.filter((rsvp) => rsvp.status === "waitlist").length;
-    const checkedIn = checkIns.filter((checkIn) => checkIn.event_id === event.id).length;
+    const eventLumaGuests = lumaGuests.filter((guest) => guest.event_id === event.id);
+    const lumaConfirmed = eventLumaGuests.filter((guest) =>
+      ["approved", "checked_in", "registered"].includes(guest.approval_status ?? "approved"),
+    ).length;
+    const lumaCheckedIn = eventLumaGuests.filter((guest) => guest.checked_in_at).length;
+    const confirmed = event.source === "luma"
+      ? lumaConfirmed
+      : eventRsvps.filter((rsvp) => rsvp.status === "confirmed").length;
+    const waitlisted = event.source === "luma"
+      ? eventLumaGuests.filter((guest) => guest.approval_status === "waitlist").length
+      : eventRsvps.filter((rsvp) => rsvp.status === "waitlist").length;
+    const checkedIn = event.source === "luma"
+      ? lumaCheckedIn
+      : checkIns.filter((checkIn) => checkIn.event_id === event.id).length;
     const viewerRsvp = viewerId
       ? eventRsvps.find((rsvp) => rsvp.user_id === viewerId)
       : undefined;
@@ -358,6 +391,9 @@ async function enrichEvents(
       registrationMode: event.registration_mode ?? "paisanos",
       checkinMode: event.checkin_mode ?? "paisanos",
       syncStatus: event.sync_status ?? "not_configured",
+      lumaLastSyncedAt: event.luma_last_synced_at ? formatDateTime(event.luma_last_synced_at) : null,
+      lumaLastWebhookAt: event.luma_last_webhook_at ? formatDateTime(event.luma_last_webhook_at) : null,
+      lumaSyncError: event.luma_sync_error ?? null,
       usesLumaRegistration: event.registration_mode === "luma",
       usesLumaCheckIn: event.checkin_mode === "luma" || event.checkin_mode === "hybrid",
     };
@@ -406,6 +442,7 @@ export function profileToMember(
     name: profile.full_name,
     role: profile.role,
     company: profile.company,
+    email: profile.email ?? undefined,
     location: profile.location,
     memberSince: formatMonth(profile.member_since),
     lastInteraction: profile.last_interaction ?? "Sin contacto registrado",
@@ -456,6 +493,15 @@ export function formatDate(date: string) {
   return new Intl.DateTimeFormat("es-AR", {
     day: "numeric",
     month: "long",
+  }).format(new Date(date));
+}
+
+function formatDateTime(date: string) {
+  return new Intl.DateTimeFormat("es-AR", {
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    month: "short",
   }).format(new Date(date));
 }
 

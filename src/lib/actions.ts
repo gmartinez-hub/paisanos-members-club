@@ -2,12 +2,54 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { extractLumaEventId, isLumaApiConfigured } from "@/lib/luma";
+import { syncLumaGuestsForEvent } from "@/lib/luma-sync";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin, requireMember } from "@/lib/community";
 
 type ActionResult = {
   error?: string;
   ok: boolean;
 };
+
+export async function requestMagicLink(formData: FormData): Promise<ActionResult> {
+  const email = requiredString(formData, "email").toLowerCase();
+  const admin = createAdminClient();
+
+  if (!admin) {
+    return {
+      error: "Falta configurar SUPABASE_SERVICE_ROLE_KEY para enviar magic links con control de acceso.",
+      ok: false,
+    };
+  }
+
+  const allowed = await emailCanRequestAccess(admin, email);
+  if (!allowed) {
+    return {
+      error: "Ese email todavia no esta aprobado para entrar.",
+      ok: false,
+    };
+  }
+
+  const supabase = await createClient();
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const { error } = await supabase.auth.signInWithOtp({
+    email,
+    options: {
+      emailRedirectTo: `${appUrl}/auth/callback?next=/club`,
+      shouldCreateUser: true,
+    },
+  });
+
+  if (error) {
+    return {
+      error: error.message,
+      ok: false,
+    };
+  }
+
+  return { ok: true };
+}
 
 export async function requestWaitlistAccess(formData: FormData): Promise<ActionResult> {
   const supabase = await createClient();
@@ -70,6 +112,7 @@ export async function activateProfile(formData: FormData): Promise<ActionResult>
     building: stringValue(formData, "building"),
     can_help_with: requiredString(formData, "can_help_with"),
     company,
+    email: user.email?.toLowerCase() ?? null,
     focus: requiredString(formData, "focus"),
     full_name: fullName,
     is_active: true,
@@ -233,7 +276,11 @@ export async function createEvent(formData: FormData) {
   const status = formData.get("status") === "published" ? "published" : "draft";
   const source = formData.get("source") === "luma" ? "luma" : "paisanos";
   const lumaUrl = stringValue(formData, "luma_url");
-  const lumaEventId = stringValue(formData, "luma_event_id");
+  const lumaEventId = stringValue(formData, "luma_event_id") || extractLumaEventId(lumaUrl);
+
+  if (source === "luma" && !lumaUrl && !lumaEventId) {
+    throw new Error("Para un evento Luma necesitamos URL o event ID.");
+  }
 
   const { error } = await supabase.from("events").insert({
     active_token: crypto.randomUUID().replaceAll("-", "").slice(0, 24),
@@ -269,12 +316,40 @@ export async function createEvent(formData: FormData) {
   revalidatePath("/events");
 }
 
+export async function syncLumaGuests(formData: FormData) {
+  const eventId = requiredString(formData, "event_id");
+  await requireAdmin();
+
+  if (!isLumaApiConfigured()) {
+    throw new Error("LUMA_API_KEY no esta configurada todavia.");
+  }
+
+  try {
+    await syncLumaGuestsForEvent(eventId);
+  } catch (error) {
+    const supabase = createAdminClient();
+    if (supabase) {
+      await supabase
+        .from("events")
+        .update({
+          luma_sync_error: error instanceof Error ? error.message : "Error desconocido",
+          sync_status: "error",
+        })
+        .eq("id", eventId);
+    }
+    throw error;
+  }
+
+  revalidateEventPaths(eventId);
+  revalidatePath("/admin/events");
+}
+
 export async function createContribution(formData: FormData) {
   const { supabase, user } = await requireMember();
   const title = requiredString(formData, "title");
   const description = requiredString(formData, "description");
   const type = formData.get("type") === "event_proposal" ? "event_proposal" : "solution";
-  const category = stringValue(formData, "category") || "Comunidad";
+  const category = stringValue(formData, "category") || "Club";
 
   const { error } = await supabase.from("contributions").insert({
     category,
@@ -365,6 +440,40 @@ async function getActionEvent(supabase: Awaited<ReturnType<typeof createClient>>
         status: "draft" | "published" | "active" | "closed";
       }
     | null;
+}
+
+async function emailCanRequestAccess(
+  admin: NonNullable<ReturnType<typeof createAdminClient>>,
+  email: string,
+) {
+  const [{ data: profile, error: profileError }, { data: whitelist, error: whitelistError }, { data: invite, error: inviteError }] =
+    await Promise.all([
+      admin
+        .from("profiles")
+        .select("id")
+        .eq("email", email)
+        .eq("is_active", true)
+        .maybeSingle(),
+      admin
+        .from("whitelist_requests")
+        .select("id")
+        .eq("email", email)
+        .eq("status", "approved")
+        .maybeSingle(),
+      admin
+        .from("invitations")
+        .select("id")
+        .eq("invited_email", email)
+        .eq("status", "pending")
+        .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
+        .maybeSingle(),
+    ]);
+
+  if (profileError || whitelistError || inviteError) {
+    throw new Error(profileError?.message ?? whitelistError?.message ?? inviteError?.message);
+  }
+
+  return Boolean(profile || whitelist || invite);
 }
 
 async function eventIsFull(

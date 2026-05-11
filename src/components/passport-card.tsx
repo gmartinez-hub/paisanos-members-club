@@ -5,17 +5,19 @@ function BPField({
   label,
   value,
   className = "",
+  valueClassName = "text-base font-bold",
 }: {
   label: string;
   value: string;
   className?: string;
+  valueClassName?: string;
 }) {
   return (
     <div className={className}>
       <p className="font-mono text-[7.5px] font-medium uppercase tracking-[0.2em] text-paper/30">
         {label}
       </p>
-      <p className="mt-1 font-sans text-base font-bold leading-tight text-paper/90">
+      <p className={`mt-1 font-sans leading-tight text-paper/90 ${valueClassName}`}>
         {value}
       </p>
     </div>
@@ -24,10 +26,10 @@ function BPField({
 
 export function PassportCard({ member }: { member: MemberView }) {
   return (
-    <div className="ticket-edge-bg overflow-visible rounded-sm border border-line bg-paper shadow-[0_8px_32px_rgba(12,26,38,.12)]">
+    <div className="ticket-edge-bg overflow-visible rounded-none border border-line bg-paper shadow-[0_8px_32px_rgba(12,26,38,.12)]">
 
       {/* ── HEADER — dark boarding pass top section ── */}
-      <div className="rounded-t-sm bg-runway px-5 pb-5 pt-4">
+      <div className="bg-runway px-5 pb-5 pt-4">
 
         {/* Airline-style header row */}
         <div className="mb-4 flex items-start justify-between">
@@ -50,7 +52,12 @@ export function PassportCard({ member }: { member: MemberView }) {
         <div className="flex items-end justify-between gap-4">
           <div className="flex-1">
             <div className="grid grid-cols-2 gap-x-6 gap-y-3">
-              <BPField label="Apellido / Nombre" value={member.name} className="col-span-2" />
+              <BPField
+                label="Apellido / Nombre"
+                value={member.name}
+                className="col-span-2"
+                valueClassName="text-2xl font-black tracking-tight sm:text-3xl"
+              />
               <BPField label="Rol" value={member.role} />
               <BPField label="Empresa" value={member.company} />
               <BPField label="Sede" value={member.location} />
@@ -143,7 +150,7 @@ export function PassportCard({ member }: { member: MemberView }) {
       {/* ── PERFORATION + BARCODE STUB ── */}
       <div className="perforation" />
 
-      <div className="flex items-center justify-between gap-4 px-5 py-3 bg-paper rounded-b-sm">
+      <div className="flex items-center justify-between gap-4 bg-paper px-5 py-3">
         <div className="barcode flex-1" />
         <div
           className="boarding-stamp inline-block rounded-sm border-2 border-stamp px-3 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-stamp-fg"
@@ -153,7 +160,7 @@ export function PassportCard({ member }: { member: MemberView }) {
       </div>
 
       {/* ── MRZ — Machine Readable Zone ── */}
-      <div className="rounded-b-sm border-t border-line bg-background px-5 py-2">
+      <div className="border-t border-line bg-background px-5 py-2">
         <p className="mrz-line">
           {`PMCARG<<${member.name.toUpperCase().replace(/\s/g, "<").padEnd(28, "<")}`}
         </p>

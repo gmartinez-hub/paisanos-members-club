@@ -14,7 +14,7 @@ export function MetricTile({
   value: string;
 }) {
   return (
-    <div className="border-t-2 border-foreground bg-transparent pt-4">
+    <div className="border-t border-line bg-transparent pt-4">
       <Icon className="mb-4 text-stamp-fg" size={20} />
       <p className="font-mono text-[9px] font-medium uppercase tracking-[0.18em] text-ink-muted">
         {label}

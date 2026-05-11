@@ -2,8 +2,8 @@
 
 ## Tesis
 
-Convertir la comunidad Paisanos en una infraestructura propia de identidad,
-eventos, conexiones y feedback. La V1 prueba si 20-30 miembros usan una
+Convertir Paisanos en una infraestructura propia de identidad, eventos,
+conexiones y feedback. La V1 prueba si 20-30 miembros usan una
 plataforma privada antes, durante y despues de un evento.
 
 ## V1
@@ -37,7 +37,7 @@ plataforma privada antes, durante y despues de un evento.
 
 1. Membresias pagas
 2. Integracion HubSpot
-3. Comunidad como panel de research
+3. Paisanos como panel de research
 4. Paisaporte portable entre comunidades aliadas
 5. Reputacion interna para contratacion
 

@@ -53,7 +53,7 @@ export default async function AdminCheckInPage({
             <section className="border-b-2 border-foreground pb-5">
               <div className="grid gap-3 rounded-sm border border-line bg-background p-4 md:grid-cols-[1fr_auto]">
                 <p className="text-sm leading-6 text-ink-muted">
-                  Este evento usa Luma para check-in. Paisanos queda como capa de comunidad e historial importado.
+                  Este evento usa Luma para check-in. Paisanos queda como capa de identidad e historial importado.
                 </p>
                 {event.lumaUrl ? (
                   <SecondaryLink href={event.lumaUrl} target="_blank">

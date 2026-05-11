@@ -51,12 +51,14 @@ export default async function ClubPage() {
       score: [92, 84, 78][index] ?? 72,
     }));
   const opportunities = opportunitiesResult.data ?? [];
+  const nativeEvents = events.filter((event) => !event.usesLumaRegistration).length;
+  const lumaEvents = events.filter((event) => event.usesLumaRegistration).length;
 
   return (
     <AppShell
       eyebrow="Members Club"
       isAdmin={profile.is_admin}
-      title="Que las ideas no queden en el aire"
+      title="Panel privado Paisanos"
       actions={
         <div className="flex flex-wrap gap-2">
           {nextEvent ? (
@@ -72,193 +74,127 @@ export default async function ClubPage() {
         </div>
       }
     >
-      <section className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_390px]">
-        <div className="paisa-noise relative min-h-[580px] overflow-hidden rounded-sm border-2 border-foreground bg-paper p-5 sm:p-8">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex flex-wrap gap-2">
-              {currentMember.skills.slice(0, 3).map((skill) => (
-                <Tag key={skill}>{skill}</Tag>
-              ))}
-            </div>
-            <span className="rounded-sm bg-foreground px-3 py-2 text-xs font-black uppercase tracking-[0.16em] text-paper">
-              {currentMember.location}
-            </span>
-          </div>
-
-          <div className="mt-14 max-w-5xl">
-            <p className="mb-4 max-w-xl text-base font-semibold text-ink-muted">
-              Un espacio para cruzar builders, pedir feedback real y hacer que la comunidad siga activa despues de cada encuentro.
-            </p>
-            <h2 className="max-w-5xl text-5xl font-black leading-[0.92] sm:text-7xl lg:text-8xl">
-              Probar.
-              <br />
-              Conectar.
-              <br />
-              Construir <span className="marker">en voz alta.</span>
-            </h2>
+      <section className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_390px]">
+        <div className="grid gap-5">
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <DashboardMetric label="Miembros" value={`${members.length}`} caption="Activos" />
+            <DashboardMetric label="Eventos" value={`${events.length}`} caption={`${nativeEvents} nativos · ${lumaEvents} Luma`} />
+            <DashboardMetric label="Cruces" value={`${matches.length}`} caption="Sugeridos" />
+            <DashboardMetric label="Fit" value={`${confirmationRate}%`} caption="Proximo evento" />
           </div>
 
           {nextEvent ? (
-            <div className="mt-12 grid gap-6 lg:grid-cols-[minmax(0,1fr)_290px]">
-              <div className="border-t-2 border-foreground pt-5">
-                <div className="flex flex-wrap items-start justify-between gap-4">
-                  <div>
-                    <p className="text-xs font-black uppercase tracking-[0.18em] text-signal">
-                      Proximo encuentro
-                    </p>
-                    <h3 className="mt-2 text-3xl font-black leading-none">{nextEvent.title}</h3>
-                    <p className="mt-3 max-w-2xl text-sm leading-6 text-ink-muted">
-                      {nextEvent.subtitle}. La idea no es llenar una sala: es armar cruces que muevan proyectos.
-                    </p>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
+            <article className="ticket-edge-bg overflow-hidden rounded-none border border-line bg-paper shadow-[0_8px_28px_rgba(12,26,38,.08)]">
+              <div className="grid gap-5 p-5 lg:grid-cols-[minmax(0,1fr)_240px]">
+                <div>
+                  <div className="mb-3 flex flex-wrap items-center gap-2">
                     <StatusBadge>{nextEvent.status}</StatusBadge>
                     <StatusBadge>{nextEvent.sourceLabel}</StatusBadge>
                   </div>
+                  <p className="font-mono text-[9px] font-medium uppercase tracking-[0.2em] text-ink-muted">
+                    Proximo embarque
+                  </p>
+                  <h2 className="mt-2 max-w-3xl text-4xl font-black leading-none">{nextEvent.title}</h2>
+                  <p className="mt-3 max-w-3xl text-sm leading-6 text-ink-muted">
+                    {nextEvent.subtitle}. Cruces concretos, feedback accionable y seguimiento despues del encuentro.
+                  </p>
+                  <div className="mt-5 grid gap-3 md:grid-cols-3">
+                    <TinyFact icon={CalendarDays} label="Fecha" value={nextEvent.date} />
+                    <TinyFact icon={ScanLine} label="Embarque" value={`${nextEvent.time} hs`} />
+                    <TinyFact icon={UsersRound} label="Capacidad" value={`${nextEvent.confirmed}/${nextEvent.capacity || "-"}`} />
+                  </div>
                 </div>
 
-                <div className="mt-6 grid gap-3 sm:grid-cols-3">
-                  <TinyFact icon={CalendarDays} label="Fecha" value={nextEvent.date} />
-                  <TinyFact icon={ScanLine} label="Check-in" value={`${nextEvent.time} hs`} />
-                  <TinyFact icon={UsersRound} label="Confirmados" value={`${nextEvent.confirmed}/${nextEvent.capacity}`} />
+                <div className="grid content-start gap-3">
+                  <div className="bg-runway p-4 text-paper">
+                    <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-stamp">Puerta</p>
+                    <p className="mt-2 text-5xl font-black leading-none">{nextEvent.point}</p>
+                    <p className="mt-4 text-sm leading-6 text-paper/70">{nextEvent.location}</p>
+                  </div>
+                  <PrimaryLink href={`/events/${nextEvent.id}`}>
+                    <QrCode size={17} />
+                    Abrir evento
+                  </PrimaryLink>
                 </div>
               </div>
-
-              <div className="rounded-sm bg-foreground p-5 text-paper">
-                <p className="text-xs font-black uppercase tracking-[0.18em] text-stamp">
-                  Pulso piloto
-                </p>
-                <div className="mt-5 grid grid-cols-2 gap-5">
-                  <Signal label="Miembros" value={`${members.length}`} />
-                  <Signal label="Activos" value={`${members.length}`} />
-                  <Signal label="Eventos" value={`${events.length}`} />
-                  <Signal label="Fit" value={`${confirmationRate}%`} />
-                </div>
+              <div className="perforation" />
+              <div className="flex flex-wrap items-center justify-between gap-3 bg-background px-5 py-3">
+                <div className="barcode h-5 min-w-48 flex-1" aria-hidden="true" />
+                <Link className="font-mono text-[9px] font-medium uppercase tracking-[0.16em] text-ink-muted hover:text-foreground" href="/events">
+                  Ver agenda completa
+                </Link>
               </div>
-            </div>
+            </article>
           ) : (
-            <EmptyBlock title="Todavia no hay encuentros publicados" copy="Cuando el admin publique uno, aparece aca con RSVP y lista de asistentes real." />
+            <EmptyBlock title="Todavia no hay encuentros publicados" copy="Cuando el admin publique uno, aparece aca con RSVP y asistentes reales." />
           )}
+
+          <div className="grid gap-5 lg:grid-cols-2">
+            <section className="border-t border-line pt-5">
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <MessageCircle className="text-signal" size={21} />
+                  <h2 className="text-3xl font-black">Cruces sugeridos</h2>
+                </div>
+                <Link className="text-sm font-black underline decoration-signal decoration-4 underline-offset-4" href="/directory">
+                  Ver directorio
+                </Link>
+              </div>
+              <div className="grid gap-3">
+                {matches.length ? (
+                  matches.map((match) => (
+                    <MatchRow match={match} key={match.member.id} />
+                  ))
+                ) : (
+                  <EmptyBlock title="Faltan miembros para sugerir cruces" copy="Apenas haya mas perfiles activos, el directorio empieza a proponer conexiones." />
+                )}
+              </div>
+            </section>
+
+            <section className="border-t border-line pt-5">
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <Radar className="text-signal" size={21} />
+                  <h2 className="text-3xl font-black">Radar</h2>
+                </div>
+                <Link className="text-sm font-black underline decoration-signal decoration-4 underline-offset-4" href="/opportunities">
+                  Proponer
+                </Link>
+              </div>
+              <div className="grid gap-3">
+                {opportunities.length ? (
+                  opportunities.map((item) => (
+                    <article className="border-t border-line pt-4" key={item.id as string}>
+                      <p className="font-mono text-[9px] font-medium uppercase tracking-[0.16em] text-signal-dark">{String(item.category)}</p>
+                      <h3 className="mt-2 text-xl font-black">{String(item.title)}</h3>
+                      <p className="mt-2 text-sm leading-6 text-ink-muted">{String(item.description)}</p>
+                    </article>
+                  ))
+                ) : (
+                  <EmptyBlock title="No hay oportunidades aprobadas" copy="El admin puede revisar propuestas y publicarlas cuando tengan contexto suficiente." />
+                )}
+              </div>
+            </section>
+          </div>
         </div>
 
         <aside className="grid content-start gap-5">
           <PassportCard member={currentMember} />
 
-          <div className="border-t-2 border-foreground pt-5">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-signal">
-              Ahora mismo
-            </p>
-            <div className="mt-4 grid gap-3">
-              <p className="border-b border-line pb-3 text-sm leading-6 text-ink-muted">
-                Tu Paisaporte esta activo y conectado al perfil real.
-              </p>
-              <p className="border-b border-line pb-3 text-sm leading-6 text-ink-muted">
-                Hay {events.length} encuentros en Supabase y {members.length} miembros activos.
-              </p>
-              <p className="border-b border-line pb-3 text-sm leading-6 text-ink-muted">
-                Ultimo contacto: {currentMember.lastInteraction}.
-              </p>
+          <section className="border-t border-line pt-5">
+            <div className="mb-4 flex items-center gap-2">
+              <Sparkles className="text-signal" size={21} />
+              <h2 className="text-2xl font-black">Ahora mismo</h2>
             </div>
-          </div>
+            <div className="grid gap-3">
+              <MiniAction href="/passport" label="Paisaporte activo" value={currentMember.lastInteraction} />
+              <MiniAction href="/feedback" label="Feedback" value={`${feedbackProcesses.length} procesos visibles`} />
+              <MiniAction href="/directory" label="Red" value={`${members.length} perfiles con contexto`} />
+            </div>
+          </section>
         </aside>
       </section>
-
-      <section className="grid gap-8 border-t-2 border-foreground pt-8 lg:grid-cols-[0.9fr_1.1fr]">
-        <div>
-          <div className="flex items-center gap-2">
-            <Sparkles className="text-signal" size={21} />
-            <h2 className="text-3xl font-black">Lo que se mueve esta semana</h2>
-          </div>
-
-          <div className="mt-6 grid gap-5">
-            {feedbackProcesses.length ? (
-              feedbackProcesses.map((process) => (
-                <div className="grid gap-4 border-t border-line pt-5 sm:grid-cols-[150px_minmax(0,1fr)]" key={process.id}>
-                  <div>
-                    <StatusBadge>{process.status}</StatusBadge>
-                    <p className="mt-3 text-sm font-semibold text-ink-muted">Vence {process.deadline}</p>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-black">{process.title}</h3>
-                    <p className="mt-2 text-sm leading-6 text-ink-muted">
-                      {process.responses}/{process.selectedMembers} respuestas. Preguntas pensadas para aprender rapido, no para validar por compromiso.
-                    </p>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <EmptyBlock title="No hay procesos activos para vos" copy="Cuando te seleccionen para un feedback, aparece aca." />
-            )}
-          </div>
-        </div>
-
-        <div>
-          <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <MessageCircle className="text-signal" size={21} />
-              <h2 className="text-3xl font-black">Cruces sugeridos</h2>
-            </div>
-            <Link className="text-sm font-black text-foreground underline decoration-signal decoration-4 underline-offset-4" href="/directory">
-              Ver directorio
-            </Link>
-          </div>
-
-          <div className="grid gap-0 border-y-2 border-foreground">
-            {matches.length ? (
-              matches.map((match) => (
-                <MatchRow match={match} key={match.member.id} />
-              ))
-            ) : (
-              <div className="py-6">
-                <EmptyBlock title="Faltan miembros para sugerir cruces" copy="Apenas haya mas perfiles activos, el directorio empieza a proponer conexiones." />
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-
-      <section className="grid gap-8 border-t-2 border-foreground pt-8 lg:grid-cols-[330px_minmax(0,1fr)]">
-        <div>
-          <div className="flex items-center gap-2">
-            <Radar className="text-signal" size={21} />
-            <h2 className="text-3xl font-black">Radar</h2>
-          </div>
-          <p className="mt-3 text-sm leading-6 text-ink-muted">
-            Oportunidades propuestas por miembros o por Paisanos. Sin ranking ni incentivos raros: solo contexto claro para decidir si suma.
-          </p>
-        </div>
-
-        <div className="grid gap-4">
-          {opportunities.length ? (
-            opportunities.map((item) => (
-              <article className="grid gap-4 border-t border-line pt-4 md:grid-cols-[150px_minmax(0,1fr)_220px]" key={item.id as string}>
-                <div>
-                  <p className="text-xs font-black uppercase tracking-[0.16em] text-signal">{String(item.type)}</p>
-                  <p className="mt-2 text-sm font-semibold text-ink-muted">{String(item.status)}</p>
-                </div>
-                <div>
-                  <h3 className="text-xl font-black">{String(item.title)}</h3>
-                  <p className="mt-2 text-sm leading-6 text-ink-muted">{String(item.description)}</p>
-                </div>
-                <p className="self-start rounded-sm bg-stamp px-3 py-2 text-sm font-black text-foreground">
-                  {String(item.category)}
-                </p>
-              </article>
-            ))
-          ) : (
-            <EmptyBlock title="No hay oportunidades aprobadas" copy="El admin puede revisar propuestas y publicarlas cuando tengan contexto suficiente." />
-          )}
-        </div>
-      </section>
     </AppShell>
-  );
-}
-
-function Tag({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="rounded-sm border border-foreground bg-paper px-3 py-2 text-xs font-black uppercase tracking-[0.16em]">
-      {children}
-    </span>
   );
 }
 
@@ -272,19 +208,20 @@ function TinyFact({
   value: string;
 }) {
   return (
-    <div className="border-t border-foreground pt-3">
+    <div className="border-t border-line pt-3">
       <Icon className="mb-3 text-signal" size={18} />
-      <p className="text-xs font-black uppercase tracking-[0.16em] text-ink-muted">{label}</p>
+      <p className="font-mono text-[9px] font-medium uppercase tracking-[0.16em] text-ink-muted">{label}</p>
       <p className="mt-2 text-lg font-black">{value}</p>
     </div>
   );
 }
 
-function Signal({ label, value }: { label: string; value: string }) {
+function DashboardMetric({ caption, label, value }: { caption: string; label: string; value: string }) {
   return (
-    <div>
-      <p className="text-4xl font-black leading-none text-stamp">{value}</p>
-      <p className="mt-1 text-xs font-black uppercase tracking-[0.16em] text-paper/70">{label}</p>
+    <div className="border-t border-line bg-paper/55 pt-4">
+      <p className="font-mono text-[9px] font-medium uppercase tracking-[0.18em] text-ink-muted">{label}</p>
+      <p className="mt-2 text-4xl font-black leading-none">{value}</p>
+      <p className="mt-2 text-xs font-semibold text-ink-muted">{caption}</p>
     </div>
   );
 }
@@ -295,7 +232,7 @@ function MatchRow({
   match: { member: MemberView; reason: string; score: number };
 }) {
   return (
-    <article className="grid gap-4 border-b-2 border-foreground py-5 last:border-b-0 md:grid-cols-[64px_minmax(0,1fr)_90px]">
+    <article className="grid gap-4 border-t border-line pt-4 md:grid-cols-[56px_minmax(0,1fr)_70px]">
       <span className="grid size-14 place-items-center rounded-sm bg-foreground text-sm font-black text-paper">
         {match.member.avatar}
       </span>
@@ -320,5 +257,14 @@ function EmptyBlock({ copy, title }: { copy: string; title: string }) {
       <h3 className="text-xl font-black">{title}</h3>
       <p className="mt-2 text-sm leading-6 text-ink-muted">{copy}</p>
     </div>
+  );
+}
+
+function MiniAction({ href, label, value }: { href: string; label: string; value: string }) {
+  return (
+    <Link className="block border-t border-line pt-3 transition-colors hover:text-signal-dark" href={href}>
+      <p className="font-mono text-[9px] font-medium uppercase tracking-[0.16em] text-ink-muted">{label}</p>
+      <p className="mt-1 text-sm font-black">{value}</p>
+    </Link>
   );
 }

@@ -2,11 +2,13 @@
 
 import { FormEvent, useState } from "react";
 import Link from "next/link";
-import { Mail, Send } from "lucide-react";
+import { KeyRound, Mail, Send } from "lucide-react";
+import { requestMagicLink } from "@/lib/actions";
 import { createClient } from "@/lib/supabase/client";
 
 export function LoginForm() {
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "sent" | "error">("idle");
   const [message, setMessage] = useState("");
 
@@ -15,17 +17,28 @@ export function LoginForm() {
     setStatus("loading");
     setMessage("");
 
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback?next=/club`,
-      },
-    });
+    if (password.trim()) {
+      const supabase = createClient();
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (error) {
+      if (error) {
+        setStatus("error");
+        setMessage(error.message);
+        return;
+      }
+
+      window.location.href = "/club";
+      return;
+    }
+
+    const result = await requestMagicLink(new FormData(event.currentTarget));
+
+    if (!result.ok) {
       setStatus("error");
-      setMessage(error.message);
+      setMessage(result.error ?? "No pudimos enviar el magic link.");
       return;
     }
 
@@ -50,13 +63,28 @@ export function LoginForm() {
         </span>
       </label>
 
+      <label className="grid gap-2 text-sm font-semibold text-runway">
+        Clave QA / staff
+        <span className="flex items-center gap-2 rounded-sm border border-line bg-paper px-3 py-3 text-foreground">
+          <KeyRound size={18} className="text-ink-muted" />
+          <input
+            className="w-full bg-transparent outline-none"
+            name="password"
+            type="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            placeholder="Opcional"
+          />
+        </span>
+      </label>
+
       <button
         className="flex h-12 items-center justify-center gap-2 rounded-sm bg-signal px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-signal-dark disabled:cursor-not-allowed disabled:opacity-60"
         disabled={status === "loading"}
         type="submit"
       >
         <Send size={18} />
-        {status === "loading" ? "Enviando..." : "Entrar con magic link"}
+        {status === "loading" ? "Enviando..." : password.trim() ? "Entrar con clave" : "Entrar con magic link"}
       </button>
 
       {message ? (

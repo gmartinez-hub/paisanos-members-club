@@ -1,15 +1,11 @@
 import Link from "next/link";
 import {
   AlertTriangle,
-  ChartNoAxesColumnIncreasing,
-  ClipboardCheck,
   Plane,
-  ShieldCheck,
   TicketCheck,
-  UsersRound,
 } from "lucide-react";
 import { AdminShell } from "@/components/admin-shell";
-import { MetricTile, PrimaryLink, SecondaryLink, StatusBadge } from "@/components/ui";
+import { AdminMetricTile, PrimaryLink, SecondaryLink, StatusBadge } from "@/components/ui";
 import { getEvents, getFeedbackProcesses, getMembers, requireAdmin } from "@/lib/community";
 
 export default async function AdminPage() {
@@ -43,29 +39,30 @@ export default async function AdminPage() {
       }
     >
       <div className="grid gap-4 md:grid-cols-3 xl:grid-cols-5">
-        <MetricTile icon={UsersRound} label="Miembros" value={`${members.length}`} caption="Activos reales" />
-        <MetricTile icon={Plane} label="Eventos" value={`${events.length}`} caption="Incluye borradores" />
-        <MetricTile icon={ShieldCheck} label="Waitlist" value={`${pendingWaitlist}`} caption="Pendientes" />
-        <MetricTile icon={ClipboardCheck} label="Feedback" value={`${feedbackProcesses.length}`} caption="Procesos visibles" />
-        <MetricTile icon={ChartNoAxesColumnIncreasing} label="Check-ins" value={`${checkedIn}/${confirmed}`} caption="Sobre RSVP" />
+        <AdminMetricTile color="cel" label="Miembros" value={`${members.length}`} caption="Activos reales" />
+        <AdminMetricTile color="och" label="Eventos" value={`${events.length}`} caption="Incluye borradores" />
+        <AdminMetricTile color="mal" label="Waitlist" value={`${pendingWaitlist}`} caption="Pendientes" />
+        <AdminMetricTile color="sag" label="Feedback" value={`${feedbackProcesses.length}`} caption="Procesos visibles" />
+        <AdminMetricTile color="ter" label="Check-ins" value={`${checkedIn}/${confirmed}`} caption="Sobre RSVP" />
       </div>
 
-      <div className="grid gap-8 xl:grid-cols-[1.1fr_0.9fr]">
-        <section className="border-t-2 border-foreground pt-5">
+      <div className="grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
+        <section className="border-t border-a-line pt-5">
           <div className="mb-4 flex items-center justify-between gap-4">
-            <h2 className="text-3xl font-black">Operacion de eventos</h2>
+            <h2 className="text-3xl font-black text-a-ink">Operacion de eventos</h2>
             <StatusBadge>Real</StatusBadge>
           </div>
-          <div className="grid gap-0 border-y-2 border-foreground">
+          <div className="grid gap-3">
             {events.map((event) => (
-              <article className="grid gap-3 border-b border-line py-4 last:border-b-0 md:grid-cols-[1fr_140px]" key={event.id}>
+              <article className="ticket-edge-parch grid gap-3 border border-a-line bg-parch-2 p-4 md:grid-cols-[1fr_140px]" key={event.id}>
                 <div>
                   <div className="mb-2 flex flex-wrap items-center gap-2">
                     <StatusBadge>{event.status}</StatusBadge>
-                    <span className="text-sm text-ink-muted">{event.point}</span>
+                    <StatusBadge>{event.sourceLabel}</StatusBadge>
+                    <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-a-ink/55">{event.point}</span>
                   </div>
-                  <h3 className="font-black">{event.title}</h3>
-                  <p className="mt-1 text-sm text-ink-muted">
+                  <h3 className="font-black text-a-ink">{event.title}</h3>
+                  <p className="mt-1 text-sm text-a-ink/70">
                     {event.date} · {event.time} · {event.location}
                   </p>
                 </div>
@@ -82,10 +79,10 @@ export default async function AdminPage() {
           </div>
         </section>
 
-        <section className="border-t-2 border-foreground pt-5">
+        <section className="border-t border-a-line pt-5">
           <div className="mb-4 flex items-center gap-2">
             <AlertTriangle className="text-signal" size={20} />
-            <h2 className="text-3xl font-black">Atajos de decision</h2>
+            <h2 className="text-3xl font-black text-a-ink">Atajos de decision</h2>
           </div>
           <div className="grid gap-3">
             <Action title="Aprobar waitlist" copy={`${pendingWaitlist} perfiles esperan revision del equipo.`} href="/admin/waitlist" />
