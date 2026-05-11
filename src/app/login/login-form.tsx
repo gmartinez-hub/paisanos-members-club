@@ -54,6 +54,7 @@ export function LoginForm() {
           <Mail size={18} className="text-ink-muted" />
           <input
             className="w-full bg-transparent outline-none"
+            name="email"
             type="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
