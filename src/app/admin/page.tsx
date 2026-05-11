@@ -1,11 +1,16 @@
 import Link from "next/link";
 import {
-  AlertTriangle,
-  Plane,
-  TicketCheck,
+  PlaneTakeoff,
+  RadioTower,
+  ScanLine,
 } from "lucide-react";
 import { AdminShell } from "@/components/admin-shell";
-import { AdminMetricTile, PrimaryLink, SecondaryLink, StatusBadge } from "@/components/ui";
+import {
+  AdminMetricTile,
+  AdminPrimaryLink,
+  AdminSecondaryLink,
+  AdminStatusBadge,
+} from "@/components/ui";
 import { getEvents, getFeedbackProcesses, getMembers, requireAdmin } from "@/lib/community";
 
 export default async function AdminPage() {
@@ -27,41 +32,41 @@ export default async function AdminPage() {
       title="Operacion de la bitacora"
       actions={
         <div className="flex flex-wrap gap-2">
-          <PrimaryLink href="/admin/events">
-            <Plane size={17} />
+          <AdminPrimaryLink href="/admin/events">
+            <PlaneTakeoff size={17} />
             Crear escala
-          </PrimaryLink>
-          <SecondaryLink href="/admin/check-in">
-            <TicketCheck size={17} />
+          </AdminPrimaryLink>
+          <AdminSecondaryLink href="/admin/check-in">
+            <ScanLine size={17} />
             Abrir puerta
-          </SecondaryLink>
+          </AdminSecondaryLink>
         </div>
       }
     >
       <div className="grid gap-4 md:grid-cols-3 xl:grid-cols-5">
-        <AdminMetricTile color="cel" label="Paisaportes" value={`${members.length}`} caption="Activos reales" />
-        <AdminMetricTile color="och" label="Escalas" value={`${events.length}`} caption="Incluye borradores" />
-        <AdminMetricTile color="mal" label="Accesos" value={`${pendingWaitlist}`} caption="Pendientes" />
-        <AdminMetricTile color="sag" label="Notas" value={`${feedbackProcesses.length}`} caption="Lecturas visibles" />
-        <AdminMetricTile color="ter" label="Sellos" value={`${checkedIn}/${confirmed}`} caption="Sobre asientos" />
+        <AdminMetricTile label="Paisaportes" value={`${members.length}`} caption="Activos reales" />
+        <AdminMetricTile label="Escalas" value={`${events.length}`} caption="Incluye borradores" />
+        <AdminMetricTile label="Accesos" value={`${pendingWaitlist}`} caption="Pendientes" />
+        <AdminMetricTile label="Notas" value={`${feedbackProcesses.length}`} caption="Lecturas visibles" />
+        <AdminMetricTile label="Sellos" value={`${checkedIn}/${confirmed}`} caption="Sobre asientos" />
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
         <section className="border-t border-a-line pt-5">
           <div className="mb-4 flex items-center justify-between gap-4">
             <h2 className="text-3xl font-black text-a-ink">Operacion de escalas</h2>
-            <StatusBadge>Real</StatusBadge>
+            <AdminStatusBadge>Real</AdminStatusBadge>
           </div>
           <div className="grid gap-3">
             {events.map((event) => (
-              <article className="ticket-edge-parch grid gap-3 border border-a-line bg-parch-2 p-4 md:grid-cols-[1fr_140px]" key={event.id}>
+              <article className="ticket-edge-parch grid min-w-0 gap-3 border border-a-line bg-parch-2 p-4 md:grid-cols-[1fr_140px]" key={event.id}>
                 <div>
                   <div className="mb-2 flex flex-wrap items-center gap-2">
-                    <StatusBadge>{event.status}</StatusBadge>
-                    <StatusBadge>{event.sourceLabel}</StatusBadge>
+                    <AdminStatusBadge>{event.status}</AdminStatusBadge>
+                    <AdminStatusBadge>{event.sourceLabel}</AdminStatusBadge>
                     <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-a-ink/55">{event.point}</span>
                   </div>
-                  <h3 className="font-black text-a-ink">{event.title}</h3>
+                  <h3 className="break-words font-black text-a-ink">{event.title}</h3>
                   <p className="mt-1 text-sm text-a-ink/70">
                     {event.date} · {event.time} · {event.location}
                   </p>
@@ -81,7 +86,7 @@ export default async function AdminPage() {
 
         <section className="border-t border-a-line pt-5">
           <div className="mb-4 flex items-center gap-2">
-            <AlertTriangle className="text-signal" size={20} />
+            <RadioTower className="text-a-och-t" size={20} />
             <h2 className="text-3xl font-black text-a-ink">Atajos de torre</h2>
           </div>
           <div className="grid gap-3">
@@ -97,9 +102,9 @@ export default async function AdminPage() {
 
 function Action({ title, copy, href }: { copy: string; href: string; title: string }) {
   return (
-    <Link className="block border-t border-foreground pt-4 transition hover:text-signal" href={href}>
+    <Link className="block border-t border-a-line pt-4 text-a-ink transition-colors hover:text-a-och-t focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-a-och-t" href={href}>
       <h3 className="font-black">{title}</h3>
-      <p className="mt-2 text-sm leading-6 text-ink-muted">{copy}</p>
+      <p className="mt-2 text-sm leading-6 text-a-ink/65">{copy}</p>
     </Link>
   );
 }

@@ -1,6 +1,6 @@
-import { Search, UserPlus, UsersRound } from "lucide-react";
+import { BadgeCheck, Search, UserPlus } from "lucide-react";
 import { AdminShell } from "@/components/admin-shell";
-import { MetricTile, Panel, PrimaryLink } from "@/components/ui";
+import { AdminMetricTile, AdminPanel, AdminPrimaryLink } from "@/components/ui";
 import { getMembers, requireAdmin } from "@/lib/community";
 
 export default async function AdminMembersPage({
@@ -27,54 +27,64 @@ export default async function AdminMembersPage({
       eyebrow="Curaduria de ruta"
       title="Paisaportes"
       actions={
-        <PrimaryLink href="/admin/waitlist">
+        <AdminPrimaryLink href="/admin/waitlist">
           <UserPlus size={17} />
           Revisar accesos
-        </PrimaryLink>
+        </AdminPrimaryLink>
       }
     >
       <div className="grid gap-4 md:grid-cols-3">
-        <MetricTile icon={UsersRound} label="Paisaportes" value={`${allMembers.length}`} caption="Activos reales" />
-        <MetricTile icon={UserPlus} label="Accesos" value="-" caption="Desde solicitudes" />
-        <MetricTile icon={Search} label="Habilidades" value={`${new Set(members.flatMap((member) => member.skills)).size}`} caption="Tags distintos" />
+        <AdminMetricTile label="Paisaportes" value={`${allMembers.length}`} caption="Activos reales" />
+        <AdminMetricTile label="Accesos" value="-" caption="Desde solicitudes" />
+        <AdminMetricTile label="Habilidades" value={`${new Set(members.flatMap((member) => member.skills)).size}`} caption="Tags distintos" />
       </div>
 
-      <Panel className="p-4">
-        <form action="/admin/members" className="flex items-center gap-3 rounded-sm border border-line bg-background px-3 py-3">
-          <Search className="text-ink-muted" size={18} />
+      <AdminPanel className="p-4">
+        <form action="/admin/members" className="flex items-center gap-3 rounded-sm border border-a-line bg-parch px-3 py-3">
+          <label className="sr-only" htmlFor="admin-member-search">Buscar Paisaporte</label>
+          <Search className="text-a-ink/55" size={18} />
           <input
-            className="w-full bg-transparent text-sm outline-none"
+            autoComplete="off"
+            className="w-full bg-transparent text-sm text-a-ink outline-none placeholder:text-a-ink/35 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-a-och-t"
             defaultValue={params?.q ?? ""}
+            id="admin-member-search"
             name="q"
-            placeholder="Buscar Paisaporte"
+            placeholder="Buscar Paisaporte…"
           />
         </form>
-      </Panel>
+      </AdminPanel>
 
-      <Panel className="overflow-hidden">
-        <div className="grid border-b border-line bg-background px-4 py-3 text-xs font-bold uppercase tracking-[0.16em] text-ink-muted md:grid-cols-[1.2fr_1fr_0.6fr_1fr]">
+      <AdminPanel className="overflow-hidden">
+        <div className="grid border-b border-a-line bg-parch px-4 py-3 text-xs font-bold uppercase tracking-[0.16em] text-a-ink/55 md:grid-cols-[1.2fr_1fr_0.6fr_1fr]">
           <span>Paisano</span>
           <span>Tramo</span>
           <span>Escalas</span>
           <span>Ultima senal</span>
         </div>
-        {members.map((member) => (
-          <div className="grid gap-3 border-b border-line px-4 py-4 last:border-b-0 md:grid-cols-[1.2fr_1fr_0.6fr_1fr]" key={member.id}>
-            <div className="flex gap-3">
-              <span className="grid size-10 place-items-center rounded-sm bg-runway text-sm font-bold text-paper">
-                {member.avatar}
-              </span>
-              <div>
-                <h2 className="font-semibold">{member.name}</h2>
-                <p className="text-sm text-ink-muted">{member.company}</p>
+        {members.length ? (
+          members.map((member) => (
+            <div className="grid gap-3 border-b border-a-line px-4 py-4 last:border-b-0 md:grid-cols-[1.2fr_1fr_0.6fr_1fr]" key={member.id}>
+              <div className="flex min-w-0 gap-3">
+                <span className="grid size-10 flex-shrink-0 place-items-center rounded-sm bg-a-ink text-sm font-bold text-parch">
+                  {member.avatar}
+                </span>
+                <div className="min-w-0">
+                  <h2 className="truncate font-semibold text-a-ink">{member.name}</h2>
+                  <p className="truncate text-sm text-a-ink/65">{member.company}</p>
+                </div>
               </div>
+              <p className="min-w-0 break-words text-sm font-semibold text-a-ink">{member.focus}</p>
+              <p className="text-sm font-semibold tabular-nums text-a-ink">{member.attendedEvents}</p>
+              <p className="min-w-0 break-words text-sm text-a-ink/65">{member.lastInteraction}</p>
             </div>
-            <p className="text-sm font-semibold text-runway">{member.focus}</p>
-            <p className="text-sm font-semibold">{member.attendedEvents}</p>
-            <p className="text-sm text-ink-muted">{member.lastInteraction}</p>
+          ))
+        ) : (
+          <div className="grid place-items-center px-4 py-10 text-center text-a-ink/65">
+            <BadgeCheck className="mb-3" size={20} />
+            <p className="text-sm font-semibold">No hay Paisaportes para esta busqueda.</p>
           </div>
-        ))}
-      </Panel>
+        )}
+      </AdminPanel>
     </AdminShell>
   );
 }

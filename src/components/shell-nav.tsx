@@ -2,6 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {
+  BadgeCheck,
+  ClipboardCheck,
+  ScanLine,
+  TicketsPlane,
+  TowerControl,
+  UserPlus,
+  type LucideIcon,
+} from "lucide-react";
 
 const memberNavItems = [
   { href: "/club", label: "Bitacora", code: "BIT" },
@@ -12,13 +21,13 @@ const memberNavItems = [
   { href: "/opportunities", label: "Radar", code: "RAD" },
 ];
 
-const adminNavItems = [
-  { href: "/admin", label: "Torre", code: "OPS" },
-  { href: "/admin/members", label: "Paisaportes", code: "PAS" },
-  { href: "/admin/events", label: "Escalas", code: "ESC" },
-  { href: "/admin/check-in", label: "Puerta", code: "PUE" },
-  { href: "/admin/waitlist", label: "Accesos", code: "ACC" },
-  { href: "/admin/feedback", label: "Notas", code: "NOT" },
+const adminNavItems: Array<{ code: string; href: string; icon: LucideIcon; label: string }> = [
+  { href: "/admin", label: "Torre", code: "OPS", icon: TowerControl },
+  { href: "/admin/members", label: "Paisaportes", code: "PAS", icon: BadgeCheck },
+  { href: "/admin/events", label: "Escalas", code: "ESC", icon: TicketsPlane },
+  { href: "/admin/check-in", label: "Puerta", code: "PUE", icon: ScanLine },
+  { href: "/admin/waitlist", label: "Accesos", code: "ACC", icon: UserPlus },
+  { href: "/admin/feedback", label: "Notas", code: "NOT", icon: ClipboardCheck },
 ];
 
 function isActive(pathname: string, href: string) {
@@ -68,34 +77,36 @@ export function AdminNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex-1 p-3" aria-label="Navegacion de administracion">
+    <nav className="min-h-0 flex-1 overflow-y-auto p-3" aria-label="Navegacion de administracion">
       <p className="mb-2 px-2 font-mono text-[8px] font-medium uppercase tracking-[0.22em] text-a-ink opacity-40">
-        Operacion
+        Terminal PMC
       </p>
       <div className="grid gap-0.5">
         {adminNavItems.map((item) => {
           const active = isActive(pathname, item.href);
+          const Icon = item.icon;
 
           return (
             <Link
               aria-current={active ? "page" : undefined}
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-2.5 rounded-sm px-3 py-2.5 font-mono text-[11px] font-medium transition-colors ${
+              className={`grid grid-cols-[22px_minmax(0,1fr)_32px] items-center gap-2 rounded-sm px-3 py-2.5 font-mono text-[11px] font-medium transition-colors ${
                 active
-                  ? "bg-a-och text-a-och-t"
-                  : "text-a-ink hover:bg-a-och/40 hover:text-a-och-t"
+                  ? "bg-a-ink text-parch"
+                  : "text-a-ink hover:bg-a-och/45 hover:text-a-och-t"
               }`}
             >
+              <Icon aria-hidden="true" size={15} />
+              <span className="min-w-0 truncate">{item.label}</span>
               <span
                 aria-hidden="true"
                 className={`grid h-5 min-w-8 place-items-center rounded-sm border px-1 text-[8px] uppercase tracking-[0.12em] ${
-                  active ? "border-a-och-t/35" : "border-a-line/70 opacity-70"
+                  active ? "border-parch/35 text-parch" : "border-a-line/70 opacity-70"
                 }`}
               >
                 {item.code}
               </span>
-              {item.label}
             </Link>
           );
         })}
@@ -103,7 +114,7 @@ export function AdminNav() {
 
       <div className="mt-6 px-2">
         <p className="font-mono text-[8px] leading-5 tracking-[0.12em] text-a-ink opacity-25">
-          34°36′S 58°22′W<br />
+          AEP → PMC<br />
           Buenos Aires · ARG
         </p>
       </div>

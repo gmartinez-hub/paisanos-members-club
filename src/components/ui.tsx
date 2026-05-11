@@ -32,29 +32,19 @@ export function AdminMetricTile({
   label,
   value,
   caption,
-  color = "och",
 }: {
   caption?: string;
-  color?: "och" | "cel" | "sag" | "mal" | "ter";
   label: string;
   value: string;
 }) {
-  const colorMap = {
-    och: "bg-a-och text-a-och-t",
-    cel: "bg-a-cel text-a-cel-t",
-    sag: "bg-a-sag text-a-sag-t",
-    mal: "bg-a-mal text-a-mal-t",
-    ter: "bg-a-ter text-a-ter-t",
-  };
-
   return (
-    <div className={`rounded-sm p-4 ${colorMap[color]}`}>
-      <p className="font-mono text-[8.5px] font-medium uppercase tracking-[0.16em] opacity-65">
+    <div className="ticket-edge-parch border border-a-line bg-parch-2 p-4 text-a-ink">
+      <p className="font-mono text-[8.5px] font-medium uppercase tracking-[0.16em] opacity-55">
         {label}
       </p>
-      <p className="mt-2 font-sans text-3xl font-black leading-none">{value}</p>
+      <p className="mt-2 font-sans text-3xl font-black leading-none tabular-nums">{value}</p>
       {caption ? (
-        <p className="mt-2 font-mono text-[9px] opacity-55">{caption}</p>
+        <p className="mt-2 font-mono text-[9px] opacity-60">{caption}</p>
       ) : null}
     </div>
   );
@@ -139,34 +129,82 @@ export function SecondaryLink({
 export function AdminPrimaryLink({
   children,
   href,
+  target,
 }: {
   children: React.ReactNode;
   href: string;
+  target?: "_blank";
 }) {
   return (
     <Link
       href={href}
-      className="inline-flex h-10 items-center justify-center gap-2 rounded-sm bg-a-ink px-4 font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-parch transition hover:opacity-88"
+      target={target}
+      rel={target ? "noreferrer" : undefined}
+      className="inline-flex h-10 items-center justify-center gap-2 rounded-sm bg-a-ink px-4 font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-parch transition-colors hover:bg-a-och-t focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-a-och-t"
     >
       {children}
     </Link>
   );
 }
 
+export function AdminPrimaryButton({
+  children,
+  disabled,
+}: {
+  children: React.ReactNode;
+  disabled?: boolean;
+}) {
+  return (
+    <button
+      className="inline-flex h-10 items-center justify-center gap-2 rounded-sm bg-a-ink px-4 font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-parch transition-colors hover:bg-a-och-t focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-a-och-t disabled:cursor-not-allowed disabled:opacity-50"
+      disabled={disabled}
+      type="submit"
+    >
+      {children}
+    </button>
+  );
+}
+
 export function AdminSecondaryLink({
   children,
   href,
+  target,
 }: {
   children: React.ReactNode;
   href: string;
+  target?: "_blank";
 }) {
   return (
     <Link
       href={href}
-      className="inline-flex h-10 items-center justify-center gap-2 rounded-sm border border-a-line bg-transparent px-4 font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-a-ink transition hover:border-a-ink"
+      target={target}
+      rel={target ? "noreferrer" : undefined}
+      className="inline-flex h-10 items-center justify-center gap-2 rounded-sm border border-a-line bg-transparent px-4 font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-a-ink transition-colors hover:border-a-ink hover:bg-a-och/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-a-och-t"
     >
       {children}
     </Link>
+  );
+}
+
+export function AdminStatusBadge({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="rounded-sm border border-a-line bg-a-och px-2 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.1em] text-a-och-t">
+      {children}
+    </span>
+  );
+}
+
+export function AdminPanel({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <section className={`ticket-edge-parch border border-a-line bg-parch-2 ${className}`}>
+      {children}
+    </section>
   );
 }
 

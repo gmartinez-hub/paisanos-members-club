@@ -1,6 +1,6 @@
 import { ExternalLink, Search, ShieldCheck } from "lucide-react";
 import { AdminShell } from "@/components/admin-shell";
-import { SecondaryLink, StatusBadge } from "@/components/ui";
+import { AdminPanel, AdminSecondaryLink, AdminStatusBadge } from "@/components/ui";
 import { checkInMember } from "@/lib/actions";
 import { getEventAttendees, getEvents, requireAdmin } from "@/lib/community";
 
@@ -30,75 +30,78 @@ export default async function AdminCheckInPage({
     >
       {event ? (
         <>
-          <section className="border-y-2 border-foreground py-5">
+          <AdminPanel className="p-5">
             <div className="grid gap-5 lg:grid-cols-[1fr_180px]">
-              <div>
+              <div className="min-w-0">
                 <div className="mb-3 flex items-center gap-2">
-                  <StatusBadge>{event.status}</StatusBadge>
+                  <AdminStatusBadge>{event.status}</AdminStatusBadge>
                   <span className="text-sm text-ink-muted">{event.date}</span>
                 </div>
-                <h2 className="text-3xl font-black">{event.title}</h2>
-                <p className="mt-2 text-sm text-ink-muted">
+                <h2 className="break-words text-3xl font-black text-a-ink">{event.title}</h2>
+                <p className="mt-2 text-sm text-a-ink/65">
                   {event.confirmed}/{event.capacity} asientos · {event.location}
                 </p>
               </div>
-              <div className="rounded-sm bg-foreground p-4 text-paper">
+              <div className="rounded-sm bg-a-ink p-4 text-parch">
                 <p className="text-xs font-black uppercase tracking-[0.18em] text-stamp">Puerta</p>
                 <p className="mt-2 text-4xl font-black">{event.point}</p>
               </div>
             </div>
-          </section>
+          </AdminPanel>
 
           {event.usesLumaCheckIn ? (
-            <section className="border-b-2 border-foreground pb-5">
-              <div className="grid gap-3 rounded-sm border border-line bg-background p-4 md:grid-cols-[1fr_auto]">
-                <p className="text-sm leading-6 text-ink-muted">
+            <section className="border-b border-a-line pb-5">
+              <div className="grid gap-3 rounded-sm border border-a-line bg-parch-2 p-4 md:grid-cols-[1fr_auto]">
+                <p className="text-sm leading-6 text-a-ink/70">
                   Esta escala usa Luma como puerta. Paisanos queda como capa de identidad y bitacora importada.
                 </p>
                 {event.lumaUrl ? (
-                  <SecondaryLink href={event.lumaUrl} target="_blank">
+                  <AdminSecondaryLink href={event.lumaUrl} target="_blank">
                     <ExternalLink size={17} />
                     Abrir Luma
-                  </SecondaryLink>
+                  </AdminSecondaryLink>
                 ) : null}
               </div>
             </section>
           ) : (
-            <section className="border-b-2 border-foreground pb-4">
-              <form action="/admin/check-in" className="flex items-center gap-3 border-b border-line px-3 py-3">
+            <section className="border-b border-a-line pb-4">
+              <form action="/admin/check-in" className="flex items-center gap-3 border-b border-a-line px-3 py-3">
+                <label className="sr-only" htmlFor="admin-checkin-search">Buscar paisano</label>
                 <Search className="text-ink-muted" size={18} />
                 <input
-                  className="w-full bg-transparent text-sm outline-none"
+                  autoComplete="off"
+                  className="w-full bg-transparent text-sm outline-none placeholder:text-a-ink/35 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-a-och-t"
                   defaultValue={params?.q ?? ""}
+                  id="admin-checkin-search"
                   name="q"
-                  placeholder="Buscar paisano"
+                  placeholder="Buscar paisano…"
                 />
               </form>
             </section>
           )}
 
           {!event.usesLumaCheckIn ? (
-            <section className="border-y-2 border-foreground">
+            <section className="border-y border-a-line">
               {filteredAttendees.length ? (
                 filteredAttendees.map(({ member, checkedIn }) => (
                   <div className="grid gap-3 border-b border-line py-4 last:border-b-0 md:grid-cols-[1fr_180px_170px]" key={member.id}>
-                    <div className="flex gap-3">
-                      <span className="grid size-10 place-items-center rounded-sm bg-foreground text-sm font-black text-paper">
+                    <div className="flex min-w-0 gap-3">
+                      <span className="grid size-10 flex-shrink-0 place-items-center rounded-sm bg-a-ink text-sm font-black text-parch">
                         {member.avatar}
                       </span>
-                      <span>
-                        <span className="block font-black">{member.name}</span>
-                        <span className="block text-sm text-ink-muted">{member.company}</span>
+                      <span className="min-w-0">
+                        <span className="block truncate font-black text-a-ink">{member.name}</span>
+                        <span className="block truncate text-sm text-a-ink/65">{member.company}</span>
                       </span>
                     </div>
-                    <span className="self-center text-sm text-ink-muted">
+                    <span className="self-center text-sm text-a-ink/65">
                       {checkedIn ? "Entrada sellada" : "Asiento confirmado"}
                     </span>
                     <form action={checkInMember}>
                       <input name="event_id" type="hidden" value={event.id} />
                       <input name="user_id" type="hidden" value={member.userId} />
                       <button
-                        className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-sm bg-signal px-3 text-sm font-black text-foreground disabled:opacity-50"
+                        className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-sm bg-a-ink px-3 text-sm font-black text-parch transition-colors hover:bg-a-och-t focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-a-och-t disabled:cursor-not-allowed disabled:opacity-50"
                         disabled={checkedIn}
                       >
                         <ShieldCheck size={16} />
@@ -108,7 +111,7 @@ export default async function AdminCheckInPage({
                   </div>
                 ))
               ) : (
-                <p className="py-5 text-sm leading-6 text-ink-muted">
+                <p className="py-5 text-sm leading-6 text-a-ink/65">
                   Todavia no hay asientos para esta escala. Cuando alguien confirme, aparece aca para sellar entrada.
                 </p>
               )}
@@ -116,7 +119,7 @@ export default async function AdminCheckInPage({
           ) : null}
         </>
       ) : (
-        <section className="border-t-2 border-foreground pt-5">
+        <section className="border-t border-a-line pt-5">
           <h2 className="text-2xl font-black">No hay escalas creadas</h2>
           <p className="mt-2 text-sm leading-6 text-ink-muted">
             Crea una escala desde Gestion de escalas para abrir puerta.

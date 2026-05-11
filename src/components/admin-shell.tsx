@@ -1,45 +1,18 @@
 import Link from "next/link";
 import { AdminNav } from "@/components/shell-nav";
 
-function CompassRose({ className }: { className?: string }) {
+function RunwayMark({ className }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 48 48"
       className={className}
       aria-hidden="true"
     >
-      {/* Outer ring with dashes */}
-      <circle
-        cx="24" cy="24" r="22"
-        fill="none" stroke="currentColor" strokeWidth="0.8"
-        strokeDasharray="2 4" opacity={0.35}
-      />
-      {/* Inner ring */}
-      <circle
-        cx="24" cy="24" r="8"
-        fill="none" stroke="currentColor" strokeWidth="0.7"
-        opacity={0.2}
-      />
-      {/* N arrow — filled */}
-      <polygon points="24,3 21.5,24 24,19.5 26.5,24" fill="currentColor" />
-      {/* S arrow */}
-      <polygon points="24,45 21.5,24 24,28.5 26.5,24" fill="currentColor" opacity={0.28} />
-      {/* E arrow */}
-      <polygon points="45,24 24,21.5 28.5,24 24,26.5" fill="currentColor" opacity={0.28} />
-      {/* W arrow */}
-      <polygon points="3,24 24,21.5 19.5,24 24,26.5" fill="currentColor" opacity={0.28} />
-      {/* Diagonal tick marks */}
-      <line x1="12.7" y1="12.7" x2="15.5" y2="15.5" stroke="currentColor" strokeWidth="0.8" opacity={0.2} />
-      <line x1="35.3" y1="35.3" x2="32.5" y2="32.5" stroke="currentColor" strokeWidth="0.8" opacity={0.2} />
-      <line x1="35.3" y1="12.7" x2="32.5" y2="15.5" stroke="currentColor" strokeWidth="0.8" opacity={0.2} />
-      <line x1="12.7" y1="35.3" x2="15.5" y2="32.5" stroke="currentColor" strokeWidth="0.8" opacity={0.2} />
-      {/* Center */}
-      <circle cx="24" cy="24" r="2.5" fill="currentColor" />
-      {/* Cardinal labels */}
-      <text x="24" y="14" textAnchor="middle" fontSize="5" fontFamily="monospace" fill="currentColor" opacity={0.5}>N</text>
-      <text x="24" y="38" textAnchor="middle" fontSize="4.5" fontFamily="monospace" fill="currentColor" opacity={0.3}>S</text>
-      <text x="38" y="25.5" textAnchor="middle" fontSize="4.5" fontFamily="monospace" fill="currentColor" opacity={0.3}>E</text>
-      <text x="10" y="25.5" textAnchor="middle" fontSize="4.5" fontFamily="monospace" fill="currentColor" opacity={0.3}>O</text>
+      <path d="M24 4v40" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" opacity="0.55" />
+      <path d="M16 44h16L27 4h-6l-5 40Z" fill="currentColor" opacity="0.08" />
+      <path d="M21 11h6M20.4 18h7.2M19.7 25h8.6M18.9 32h10.2" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" opacity="0.34" />
+      <path d="M9 28l30-9-8.7 8.5 2.1 8.7-7.8-5.4-8.3 5.9 3.1-7.6L9 28Z" fill="currentColor" opacity="0.75" />
+      <circle cx="24" cy="24" r="21.5" fill="none" stroke="currentColor" strokeDasharray="2 5" strokeWidth="0.8" opacity="0.28" />
     </svg>
   );
 }
@@ -56,16 +29,16 @@ export function AdminShell({
   title: string;
 }) {
   return (
-    <main className="coord-grid min-h-[100dvh] bg-parch text-foreground">
-      <div className="mx-auto grid w-full max-w-[1480px] gap-4 px-4 py-4 lg:grid-cols-[220px_minmax(0,1fr)]">
+    <main className="coord-grid min-h-[100dvh] overflow-x-hidden bg-parch text-foreground">
+      <div className="mx-auto grid w-full max-w-[1480px] gap-4 px-4 py-4 lg:grid-cols-[230px_minmax(0,1fr)]">
 
-        {/* ── SIDEBAR — Indiana Jones parchment + topo lines ── */}
+        {/* ── SIDEBAR ── */}
         <aside className="lg:sticky lg:top-4 lg:h-[calc(100dvh-32px)]">
-          <div className="topo-lines ticket-edge-parch relative flex h-full flex-col justify-between overflow-hidden rounded-sm border border-a-line bg-parch-2">
+          <div className="ticket-edge-parch relative flex h-full min-h-0 flex-col justify-between overflow-hidden rounded-sm border border-a-line bg-parch-2">
 
             {/* Brand header */}
             <div className="relative border-b border-a-line p-5">
-              <CompassRose className="absolute right-4 top-4 h-9 w-9 text-a-ink opacity-20" />
+              <RunwayMark className="absolute right-4 top-4 h-10 w-10 text-a-ink opacity-25" />
               <Link className="flex items-center gap-3" href="/admin">
                 <span className="grid h-10 w-10 flex-shrink-0 place-items-center rounded-sm border-2 border-a-ink bg-a-ink font-mono text-sm font-black text-parch">
                   P
@@ -74,7 +47,7 @@ export function AdminShell({
                   <span className="block font-mono text-[9px] font-medium uppercase tracking-[0.2em] text-a-ink opacity-60">
                     Paisanos
                   </span>
-                  <span className="block font-sans text-sm font-black text-a-ink">Torre</span>
+                  <span className="block font-sans text-sm font-black text-a-ink">Torre AEP</span>
                 </span>
               </Link>
             </div>
@@ -86,7 +59,7 @@ export function AdminShell({
             <div className="border-t border-a-line p-4">
               <Link
                 href="/club"
-                className="block rounded-sm border border-a-ink/30 px-3 py-2.5 text-center font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-a-ink transition-colors hover:bg-a-ink hover:text-parch"
+                className="block rounded-sm border border-a-ink/30 px-3 py-2.5 text-center font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-a-ink transition-colors hover:bg-a-ink hover:text-parch focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-a-och-t"
               >
                 Ver bitacora
               </Link>
@@ -95,13 +68,13 @@ export function AdminShell({
         </aside>
 
         {/* ── MAIN CONTENT ── */}
-        <section className="grid gap-4">
+        <section className="grid min-w-0 gap-4">
           <header className="flex flex-wrap items-end justify-between gap-4 border-b border-a-line pb-5">
-            <div>
+            <div className="min-w-0">
               <p className="font-mono text-[9px] font-medium uppercase tracking-[0.2em] text-a-och-t opacity-70">
                 {eyebrow}
               </p>
-              <h1 className="mt-1 font-sans text-3xl font-black text-a-ink sm:text-5xl">
+              <h1 className="mt-1 text-balance font-sans text-3xl font-black text-a-ink sm:text-5xl">
                 {title}
               </h1>
             </div>
