@@ -1,6 +1,19 @@
 import { cache } from "react";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
+import {
+  DEMO_COOKIE,
+  getDemoEventAttendees,
+  getDemoEvents,
+  getDemoFeedbackProcesses,
+  getDemoMembers,
+  getDemoProfile,
+  getDemoUser,
+  isDemoSupabase,
+  makeDemoSupabase,
+  type DemoRole,
+} from "@/lib/demo-data";
 
 type SupabaseServerClient = Awaited<ReturnType<typeof createClient>>;
 
@@ -141,6 +154,20 @@ export type FeedbackProcessView = {
 };
 
 export const requireMember = cache(async () => {
+  const demoRole = getDemoRole(await cookies());
+
+  if (demoRole) {
+    const profile = getDemoProfile(demoRole);
+    const user = getDemoUser(demoRole);
+
+    return {
+      email: user.email ?? "",
+      profile,
+      supabase: makeDemoSupabase() as unknown as SupabaseServerClient,
+      user,
+    };
+  }
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -180,6 +207,10 @@ export async function requireAdmin() {
 }
 
 export async function getMembers(supabase: SupabaseServerClient) {
+  if (isDemoSupabase(supabase)) {
+    return getDemoMembers();
+  }
+
   const { data } = await supabase
     .from("profiles")
     .select("*")
@@ -196,6 +227,10 @@ export async function getEvents(
   supabase: SupabaseServerClient,
   options: { includeDrafts?: boolean; viewerId?: string } = {},
 ) {
+  if (isDemoSupabase(supabase)) {
+    return getDemoEvents(options.viewerId);
+  }
+
   let query = supabase
     .from("events")
     .select("*")
@@ -215,6 +250,10 @@ export async function getEventById(
   eventId: string,
   options: { viewerId?: string } = {},
 ) {
+  if (isDemoSupabase(supabase)) {
+    return getDemoEvents(options.viewerId).find((event) => event.id === eventId) ?? null;
+  }
+
   const { data } = await supabase
     .from("events")
     .select("*")
@@ -230,6 +269,10 @@ export async function getEventById(
 }
 
 export async function getEventAttendees(supabase: SupabaseServerClient, eventId: string) {
+  if (isDemoSupabase(supabase)) {
+    return getDemoEventAttendees(eventId);
+  }
+
   const { data: rsvpData } = await supabase
     .from("rsvps")
     .select("event_id,user_id,status,confirmed_at,cancelled_at")
@@ -265,6 +308,10 @@ export async function getEventAttendees(supabase: SupabaseServerClient, eventId:
 }
 
 export async function getFeedbackProcesses(supabase: SupabaseServerClient) {
+  if (isDemoSupabase(supabase)) {
+    return getDemoFeedbackProcesses();
+  }
+
   const { data: processes } = await supabase
     .from("feedback_processes")
     .select("id,name,questions,target_members,deadline,status")
@@ -517,4 +564,14 @@ function formatMonth(date: string) {
     month: "short",
     year: "numeric",
   }).format(new Date(date));
+}
+
+function getDemoRole(cookieStore: Awaited<ReturnType<typeof cookies>>): DemoRole | null {
+  const value = cookieStore.get(DEMO_COOKIE)?.value;
+
+  if (value === "admin" || value === "member" || value === "builder" || value === "onboarding") {
+    return value;
+  }
+
+  return null;
 }

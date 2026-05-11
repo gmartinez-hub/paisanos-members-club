@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { KeyRound, Mail, Send } from "lucide-react";
 import { requestMagicLink } from "@/lib/actions";
+import { DEMO_PASSWORD, roleFromEmail } from "@/lib/demo-data";
 import { createClient } from "@/lib/supabase/client";
 
 export function LoginForm() {
@@ -25,6 +26,13 @@ export function LoginForm() {
       });
 
       if (error) {
+        const demoRole = roleFromEmail(email);
+
+        if (demoRole && password === DEMO_PASSWORD) {
+          window.location.href = `/demo?email=${encodeURIComponent(email)}`;
+          return;
+        }
+
         setStatus("error");
         setMessage(error.message);
         return;
@@ -101,6 +109,21 @@ export function LoginForm() {
         </Link>
         .
       </p>
+
+      <div className="grid gap-2 border-t border-line pt-4 sm:grid-cols-2">
+        <Link
+          className="rounded-sm border border-line px-3 py-3 text-center text-sm font-black text-runway transition hover:bg-background"
+          href="/demo?role=member"
+        >
+          Ver demo miembro
+        </Link>
+        <Link
+          className="rounded-sm border border-line px-3 py-3 text-center text-sm font-black text-runway transition hover:bg-background"
+          href="/demo?role=admin"
+        >
+          Ver demo admin
+        </Link>
+      </div>
     </form>
   );
 }

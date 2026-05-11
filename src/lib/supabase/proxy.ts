@@ -1,8 +1,13 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { DEMO_COOKIE } from "@/lib/demo-data";
 
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
+
+  if (request.cookies.has(DEMO_COOKIE)) {
+    return response;
+  }
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

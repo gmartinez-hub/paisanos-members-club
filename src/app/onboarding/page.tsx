@@ -1,8 +1,17 @@
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
+import { DEMO_COOKIE } from "@/lib/demo-data";
 import { createClient } from "@/lib/supabase/server";
 import { OnboardingForm } from "./onboarding-form";
 
 export default async function OnboardingPage() {
+  const cookieStore = await cookies();
+  const isDemoOnboarding = cookieStore.get(DEMO_COOKIE)?.value === "onboarding";
+
+  if (isDemoOnboarding) {
+    return <OnboardingScreen />;
+  }
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -12,6 +21,12 @@ export default async function OnboardingPage() {
     redirect("/login");
   }
 
+  return (
+    <OnboardingScreen />
+  );
+}
+
+function OnboardingScreen() {
   return (
     <main className="route-grid min-h-screen bg-background px-4 py-6 text-foreground">
       <section className="mx-auto grid min-h-[calc(100vh-48px)] w-full max-w-5xl place-items-center">
