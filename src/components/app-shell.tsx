@@ -31,7 +31,7 @@ export function AppShell({
                 Paisanos
               </span>
               <span className="block font-sans text-sm font-black text-foreground">
-                Members Club
+                Bitacora
               </span>
             </span>
           </Link>
@@ -48,7 +48,7 @@ export function AppShell({
               <span aria-hidden="true" className="grid h-5 min-w-7 place-items-center rounded-sm border border-line px-1 text-[8px]">
                 IJ
               </span>
-              Admin
+              Torre
             </Link>
           ) : null}
         </div>

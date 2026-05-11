@@ -14,7 +14,7 @@ export default async function AdminEventsPage() {
   return (
     <AdminShell
       eyebrow="Operacion"
-      title="Gestion de eventos"
+      title="Gestion de escalas"
     >
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_430px]">
         <section className="grid gap-4">
@@ -26,8 +26,8 @@ export default async function AdminEventsPage() {
 
           <div className="flex items-end justify-between gap-4 border-t border-a-line pt-5">
             <div>
-              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-a-och-t">Ops board</p>
-              <h2 className="mt-1 text-3xl font-black text-a-ink">Eventos cargados</h2>
+              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-a-och-t">Tablero de torre</p>
+              <h2 className="mt-1 text-3xl font-black text-a-ink">Escalas cargadas</h2>
             </div>
             <StatusBadge>{events.length} total</StatusBadge>
           </div>
@@ -48,7 +48,7 @@ export default async function AdminEventsPage() {
                 </div>
                 <div className="mt-4 grid gap-3 border-t border-a-line pt-3 md:grid-cols-[1fr_auto]">
                   <div className="grid gap-1 font-mono text-[9px] uppercase tracking-[0.14em] text-a-ink/55 sm:grid-cols-3">
-                    <span>RSVP {event.confirmed}/{event.capacity || "-"}</span>
+                    <span>ASIENTOS {event.confirmed}/{event.capacity || "-"}</span>
                     <span>SYNC {event.syncStatus}</span>
                     <span>{event.lumaLastSyncedAt ?? "Sin sync"}</span>
                   </div>
@@ -66,7 +66,7 @@ export default async function AdminEventsPage() {
                           className="inline-flex h-10 items-center justify-center rounded-sm border border-a-line px-3 font-mono text-[10px] font-medium uppercase tracking-[0.08em] text-a-ink disabled:cursor-not-allowed disabled:opacity-45"
                           disabled={!lumaApiReady || !event.lumaEventId}
                         >
-                          Sync guests
+                          Sincronizar invitados
                         </button>
                       </form>
                     ) : null}
@@ -78,16 +78,16 @@ export default async function AdminEventsPage() {
         </section>
 
         <section className="border border-a-line bg-parch-2 p-5">
-          <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-a-och-t">Nuevo vuelo</p>
-          <h2 className="mt-1 text-3xl font-black text-a-ink">Crear evento</h2>
+          <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-a-och-t">Nueva escala</p>
+          <h2 className="mt-1 text-3xl font-black text-a-ink">Crear escala</h2>
           <form action={createEvent} className="mt-5 grid gap-4">
-            <Field label="Titulo" name="title" placeholder="Founders Night" />
-            <Field label="Subtitulo" name="subtitle" placeholder="Mesa chica para builders" />
+            <Field label="Nombre de la escala" name="title" placeholder="Founders Night" />
+            <Field label="Nota breve" name="subtitle" placeholder="Mesa chica para builders" />
             <label className="grid gap-2 text-sm font-black text-foreground">
-              Fuente del evento
+              Origen del registro
               <select className="rounded-sm border border-line bg-background px-3 py-3 text-foreground outline-none" name="source" defaultValue="paisanos">
-                <option value="paisanos">Paisanos: RSVP y check-in nativos</option>
-                <option value="luma">Luma externo: registro fuera de Paisanos</option>
+                <option value="paisanos">Paisanos: asiento y puerta propios</option>
+                <option value="luma">Luma: registro externo</option>
               </select>
             </label>
             <Field label="URL de Luma" name="luma_url" placeholder="https://luma.com/..." required={false} type="url" />
@@ -98,7 +98,7 @@ export default async function AdminEventsPage() {
             </div>
             <Field label="Lugar" name="location" placeholder="Paisanos HQ" />
             <Field label="Host" name="host" placeholder="Paisanos" />
-            <Field label="Capacidad" name="capacity" placeholder="30" type="number" />
+            <Field label="Asientos" name="capacity" placeholder="30" type="number" />
             <Field label="Tags" name="tags" placeholder="Producto, AI, Founders" required={false} />
             <label className="grid gap-2 text-sm font-black text-foreground">
               Estado
@@ -108,16 +108,16 @@ export default async function AdminEventsPage() {
               </select>
             </label>
             <label className="grid gap-2 text-sm font-black text-foreground">
-              Descripcion
+              Bitacora de la escala
               <textarea
                 className="min-h-28 resize-none rounded-sm border border-line bg-background px-3 py-3 text-foreground outline-none"
                 name="description"
-                placeholder="Que va a pasar y por que vale la pena ir."
+                placeholder="Que va a pasar, por que suma y que cruces deberian abrirse."
               />
             </label>
             <PrimaryButton>
               <Save size={17} />
-              Guardar evento
+              Guardar escala
             </PrimaryButton>
           </form>
         </section>

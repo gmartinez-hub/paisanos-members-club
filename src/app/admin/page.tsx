@@ -23,33 +23,33 @@ export default async function AdminPage() {
 
   return (
     <AdminShell
-      eyebrow="Torre de control"
-      title="Admin Paisanos"
+      eyebrow="Torre Paisanos"
+      title="Operacion de la bitacora"
       actions={
         <div className="flex flex-wrap gap-2">
           <PrimaryLink href="/admin/events">
             <Plane size={17} />
-            Crear evento
+            Crear escala
           </PrimaryLink>
           <SecondaryLink href="/admin/check-in">
             <TicketCheck size={17} />
-            Abrir check-in
+            Abrir puerta
           </SecondaryLink>
         </div>
       }
     >
       <div className="grid gap-4 md:grid-cols-3 xl:grid-cols-5">
-        <AdminMetricTile color="cel" label="Miembros" value={`${members.length}`} caption="Activos reales" />
-        <AdminMetricTile color="och" label="Eventos" value={`${events.length}`} caption="Incluye borradores" />
-        <AdminMetricTile color="mal" label="Waitlist" value={`${pendingWaitlist}`} caption="Pendientes" />
-        <AdminMetricTile color="sag" label="Feedback" value={`${feedbackProcesses.length}`} caption="Procesos visibles" />
-        <AdminMetricTile color="ter" label="Check-ins" value={`${checkedIn}/${confirmed}`} caption="Sobre RSVP" />
+        <AdminMetricTile color="cel" label="Paisaportes" value={`${members.length}`} caption="Activos reales" />
+        <AdminMetricTile color="och" label="Escalas" value={`${events.length}`} caption="Incluye borradores" />
+        <AdminMetricTile color="mal" label="Accesos" value={`${pendingWaitlist}`} caption="Pendientes" />
+        <AdminMetricTile color="sag" label="Notas" value={`${feedbackProcesses.length}`} caption="Lecturas visibles" />
+        <AdminMetricTile color="ter" label="Sellos" value={`${checkedIn}/${confirmed}`} caption="Sobre asientos" />
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
         <section className="border-t border-a-line pt-5">
           <div className="mb-4 flex items-center justify-between gap-4">
-            <h2 className="text-3xl font-black text-a-ink">Operacion de eventos</h2>
+            <h2 className="text-3xl font-black text-a-ink">Operacion de escalas</h2>
             <StatusBadge>Real</StatusBadge>
           </div>
           <div className="grid gap-3">
@@ -68,7 +68,7 @@ export default async function AdminPage() {
                 </div>
                 <div className="text-left md:text-right">
                   <p className="text-xs font-black uppercase tracking-[0.16em] text-ink-muted">
-                    Confirmados
+                    Asientos
                   </p>
                   <p className="mt-1 text-2xl font-black">
                     {event.confirmed}/{event.capacity}
@@ -82,12 +82,12 @@ export default async function AdminPage() {
         <section className="border-t border-a-line pt-5">
           <div className="mb-4 flex items-center gap-2">
             <AlertTriangle className="text-signal" size={20} />
-            <h2 className="text-3xl font-black text-a-ink">Atajos de decision</h2>
+            <h2 className="text-3xl font-black text-a-ink">Atajos de torre</h2>
           </div>
           <div className="grid gap-3">
-            <Action title="Aprobar waitlist" copy={`${pendingWaitlist} perfiles esperan revision del equipo.`} href="/admin/waitlist" />
-            <Action title="Revisar asistentes" copy="RSVP y check-ins ya escriben en Supabase." href="/admin/check-in" />
-            <Action title="Cerrar preguntas de feedback" copy="Procesos reales listos para conectar respuestas." href="/admin/feedback" />
+            <Action title="Revisar accesos" copy={`${pendingWaitlist} solicitudes esperan revision de la torre.`} href="/admin/waitlist" />
+            <Action title="Sellar entradas" copy="Asientos y entradas ya escriben en Supabase." href="/admin/check-in" />
+            <Action title="Cerrar notas de viaje" copy="Lecturas reales listas para conectar respuestas." href="/admin/feedback" />
           </div>
         </section>
       </div>

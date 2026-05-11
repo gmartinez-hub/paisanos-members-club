@@ -24,19 +24,19 @@ export default async function AdminMembersPage({
 
   return (
     <AdminShell
-      eyebrow="Curaduria"
-      title="Miembros"
+      eyebrow="Curaduria de ruta"
+      title="Paisaportes"
       actions={
         <PrimaryLink href="/admin/waitlist">
           <UserPlus size={17} />
-          Revisar waitlist
+          Revisar accesos
         </PrimaryLink>
       }
     >
       <div className="grid gap-4 md:grid-cols-3">
-        <MetricTile icon={UsersRound} label="Total" value={`${allMembers.length}`} caption="Activos reales" />
-        <MetricTile icon={UserPlus} label="Invitables" value="-" caption="Desde waitlist" />
-        <MetricTile icon={Search} label="Skills" value={`${new Set(members.flatMap((member) => member.skills)).size}`} caption="Tags distintos" />
+        <MetricTile icon={UsersRound} label="Paisaportes" value={`${allMembers.length}`} caption="Activos reales" />
+        <MetricTile icon={UserPlus} label="Accesos" value="-" caption="Desde solicitudes" />
+        <MetricTile icon={Search} label="Habilidades" value={`${new Set(members.flatMap((member) => member.skills)).size}`} caption="Tags distintos" />
       </div>
 
       <Panel className="p-4">
@@ -46,17 +46,17 @@ export default async function AdminMembersPage({
             className="w-full bg-transparent text-sm outline-none"
             defaultValue={params?.q ?? ""}
             name="q"
-            placeholder="Buscar miembro"
+            placeholder="Buscar Paisaporte"
           />
         </form>
       </Panel>
 
       <Panel className="overflow-hidden">
         <div className="grid border-b border-line bg-background px-4 py-3 text-xs font-bold uppercase tracking-[0.16em] text-ink-muted md:grid-cols-[1.2fr_1fr_0.6fr_1fr]">
-          <span>Miembro</span>
-          <span>Foco</span>
-          <span>Eventos</span>
-          <span>Ultimo contacto</span>
+          <span>Paisano</span>
+          <span>Tramo</span>
+          <span>Escalas</span>
+          <span>Ultima senal</span>
         </div>
         {members.map((member) => (
           <div className="grid gap-3 border-b border-line px-4 py-4 last:border-b-0 md:grid-cols-[1.2fr_1fr_0.6fr_1fr]" key={member.id}>

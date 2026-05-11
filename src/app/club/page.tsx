@@ -56,15 +56,15 @@ export default async function ClubPage() {
 
   return (
     <AppShell
-      eyebrow="Members Club"
+      eyebrow="Bitacora privada"
       isAdmin={profile.is_admin}
-      title="Panel privado Paisanos"
+      title="Tu ruta Paisanos"
       actions={
         <div className="flex flex-wrap gap-2">
           {nextEvent ? (
             <PrimaryLink href={`/events/${nextEvent.id}`}>
               <QrCode size={17} />
-              Abrir encuentro
+              Abrir escala
             </PrimaryLink>
           ) : null}
           <SecondaryLink href="/passport">
@@ -77,10 +77,10 @@ export default async function ClubPage() {
       <section className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_390px]">
         <div className="grid gap-5">
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            <DashboardMetric label="Miembros" value={`${members.length}`} caption="Activos" />
-            <DashboardMetric label="Eventos" value={`${events.length}`} caption={`${nativeEvents} nativos · ${lumaEvents} Luma`} />
+            <DashboardMetric label="Paisanos" value={`${members.length}`} caption="Paisaportes activos" />
+            <DashboardMetric label="Escalas" value={`${events.length}`} caption={`${nativeEvents} Paisanos · ${lumaEvents} Luma`} />
             <DashboardMetric label="Cruces" value={`${matches.length}`} caption="Sugeridos" />
-            <DashboardMetric label="Fit" value={`${confirmationRate}%`} caption="Proximo evento" />
+            <DashboardMetric label="Afinidad" value={`${confirmationRate}%`} caption="Proxima escala" />
           </div>
 
           {nextEvent ? (
@@ -92,11 +92,11 @@ export default async function ClubPage() {
                     <StatusBadge>{nextEvent.sourceLabel}</StatusBadge>
                   </div>
                   <p className="font-mono text-[9px] font-medium uppercase tracking-[0.2em] text-ink-muted">
-                    Proximo embarque
+                    Proxima escala
                   </p>
                   <h2 className="mt-2 max-w-3xl text-4xl font-black leading-none">{nextEvent.title}</h2>
                   <p className="mt-3 max-w-3xl text-sm leading-6 text-ink-muted">
-                    {nextEvent.subtitle}. Cruces concretos, feedback accionable y seguimiento despues del encuentro.
+                    {nextEvent.subtitle}. Cruces concretos, notas accionables y seguimiento despues de la escala.
                   </p>
                   <div className="mt-5 grid gap-3 md:grid-cols-3">
                     <TinyFact icon={CalendarDays} label="Fecha" value={nextEvent.date} />
@@ -113,7 +113,7 @@ export default async function ClubPage() {
                   </div>
                   <PrimaryLink href={`/events/${nextEvent.id}`}>
                     <QrCode size={17} />
-                    Abrir evento
+                    Abrir escala
                   </PrimaryLink>
                 </div>
               </div>
@@ -121,12 +121,12 @@ export default async function ClubPage() {
               <div className="flex flex-wrap items-center justify-between gap-3 bg-background px-5 py-3">
                 <div className="barcode h-5 min-w-48 flex-1" aria-hidden="true" />
                 <Link className="font-mono text-[9px] font-medium uppercase tracking-[0.16em] text-ink-muted hover:text-foreground" href="/events">
-                  Ver agenda completa
+                  Ver escalas
                 </Link>
               </div>
             </article>
           ) : (
-            <EmptyBlock title="Todavia no hay encuentros publicados" copy="Cuando el admin publique uno, aparece aca con RSVP y asistentes reales." />
+            <EmptyBlock title="Todavia no hay escalas publicadas" copy="Cuando la torre publique una, aparece aca con asientos y asistentes reales." />
           )}
 
           <div className="grid gap-5 lg:grid-cols-2">
@@ -134,10 +134,10 @@ export default async function ClubPage() {
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <MessageCircle className="text-signal" size={21} />
-                  <h2 className="text-3xl font-black">Cruces sugeridos</h2>
+                  <h2 className="text-3xl font-black">Mapa de cruces</h2>
                 </div>
                 <Link className="text-sm font-black underline decoration-signal decoration-4 underline-offset-4" href="/directory">
-                  Ver directorio
+                  Ver mapa
                 </Link>
               </div>
               <div className="grid gap-3">
@@ -146,7 +146,7 @@ export default async function ClubPage() {
                     <MatchRow match={match} key={match.member.id} />
                   ))
                 ) : (
-                  <EmptyBlock title="Faltan miembros para sugerir cruces" copy="Apenas haya mas perfiles activos, el directorio empieza a proponer conexiones." />
+                  <EmptyBlock title="Faltan paisanos para sugerir cruces" copy="Apenas haya mas Paisaportes activos, el mapa empieza a proponer conexiones." />
                 )}
               </div>
             </section>
@@ -155,10 +155,10 @@ export default async function ClubPage() {
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <Radar className="text-signal" size={21} />
-                  <h2 className="text-3xl font-black">Radar</h2>
+                  <h2 className="text-3xl font-black">Senales</h2>
                 </div>
                 <Link className="text-sm font-black underline decoration-signal decoration-4 underline-offset-4" href="/opportunities">
-                  Proponer
+                  Dejar senal
                 </Link>
               </div>
               <div className="grid gap-3">
@@ -171,7 +171,7 @@ export default async function ClubPage() {
                     </article>
                   ))
                 ) : (
-                  <EmptyBlock title="No hay oportunidades aprobadas" copy="El admin puede revisar propuestas y publicarlas cuando tengan contexto suficiente." />
+                  <EmptyBlock title="No hay senales aprobadas" copy="La torre puede revisar propuestas y publicarlas cuando tengan contexto suficiente." />
                 )}
               </div>
             </section>
@@ -188,8 +188,8 @@ export default async function ClubPage() {
             </div>
             <div className="grid gap-3">
               <MiniAction href="/passport" label="Paisaporte activo" value={currentMember.lastInteraction} />
-              <MiniAction href="/feedback" label="Feedback" value={`${feedbackProcesses.length} procesos visibles`} />
-              <MiniAction href="/directory" label="Red" value={`${members.length} perfiles con contexto`} />
+              <MiniAction href="/feedback" label="Notas de viaje" value={`${feedbackProcesses.length} lecturas visibles`} />
+              <MiniAction href="/directory" label="Mapa" value={`${members.length} perfiles con contexto`} />
             </div>
           </section>
         </aside>

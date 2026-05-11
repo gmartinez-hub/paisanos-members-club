@@ -25,8 +25,8 @@ export default async function AdminCheckInPage({
 
   return (
     <AdminShell
-      eyebrow="Entrada del evento"
-      title="Check-in staff"
+      eyebrow="Puerta de embarque"
+      title="Sellar entradas"
     >
       {event ? (
         <>
@@ -39,11 +39,11 @@ export default async function AdminCheckInPage({
                 </div>
                 <h2 className="text-3xl font-black">{event.title}</h2>
                 <p className="mt-2 text-sm text-ink-muted">
-                  {event.confirmed}/{event.capacity} confirmados · {event.location}
+                  {event.confirmed}/{event.capacity} asientos · {event.location}
                 </p>
               </div>
               <div className="rounded-sm bg-foreground p-4 text-paper">
-                <p className="text-xs font-black uppercase tracking-[0.18em] text-stamp">Punto</p>
+                <p className="text-xs font-black uppercase tracking-[0.18em] text-stamp">Puerta</p>
                 <p className="mt-2 text-4xl font-black">{event.point}</p>
               </div>
             </div>
@@ -53,7 +53,7 @@ export default async function AdminCheckInPage({
             <section className="border-b-2 border-foreground pb-5">
               <div className="grid gap-3 rounded-sm border border-line bg-background p-4 md:grid-cols-[1fr_auto]">
                 <p className="text-sm leading-6 text-ink-muted">
-                  Este evento usa Luma para check-in. Paisanos queda como capa de identidad e historial importado.
+                  Esta escala usa Luma como puerta. Paisanos queda como capa de identidad y bitacora importada.
                 </p>
                 {event.lumaUrl ? (
                   <SecondaryLink href={event.lumaUrl} target="_blank">
@@ -71,7 +71,7 @@ export default async function AdminCheckInPage({
                   className="w-full bg-transparent text-sm outline-none"
                   defaultValue={params?.q ?? ""}
                   name="q"
-                  placeholder="Buscar por nombre"
+                  placeholder="Buscar paisano"
                 />
               </form>
             </section>
@@ -92,7 +92,7 @@ export default async function AdminCheckInPage({
                       </span>
                     </div>
                     <span className="self-center text-sm text-ink-muted">
-                      {checkedIn ? "Check-in realizado" : "RSVP confirmado"}
+                      {checkedIn ? "Entrada sellada" : "Asiento confirmado"}
                     </span>
                     <form action={checkInMember}>
                       <input name="event_id" type="hidden" value={event.id} />
@@ -102,14 +102,14 @@ export default async function AdminCheckInPage({
                         disabled={checkedIn}
                       >
                         <ShieldCheck size={16} />
-                        {checkedIn ? "Presente" : "Marcar entrada"}
+                        {checkedIn ? "Sellado" : "Sellar entrada"}
                       </button>
                     </form>
                   </div>
                 ))
               ) : (
                 <p className="py-5 text-sm leading-6 text-ink-muted">
-                  Todavia no hay RSVP para este evento. Cuando alguien confirme, aparece aca para check-in manual.
+                  Todavia no hay asientos para esta escala. Cuando alguien confirme, aparece aca para sellar entrada.
                 </p>
               )}
             </section>
@@ -117,9 +117,9 @@ export default async function AdminCheckInPage({
         </>
       ) : (
         <section className="border-t-2 border-foreground pt-5">
-          <h2 className="text-2xl font-black">No hay eventos creados</h2>
+          <h2 className="text-2xl font-black">No hay escalas creadas</h2>
           <p className="mt-2 text-sm leading-6 text-ink-muted">
-            Crea un evento desde Gestion de eventos para abrir check-in.
+            Crea una escala desde Gestion de escalas para abrir puerta.
           </p>
         </section>
       )}

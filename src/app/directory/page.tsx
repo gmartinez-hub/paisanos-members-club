@@ -18,9 +18,9 @@ export default async function DirectoryPage({
 
   return (
     <AppShell
-      eyebrow="Mapa vivo"
+      eyebrow="Mapa de ruta"
       isAdmin={profile.is_admin}
-      title="Personas, contexto y posibles cruces"
+      title="Paisanos, coordenadas y cruces"
     >
       <section className="grid gap-6 border-y-2 border-foreground py-6 lg:grid-cols-[360px_minmax(0,1fr)]">
         <div>
@@ -30,7 +30,7 @@ export default async function DirectoryPage({
               defaultValue={params?.q ?? ""}
               className="w-full bg-transparent text-lg font-black outline-none placeholder:text-ink-muted"
               name="q"
-              placeholder="Buscar persona, tema o proyecto"
+              placeholder="Buscar persona, oficio o proyecto"
             />
             {topic ? <input name="topic" type="hidden" value={topic} /> : null}
             <button className="grid size-10 shrink-0 place-items-center rounded-sm bg-foreground text-paper transition hover:bg-signal hover:text-foreground">
@@ -41,7 +41,7 @@ export default async function DirectoryPage({
           {topics.length ? (
             <div className="mt-6">
               <p className="text-xs font-black uppercase tracking-[0.18em] text-signal">
-                Temas activos
+                Senales activas
               </p>
               <div className="mt-3 flex flex-wrap gap-2">
                 {topics.map((topic) => (
@@ -66,7 +66,7 @@ export default async function DirectoryPage({
             <UsersRound className="mb-4 text-signal" size={22} />
             <p className="text-4xl font-black leading-none">{members.length}</p>
             <p className="mt-2 text-sm leading-6 text-ink-muted">
-              Miembros activos con contexto editable. La unidad no es categoria: es intencion, aporte y necesidad.
+              Paisaportes activos con contexto editable. La unidad no es categoria: es tramo, aporte y necesidad.
             </p>
           </div>
         </div>
@@ -76,7 +76,7 @@ export default async function DirectoryPage({
             members.map((member) => <DirectoryRow key={member.id} member={member} />)
           ) : (
             <div className="py-6">
-              <h2 className="text-2xl font-black">Todavia no hay miembros activos</h2>
+              <h2 className="text-2xl font-black">Todavia no hay Paisaportes activos</h2>
               <p className="mt-2 text-sm leading-6 text-ink-muted">
                 A medida que se activen Paisaportes, este mapa empieza a mostrar contexto real.
               </p>
@@ -135,10 +135,10 @@ function DirectoryRow({ member }: { member: MemberView }) {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <InfoBlock label="Puede aportar" value={member.canHelpWith} />
+        <InfoBlock label="Puede compartir" value={member.canHelpWith} />
         <InfoBlock label="Busca" value={member.lookingFor} />
-        <InfoBlock label="Abierto a" value={member.openTo} />
-        <InfoBlock label="Ultimo contacto" value={member.lastInteraction} />
+        <InfoBlock label="Abierto a cruces" value={member.openTo} />
+        <InfoBlock label="Ultima senal" value={member.lastInteraction} />
       </div>
     </article>
   );

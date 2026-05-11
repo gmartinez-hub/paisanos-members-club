@@ -17,8 +17,8 @@ const dmMono = DM_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Paisanos Members Club",
-  description: "Paisaporte, eventos y red privada de Paisanos.",
+  title: "Paisanos",
+  description: "Paisaporte, bitacora de viaje y red privada de Paisanos.",
 };
 
 export default function RootLayout({

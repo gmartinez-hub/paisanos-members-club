@@ -12,7 +12,7 @@ export default async function AdminWaitlistPage() {
     .order("created_at", { ascending: false });
 
   return (
-    <AdminShell eyebrow="Acceso privado" title="Whitelist">
+    <AdminShell eyebrow="Solicitudes de abordaje" title="Accesos">
       <div className="grid gap-4">
         {(waitlist ?? []).map((person) => (
           <Panel className="p-5" key={person.email}>
@@ -33,23 +33,23 @@ export default async function AdminWaitlistPage() {
                       <input name="request_id" type="hidden" value={person.id} />
                       <PrimaryButton>
                         <Check size={17} />
-                        Aprobar
+                        Dar sello
                       </PrimaryButton>
                     </form>
-                    <SecondaryLink href={`mailto:${person.email}?subject=Paisanos Members Club`}>
+                    <SecondaryLink href={`mailto:${person.email}?subject=Paisaporte Paisanos`}>
                       <ShieldCheck size={17} />
-                      Pedir mas info
+                      Pedir coordenadas
                     </SecondaryLink>
                     <form action={rejectWaitlistRequest}>
                       <input name="request_id" type="hidden" value={person.id} />
                       <button className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-sm border border-line px-4 text-sm font-semibold text-signal-dark">
                         <X size={17} />
-                        Rechazar
+                        Dejar en espera
                       </button>
                     </form>
                   </>
                 ) : (
-                  <SecondaryLink href={`mailto:${person.email}?subject=Paisanos Members Club`}>
+                  <SecondaryLink href={`mailto:${person.email}?subject=Paisaporte Paisanos`}>
                     <ShieldCheck size={17} />
                     Contactar
                   </SecondaryLink>

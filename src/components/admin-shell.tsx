@@ -74,7 +74,7 @@ export function AdminShell({
                   <span className="block font-mono text-[9px] font-medium uppercase tracking-[0.2em] text-a-ink opacity-60">
                     Paisanos
                   </span>
-                  <span className="block font-sans text-sm font-black text-a-ink">Admin</span>
+                  <span className="block font-sans text-sm font-black text-a-ink">Torre</span>
                 </span>
               </Link>
             </div>
@@ -88,7 +88,7 @@ export function AdminShell({
                 href="/club"
                 className="block rounded-sm border border-a-ink/30 px-3 py-2.5 text-center font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-a-ink transition-colors hover:bg-a-ink hover:text-parch"
               >
-                Ver app de miembros
+                Ver bitacora
               </Link>
             </div>
           </div>

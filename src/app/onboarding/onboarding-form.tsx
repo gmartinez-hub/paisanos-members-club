@@ -37,7 +37,7 @@ export function OnboardingForm() {
     const result = await activateProfile(formData);
 
     if (!result.ok) {
-      setError(result.error ?? "No pudimos activar tu Paisaporte.");
+      setError(result.error ?? "No pudimos sellar tu Paisaporte.");
       setLoading(false);
       return;
     }
@@ -50,67 +50,84 @@ export function OnboardingForm() {
     <form className="grid gap-4" onSubmit={handleSubmit}>
       <div className="grid gap-4 sm:grid-cols-2">
         <Field
-          label="Nombre completo"
+          autoComplete="name"
+          label="Nombre en la bitacora"
+          placeholder="Sofia Alvarez"
           value={form.full_name}
           onChange={(value) => setForm((current) => ({ ...current, full_name: value }))}
         />
         <Field
-          label="Rol"
+          autoComplete="organization-title"
+          label="Oficio / rol"
+          placeholder="Founder, PM, designer..."
           value={form.role}
           onChange={(value) => setForm((current) => ({ ...current, role: value }))}
         />
       </div>
 
       <Field
-        label="Empresa / proyecto"
+        autoComplete="organization"
+        label="Proyecto o compania"
+        placeholder="Ruta Labs"
         value={form.company}
         onChange={(value) => setForm((current) => ({ ...current, company: value }))}
       />
       <div className="grid gap-4 sm:grid-cols-2">
         <Field
-          label="Ubicacion"
+          autoComplete="address-level2"
+          label="Base de salida"
+          placeholder="Buenos Aires"
           value={form.location}
           onChange={(value) => setForm((current) => ({ ...current, location: value }))}
         />
         <Field
-          label="Foco actual"
+          label="Tramo actual"
+          placeholder="Conseguir los primeros clientes"
           value={form.focus}
           onChange={(value) => setForm((current) => ({ ...current, focus: value }))}
         />
       </div>
       <Field
-        label="Skills, separadas por coma"
+        label="Equipaje de habilidades"
+        placeholder="Producto, ventas, AI, operaciones"
         value={form.skills}
         onChange={(value) => setForm((current) => ({ ...current, skills: value }))}
       />
       <Field
         label="Que estas construyendo"
+        placeholder="Un copiloto de ventas para equipos B2B"
         value={form.building}
         onChange={(value) => setForm((current) => ({ ...current, building: value }))}
         maxLength={140}
       />
       <Field
-        label="En que podes ayudar"
+        label="Que podes compartir en ruta"
+        placeholder="Discovery, GTM, automatizacion, research"
         value={form.can_help_with}
         onChange={(value) => setForm((current) => ({ ...current, can_help_with: value }))}
       />
       <Field
-        label="Que buscas en el club, separado por coma"
+        label="Que queres encontrar"
+        placeholder="Beta testers, advisors, clientes, talento"
         value={form.looking_for}
         onChange={(value) => setForm((current) => ({ ...current, looking_for: value }))}
       />
       <Field
-        label="A que estas abierto"
+        label="A que cruces estas abierto"
+        placeholder="Demos tempranas, cafes, notas, presentaciones"
         value={form.open_to}
         onChange={(value) => setForm((current) => ({ ...current, open_to: value }))}
       />
       <Field
-        label="Disponibilidad"
+        label="Disponibilidad para hacer escala"
+        placeholder="Viernes por la tarde o mañanas de la semana"
         value={form.availability}
         onChange={(value) => setForm((current) => ({ ...current, availability: value }))}
       />
       <Field
-        label="LinkedIn"
+        autoComplete="url"
+        label="Link publico / LinkedIn"
+        placeholder="https://linkedin.com/in/tu-nombre"
         required={false}
         type="url"
         value={form.linkedin_url}
@@ -123,7 +140,7 @@ export function OnboardingForm() {
         type="submit"
       >
         <BadgeCheck size={18} />
-        {loading ? "Activando..." : "Activar Paisaporte"}
+        {loading ? "Sellando..." : "Sellar Paisaporte"}
       </button>
 
       {error ? <p className="text-sm text-signal-dark">{error}</p> : null}
@@ -132,16 +149,20 @@ export function OnboardingForm() {
 }
 
 function Field({
+  autoComplete,
   label,
   maxLength,
   onChange,
+  placeholder,
   required = true,
   type = "text",
   value,
 }: {
+  autoComplete?: string;
   label: string;
   maxLength?: number;
   onChange: (value: string) => void;
+  placeholder?: string;
   required?: boolean;
   type?: string;
   value: string;
@@ -151,7 +172,9 @@ function Field({
       {label}
       <input
         className="rounded-sm border border-line bg-paper px-3 py-3 text-foreground outline-none transition focus:border-runway"
+        autoComplete={autoComplete}
         maxLength={maxLength}
+        placeholder={placeholder}
         type={type}
         value={value}
         onChange={(event) => onChange(event.target.value)}

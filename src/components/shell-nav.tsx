@@ -4,21 +4,21 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const memberNavItems = [
-  { href: "/club", label: "Club", code: "CLB" },
+  { href: "/club", label: "Bitacora", code: "BIT" },
   { href: "/passport", label: "Paisaporte", code: "PAS" },
-  { href: "/events", label: "Eventos", code: "EVT" },
-  { href: "/directory", label: "Directorio", code: "DIR" },
-  { href: "/feedback", label: "Feedback", code: "FDB" },
+  { href: "/events", label: "Escalas", code: "ESC" },
+  { href: "/directory", label: "Mapa", code: "MAP" },
+  { href: "/feedback", label: "Notas", code: "NOT" },
   { href: "/opportunities", label: "Radar", code: "RAD" },
 ];
 
 const adminNavItems = [
-  { href: "/admin", label: "Resumen", code: "OPS" },
-  { href: "/admin/members", label: "Miembros", code: "MBR" },
-  { href: "/admin/events", label: "Eventos", code: "EVT" },
-  { href: "/admin/check-in", label: "Check-in", code: "CHK" },
-  { href: "/admin/waitlist", label: "Whitelist", code: "WHT" },
-  { href: "/admin/feedback", label: "Feedback", code: "FDB" },
+  { href: "/admin", label: "Torre", code: "OPS" },
+  { href: "/admin/members", label: "Paisaportes", code: "PAS" },
+  { href: "/admin/events", label: "Escalas", code: "ESC" },
+  { href: "/admin/check-in", label: "Puerta", code: "PUE" },
+  { href: "/admin/waitlist", label: "Accesos", code: "ACC" },
+  { href: "/admin/feedback", label: "Notas", code: "NOT" },
 ];
 
 function isActive(pathname: string, href: string) {

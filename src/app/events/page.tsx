@@ -13,20 +13,20 @@ export default async function EventsPage() {
 
   return (
     <AppShell
-      eyebrow="Agenda del club"
+      eyebrow="Escalas Paisanos"
       isAdmin={profile.is_admin}
-      title="Encuentros para mover proyectos"
+      title="Proximas escalas"
       actions={
         <PrimaryLink href="/opportunities">
           <Plus size={17} />
-          Proponer en Radar
+          Dejar una senal
         </PrimaryLink>
       }
     >
       <div className="grid gap-4 md:grid-cols-3">
-        <MetricTile icon={CalendarDays} label="Programados" value={`${events.length}`} caption={nextEvent ? `Proximo: ${nextEvent.date}` : "Sin publicados"} />
-        <MetricTile icon={UsersRound} label="RSVP totales" value={`${totalRsvps}`} caption="Desde Supabase" />
-        <MetricTile icon={TicketCheck} label="Check-in digital" value="Listo" caption="Staff + QR token" />
+        <MetricTile icon={CalendarDays} label="Escalas" value={`${events.length}`} caption={nextEvent ? `Proxima: ${nextEvent.date}` : "Sin publicadas"} />
+        <MetricTile icon={UsersRound} label="Asientos" value={`${totalRsvps}`} caption="Confirmados" />
+        <MetricTile icon={TicketCheck} label="Puerta digital" value="Lista" caption="Sello + QR" />
       </div>
 
       <div className="grid gap-4">
@@ -34,9 +34,9 @@ export default async function EventsPage() {
           events.map((event) => <EventRow event={event} key={event.id} />)
         ) : (
           <div className="py-6">
-            <h2 className="text-2xl font-black">Todavia no hay eventos publicados</h2>
+            <h2 className="text-2xl font-black">Todavia no hay escalas publicadas</h2>
             <p className="mt-2 text-sm leading-6 text-ink-muted">
-              Cuando el admin publique uno, los miembros van a poder hacer RSVP desde aca.
+              Cuando la torre publique una, vas a poder confirmar asiento desde aca.
             </p>
           </div>
         )}
@@ -73,15 +73,15 @@ function EventRow({ event }: { event: EventView }) {
             {event.description}
           </p>
           <div className="mt-5 grid gap-3 md:grid-cols-3">
-            <Info label="Vuelo" value={`${flightCode}-${event.id.slice(0, 4).toUpperCase()}`} />
-            <Info label="Destino" value={event.location} />
-            <Info label="Embarque" value={`${event.date} · ${event.time}`} />
+            <Info label="Codigo" value={`${flightCode}-${event.id.slice(0, 4).toUpperCase()}`} />
+            <Info label="Lugar" value={event.location} />
+            <Info label="Salida" value={`${event.date} · ${event.time}`} />
           </div>
         </div>
 
         <div className="grid content-start gap-3">
           <div className="bg-runway p-4 text-paper">
-            <p className="font-mono text-[9px] font-medium uppercase tracking-[0.18em] text-stamp">Capacidad</p>
+            <p className="font-mono text-[9px] font-medium uppercase tracking-[0.18em] text-stamp">Asientos</p>
             <p className="mt-2 text-4xl font-black leading-none">{event.confirmed}/{event.capacity}</p>
             {event.waitlisted ? (
               <p className="mt-2 font-mono text-[9px] font-medium uppercase tracking-[0.14em] text-paper/70">
@@ -93,22 +93,22 @@ function EventRow({ event }: { event: EventView }) {
             event.lumaUrl ? (
               <PrimaryLink href={event.lumaUrl} target="_blank">
                 <ExternalLink size={17} />
-                Anotarme en Luma
+                Reservar en Luma
               </PrimaryLink>
             ) : (
               <p className="rounded-sm border border-line bg-background px-3 py-3 text-sm font-semibold text-ink-muted">
-                Registro en Luma pendiente
+                Enlace Luma pendiente
               </p>
             )
           ) : (
             <form action={hasNativeRsvp ? cancelRsvp : rsvpToEvent}>
               <input name="event_id" type="hidden" value={event.id} />
               <button className="flex h-11 w-full items-center justify-center rounded-sm bg-signal px-4 text-sm font-black text-foreground transition-colors hover:bg-stamp">
-                {hasNativeRsvp ? "Cancelar RSVP" : event.isFull ? "Entrar en espera" : "Hacer RSVP"}
+                {hasNativeRsvp ? "Soltar asiento" : event.isFull ? "Entrar en espera" : "Confirmar asiento"}
               </button>
               {isWaitlisted ? (
                 <p className="mt-2 text-xs font-semibold text-ink-muted">
-                  Estas en lista de espera.
+                  Quedaste en lista de espera.
                 </p>
               ) : null}
             </form>
@@ -121,7 +121,7 @@ function EventRow({ event }: { event: EventView }) {
       <div className="flex flex-wrap items-center justify-between gap-3 bg-background px-5 py-3">
         <div className="barcode h-5 min-w-48 flex-1" aria-hidden="true" />
         <p className="font-mono text-[9px] font-medium uppercase tracking-[0.16em] text-ink-muted">
-          {event.usesLumaRegistration ? "Registro externo" : "RSVP Paisanos"}
+          {event.usesLumaRegistration ? "Registro Luma" : "Asiento Paisanos"}
         </p>
       </div>
     </article>

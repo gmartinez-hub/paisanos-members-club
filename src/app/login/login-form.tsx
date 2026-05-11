@@ -46,18 +46,18 @@ export function LoginForm() {
 
     if (!result.ok) {
       setStatus("error");
-      setMessage(result.error ?? "No pudimos enviar el magic link.");
+      setMessage(result.error ?? "No pudimos enviar el enlace de acceso.");
       return;
     }
 
     setStatus("sent");
-    setMessage("Te mandamos un magic link. Revisá tu mail para entrar al club.");
+    setMessage("Te mandamos el enlace de acceso. Revisa tu mail para abrir el Paisaporte.");
   }
 
   return (
     <form className="grid gap-4" onSubmit={handleSubmit}>
       <label className="grid gap-2 text-sm font-semibold text-runway">
-        Email
+        Mail de acceso
         <span className="flex items-center gap-2 rounded-sm border border-line bg-paper px-3 py-3 text-foreground">
           <Mail size={18} className="text-ink-muted" />
           <input
@@ -73,7 +73,7 @@ export function LoginForm() {
       </label>
 
       <label className="grid gap-2 text-sm font-semibold text-runway">
-        Clave QA / staff
+        Clave de prueba
         <span className="flex items-center gap-2 rounded-sm border border-line bg-paper px-3 py-3 text-foreground">
           <KeyRound size={18} className="text-ink-muted" />
           <input
@@ -93,7 +93,7 @@ export function LoginForm() {
         type="submit"
       >
         <Send size={18} />
-        {status === "loading" ? "Enviando..." : password.trim() ? "Entrar con clave" : "Entrar con magic link"}
+        {status === "loading" ? "Enviando..." : password.trim() ? "Abrir con clave" : "Enviar enlace"}
       </button>
 
       {message ? (
@@ -103,9 +103,9 @@ export function LoginForm() {
       ) : null}
 
       <p className="text-sm text-ink-muted">
-        Si todavia no tenes invitacion,{" "}
+        Si todavia no tenes sello de entrada,{" "}
         <Link className="font-semibold text-signal-dark" href="/waitlist">
-          pedi acceso aca
+          pedi tu lugar
         </Link>
         .
       </p>
@@ -115,13 +115,13 @@ export function LoginForm() {
           className="rounded-sm border border-line px-3 py-3 text-center text-sm font-black text-runway transition hover:bg-background"
           href="/demo?role=member"
         >
-          Ver demo miembro
+          Ver Paisaporte demo
         </Link>
         <Link
           className="rounded-sm border border-line px-3 py-3 text-center text-sm font-black text-runway transition hover:bg-background"
           href="/demo?role=admin"
         >
-          Ver demo admin
+          Ver torre demo
         </Link>
       </div>
     </form>

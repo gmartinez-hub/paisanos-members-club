@@ -33,20 +33,20 @@ export function WaitlistForm() {
 
     setStatus("sent");
     setForm(initialForm);
-    setMessage("Listo. Tu solicitud quedo registrada para revision del equipo.");
+    setMessage("Listo. Tu solicitud quedo en la bitacora para revision de la torre.");
   }
 
   return (
     <form className="grid gap-4" onSubmit={handleSubmit}>
       <div className="grid gap-4 sm:grid-cols-2">
         <Field
-          label="Nombre"
+          label="Nombre en bitacora"
           value={form.full_name}
           onChange={(value) => setForm((current) => ({ ...current, full_name: value }))}
           placeholder="Tu nombre"
         />
         <Field
-          label="Email"
+          label="Mail de acceso"
           type="email"
           value={form.email}
           onChange={(value) => setForm((current) => ({ ...current, email: value }))}
@@ -55,14 +55,14 @@ export function WaitlistForm() {
       </div>
 
       <Field
-        label="Empresa / proyecto"
+        label="Proyecto o compania"
         value={form.company}
         onChange={(value) => setForm((current) => ({ ...current, company: value }))}
         placeholder="Que estas construyendo"
       />
 
       <label className="grid gap-2 text-sm font-semibold text-runway">
-        Por que queres entrar
+        Por que queres abrir Paisaporte
         <textarea
           className="min-h-32 resize-none rounded-sm border border-line bg-paper px-3 py-3 text-foreground outline-none transition focus:border-runway"
           maxLength={300}
@@ -71,7 +71,7 @@ export function WaitlistForm() {
           onChange={(event) =>
             setForm((current) => ({ ...current, reason: event.target.value }))
           }
-          placeholder="Contanos en 1 o 2 lineas que podrias aportar o buscar dentro del club."
+          placeholder="Contanos en 1 o 2 lineas que podrias compartir, buscar o probar con Paisanos."
           required
         />
       </label>
@@ -82,7 +82,7 @@ export function WaitlistForm() {
         type="submit"
       >
         <Send size={18} />
-        {status === "loading" ? "Guardando..." : "Pedir invitacion"}
+        {status === "loading" ? "Guardando..." : "Pedir sello"}
       </button>
 
       {message ? (

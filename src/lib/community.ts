@@ -408,7 +408,7 @@ async function enrichEvents(
     return {
       id: event.id,
       title: event.title,
-      subtitle: event.subtitle || "Encuentro Paisanos",
+      subtitle: event.subtitle || "Escala Paisanos",
       description: event.description ?? "",
       date: formatDate(event.event_date),
       time: formatTime(event.event_date),
