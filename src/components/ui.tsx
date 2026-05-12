@@ -27,24 +27,34 @@ export function MetricTile({
   );
 }
 
-/* ── Admin metric tile — parchment palette ── */
+/* ── Admin metric tile — Argentine pastel palette ── */
+const ADMIN_TILE_COLORS = {
+  och: "bg-a-och text-a-och-t border-a-och-t/15",
+  cel: "bg-a-cel text-a-cel-t border-a-cel-t/15",
+  sag: "bg-a-sag text-a-sag-t border-a-sag-t/15",
+  mal: "bg-a-mal text-a-mal-t border-a-mal-t/15",
+  ter: "bg-a-ter text-a-ter-t border-a-ter-t/15",
+} as const;
+
 export function AdminMetricTile({
   label,
   value,
   caption,
+  color = "och",
 }: {
   caption?: string;
+  color?: keyof typeof ADMIN_TILE_COLORS;
   label: string;
   value: string;
 }) {
   return (
-    <div className="ticket-edge-parch border border-a-line bg-parch-2 p-4 text-a-ink">
-      <p className="font-mono text-[8.5px] font-medium uppercase tracking-[0.16em] opacity-55">
+    <div className={`rounded-sm border p-4 ${ADMIN_TILE_COLORS[color]}`}>
+      <p className="font-mono text-[8.5px] font-medium uppercase tracking-[0.16em] opacity-70">
         {label}
       </p>
       <p className="mt-2 font-sans text-3xl font-black leading-none tabular-nums">{value}</p>
       {caption ? (
-        <p className="mt-2 font-mono text-[9px] opacity-60">{caption}</p>
+        <p className="mt-2 font-mono text-[9px] leading-snug opacity-70">{caption}</p>
       ) : null}
     </div>
   );
@@ -202,7 +212,7 @@ export function AdminPanel({
   className?: string;
 }) {
   return (
-    <section className={`ticket-edge-parch border border-a-line bg-parch-2 ${className}`}>
+    <section className={`rounded-sm border border-a-line bg-parch-2 ${className}`}>
       {children}
     </section>
   );

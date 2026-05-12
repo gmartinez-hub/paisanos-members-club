@@ -28,38 +28,41 @@ export default async function AdminPage() {
 
   return (
     <AdminShell
-      eyebrow="Torre Paisanos"
-      title="Operacion de la bitacora"
+      eyebrow="Torre Paisanos · Panel de operación"
+      title="Operación de la bitácora"
       actions={
         <div className="flex flex-wrap gap-2">
           <AdminPrimaryLink href="/admin/events">
             <PlaneTakeoff size={17} />
-            Crear escala
+            Crear escala · evento
           </AdminPrimaryLink>
           <AdminSecondaryLink href="/admin/check-in">
             <ScanLine size={17} />
-            Abrir puerta
+            Abrir puerta · check-in
           </AdminSecondaryLink>
         </div>
       }
     >
       <div className="grid gap-4 md:grid-cols-3 xl:grid-cols-5">
-        <AdminMetricTile label="Paisaportes" value={`${members.length}`} caption="Activos reales" />
-        <AdminMetricTile label="Escalas" value={`${events.length}`} caption="Incluye borradores" />
-        <AdminMetricTile label="Accesos" value={`${pendingWaitlist}`} caption="Pendientes" />
-        <AdminMetricTile label="Notas" value={`${feedbackProcesses.length}`} caption="Lecturas visibles" />
-        <AdminMetricTile label="Sellos" value={`${checkedIn}/${confirmed}`} caption="Sobre asientos" />
+        <AdminMetricTile color="cel" label="Paisaportes" value={`${members.length}`} caption="Miembros activos" />
+        <AdminMetricTile color="och" label="Escalas" value={`${events.length}`} caption="Eventos (incluye borradores)" />
+        <AdminMetricTile color="ter" label="Accesos" value={`${pendingWaitlist}`} caption="Whitelist pendiente" />
+        <AdminMetricTile color="mal" label="Notas" value={`${feedbackProcesses.length}`} caption="Procesos de feedback" />
+        <AdminMetricTile color="sag" label="Sellos" value={`${checkedIn}/${confirmed}`} caption="Check-ins / asientos confirmados" />
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
         <section className="border-t border-a-line pt-5">
-          <div className="mb-4 flex items-center justify-between gap-4">
-            <h2 className="text-3xl font-black text-a-ink">Operacion de escalas</h2>
+          <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <h2 className="text-3xl font-black text-a-ink">Operación de escalas</h2>
+              <p className="mt-1 font-mono text-[11px] text-a-ink/65">Próximos eventos · ordenados por fecha</p>
+            </div>
             <AdminStatusBadge>Real</AdminStatusBadge>
           </div>
           <div className="grid gap-3">
             {events.map((event) => (
-              <article className="ticket-edge-parch grid min-w-0 gap-3 border border-a-line bg-parch-2 p-4 md:grid-cols-[1fr_140px]" key={event.id}>
+              <article className="grid min-w-0 gap-3 rounded-sm border border-a-line bg-parch-2 p-4 md:grid-cols-[1fr_140px]" key={event.id}>
                 <div>
                   <div className="mb-2 flex flex-wrap items-center gap-2">
                     <AdminStatusBadge>{event.status}</AdminStatusBadge>
@@ -72,10 +75,10 @@ export default async function AdminPage() {
                   </p>
                 </div>
                 <div className="text-left md:text-right">
-                  <p className="text-xs font-black uppercase tracking-[0.16em] text-ink-muted">
-                    Asientos
+                  <p className="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-a-ink/60">
+                    Asientos · cupo
                   </p>
-                  <p className="mt-1 text-2xl font-black">
+                  <p className="mt-1 text-2xl font-black tabular-nums">
                     {event.confirmed}/{event.capacity}
                   </p>
                 </div>
@@ -85,14 +88,17 @@ export default async function AdminPage() {
         </section>
 
         <section className="border-t border-a-line pt-5">
-          <div className="mb-4 flex items-center gap-2">
-            <RadioTower className="text-a-och-t" size={20} />
-            <h2 className="text-3xl font-black text-a-ink">Atajos de torre</h2>
+          <div className="mb-4">
+            <div className="flex items-center gap-2">
+              <RadioTower className="text-a-och-t" size={20} />
+              <h2 className="text-3xl font-black text-a-ink">Atajos de torre</h2>
+            </div>
+            <p className="mt-1 font-mono text-[11px] text-a-ink/65">Acciones rápidas de operación</p>
           </div>
           <div className="grid gap-3">
-            <Action title="Revisar accesos" copy={`${pendingWaitlist} solicitudes esperan revision de la torre.`} href="/admin/waitlist" />
-            <Action title="Sellar entradas" copy="Asientos y entradas ya escriben en Supabase." href="/admin/check-in" />
-            <Action title="Cerrar notas de viaje" copy="Lecturas reales listas para conectar respuestas." href="/admin/feedback" />
+            <Action title="Revisar accesos · whitelist" copy={`${pendingWaitlist} solicitudes esperan revisión de la torre.`} href="/admin/waitlist" />
+            <Action title="Sellar entradas · check-in" copy="Asientos y entradas ya escriben en Supabase." href="/admin/check-in" />
+            <Action title="Cerrar notas de viaje · feedback" copy="Lecturas reales listas para conectar respuestas." href="/admin/feedback" />
           </div>
         </section>
       </div>
