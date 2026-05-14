@@ -14,14 +14,15 @@ Actualizado: 2026-05-14.
 8. Seed QA reproducible con usuarios admin, miembros, onboarding, eventos nativos y evento Luma simulado.
 9. Variables esperadas documentadas para Vercel/local y verificador `npm run verify:p0`.
 10. Visual ajustada hacia Paisanos + aviacion: menos British Airways literal, mas herramienta sobria con papel, celeste, lima, rosa, bordes documentales y admin operativo.
+11. Supabase local validado con Admin API y seed QA aplicado.
+12. Vercel Production/Development sincronizado con variables P0 y redeploy de produccion listo.
 
 ## P0 - Bloqueado fuera del codigo
 
 1. Confirmar que el SQL final de P0 quedo aplicado en Supabase.
-2. Reemplazar `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` y `SUPABASE_SERVICE_ROLE_KEY` locales por keys validas del proyecto. `npm run verify:p0` hoy marca ambas como placeholders/incompletas.
-3. Correr `npm run seed:qa` y validar login por usuario QA.
-4. Configurar o validar Supabase Auth URLs y branding de magic link.
-5. Pushear el commit local a GitHub para alinear repo, GitHub Desktop y deploys automaticos de Vercel.
+2. Configurar o validar Supabase Auth URLs y branding de magic link.
+3. Autenticar GitHub CLI con `gh auth login` y `gh auth setup-git` para que Codex pueda pushear sin GitHub Desktop.
+4. Vercel Preview conserva variables antiguas para algunas keys; Production y Development ya quedaron sincronizados. Preview puede esperar si trabajamos directo en `main`.
 
 ## P1 - Siguiente
 
