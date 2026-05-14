@@ -1,10 +1,19 @@
 # Paisanos Members Club - Plan de producto
 
+Este archivo queda como resumen historico. Las definiciones actuales viven en:
+
+- `docs/product/paisaporte-product-definition.md`
+- `docs/product/paisaporte-roadmap-prd.md`
+- `docs/product/paisaporte-ux-spec.md`
+- `.agents/product-marketing.md`
+
 ## Tesis
 
 Convertir Paisanos en una infraestructura propia de identidad, eventos,
-conexiones y feedback. La V1 prueba si 20-30 miembros usan una
-plataforma privada antes, durante y despues de un evento.
+conexiones, propuestas, feedback y senales. Paisaporte debe funcionar como
+tool premium propietaria de Paisanos: una capa privada para convertir eventos
+en relaciones, propuestas, validacion de productos, oportunidades comerciales,
+talento y memoria accionable.
 
 ## V1
 
@@ -29,7 +38,7 @@ plataforma privada antes, durante y despues de un evento.
 1. Historial de participacion sin categorias de miembro
 2. Directorio avanzado por intencion, aporte y disponibilidad
 3. Matching mas rico por evento
-4. Chat moderado por canales
+4. Threads contextuales por evento, propuesta, producto o feedback
 5. Bolsa de trabajo interna
 6. Sellos de hitos del Paisaporte, no rankings personales
 
@@ -48,3 +57,5 @@ plataforma privada antes, durante y despues de un evento.
 - La participacion genera contexto e historial, no categorias ni jerarquias de miembros.
 - La V1 mide interes antes de construir features pesadas.
 - El admin tiene que ser operativo y sobrio, no una landing page interna.
+- El foro general no es prioridad; primero van conversaciones contextuales.
+- Luma complementa Paisaporte hasta que Paisaporte gane mas ownership operativo.
