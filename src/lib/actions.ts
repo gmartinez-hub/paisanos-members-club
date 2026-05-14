@@ -147,6 +147,49 @@ export async function activateProfile(formData: FormData): Promise<ActionResult>
   return { ok: true };
 }
 
+export async function updateProfile(formData: FormData): Promise<ActionResult> {
+  const { supabase, user } = await requireMember();
+  const fullName = requiredString(formData, "full_name");
+  const role = requiredString(formData, "role");
+  const company = requiredString(formData, "company");
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({
+      availability: requiredString(formData, "availability"),
+      building: requiredString(formData, "building"),
+      can_help_with: requiredString(formData, "can_help_with"),
+      company,
+      focus: requiredString(formData, "focus"),
+      full_name: fullName,
+      linkedin_url: stringValue(formData, "linkedin_url") || null,
+      location: requiredString(formData, "location"),
+      looking_for: listValue(formData, "looking_for"),
+      open_to: requiredString(formData, "open_to"),
+      role,
+      skills: listValue(formData, "skills"),
+      updated_at: new Date().toISOString(),
+    })
+    .eq("user_id", user.id);
+
+  if (error) {
+    return {
+      error: error.message,
+      ok: false,
+    };
+  }
+
+  revalidatePath("/club");
+  revalidatePath("/directory");
+  revalidatePath("/passport");
+  revalidatePath("/passport/edit");
+  revalidatePath(`/p/${user.id}`);
+  revalidatePath("/admin");
+  revalidatePath("/admin/members");
+
+  return { ok: true };
+}
+
 export async function rsvpToEvent(formData: FormData) {
   const eventId = requiredString(formData, "event_id");
   const { supabase, user } = await requireMember();

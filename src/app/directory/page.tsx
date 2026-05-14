@@ -122,7 +122,11 @@ function DirectoryRow({ member }: { member: MemberView }) {
 
       <div>
         <div className="flex flex-wrap items-center gap-2">
-          <h2 className="text-2xl font-black">{member.name}</h2>
+          <Link href={`/p/${member.userId}`}>
+            <h2 className="text-2xl font-black hover:underline hover:decoration-signal hover:decoration-4">
+              {member.name}
+            </h2>
+          </Link>
           <span className="rounded-sm bg-stamp px-2 py-1 text-xs font-black text-foreground">
             {member.availability}
           </span>
@@ -132,6 +136,9 @@ function DirectoryRow({ member }: { member: MemberView }) {
         </p>
         <p className="marker mt-4 inline text-base font-black">{member.focus}</p>
         <p className="mt-4 text-sm leading-6 text-ink-muted">{member.building}</p>
+        <Link className="mt-4 inline-block text-sm font-black underline decoration-signal decoration-4 underline-offset-4" href={`/p/${member.userId}`}>
+          Ver Paisaporte
+        </Link>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">

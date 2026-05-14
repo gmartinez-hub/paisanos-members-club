@@ -237,7 +237,11 @@ function MatchRow({
         {match.member.avatar}
       </span>
       <div>
-        <h3 className="text-xl font-black">{match.member.name}</h3>
+        <Link href={`/p/${match.member.userId}`}>
+          <h3 className="text-xl font-black hover:underline hover:decoration-signal hover:decoration-4">
+            {match.member.name}
+          </h3>
+        </Link>
         <p className="mt-1 text-sm font-semibold text-ink-muted">
           {match.member.role} · {match.member.company}
         </p>

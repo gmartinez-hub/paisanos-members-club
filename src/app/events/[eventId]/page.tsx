@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { CheckCircle2, ExternalLink, QrCode, ScanLine, UsersRound } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { MetricTile, PrimaryButton, PrimaryLink, SecondaryLink, StatusBadge } from "@/components/ui";
@@ -96,7 +97,9 @@ export default async function EventDetailPage({
                     {member.avatar}
                   </span>
                   <span>
-                    <span className="block font-black">{member.name}</span>
+                    <Link className="block font-black hover:underline hover:decoration-signal hover:decoration-4" href={`/p/${member.userId}`}>
+                      {member.name}
+                    </Link>
                     <span className="block text-sm text-ink-muted">
                       {member.role} · {member.company}
                     </span>

@@ -1,7 +1,7 @@
-import { BadgeCheck, History, Link2, ShieldCheck } from "lucide-react";
+import { BadgeCheck, Eye, History, Link2, PenLine, ShieldCheck } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { PassportCard } from "@/components/passport-card";
-import { MetricTile } from "@/components/ui";
+import { MetricTile, PrimaryLink, SecondaryLink } from "@/components/ui";
 import { getEvents, getMembers, profileToMember, requireMember } from "@/lib/community";
 
 export default async function PassportPage() {
@@ -20,6 +20,18 @@ export default async function PassportPage() {
       eyebrow="Identidad privada"
       isAdmin={profile.is_admin}
       title="Paisaporte"
+      actions={
+        <div className="flex flex-wrap gap-2">
+          <PrimaryLink href="/passport/edit">
+            <PenLine size={17} />
+            Editar
+          </PrimaryLink>
+          <SecondaryLink href={currentMember.qrValue}>
+            <Eye size={17} />
+            Ver perfil
+          </SecondaryLink>
+        </div>
+      }
     >
       <div className="grid gap-6 xl:grid-cols-[420px_minmax(0,1fr)]">
         <PassportCard member={currentMember} />
