@@ -25,8 +25,8 @@ export default async function AdminCheckInPage({
 
   return (
     <AdminShell
-      eyebrow="Check-in"
-      title="Entradas"
+      eyebrow="Admin / check-in"
+      title="Check-in"
       actions={
         <AdminPrimaryLink href="/admin/check-in/scan">
           <Camera size={17} />
@@ -45,11 +45,11 @@ export default async function AdminCheckInPage({
                 </div>
                 <h2 className="break-words text-3xl font-black text-a-ink">{event.title}</h2>
                 <p className="mt-2 text-sm text-a-ink/65">
-                  {event.confirmed}/{event.capacity} asientos · {event.location}
+                  {event.confirmed}/{event.capacity} confirmados · {event.location}
                 </p>
               </div>
               <div className="rounded-sm bg-a-ink p-4 text-parch">
-                <p className="text-xs font-black uppercase tracking-[0.18em] text-stamp">Punto</p>
+                <p className="text-xs font-black uppercase tracking-[0.18em] text-stamp">Check-in</p>
                 <p className="mt-2 text-4xl font-black">{event.point}</p>
               </div>
             </div>
@@ -59,7 +59,7 @@ export default async function AdminCheckInPage({
             <section className="border-b border-a-line pb-5">
               <div className="grid gap-3 rounded-sm border border-a-line bg-parch-2 p-4 md:grid-cols-[1fr_auto]">
                 <p className="text-sm leading-6 text-a-ink/70">
-                  Este evento usa Luma para registro y check-in. Paisanos mantiene identidad y bitacora importada.
+                  Este evento usa Luma para registro y check-in. Paisaporte mantiene identidad e historial importado.
                 </p>
                 {event.lumaUrl ? (
                   <AdminSecondaryLink href={event.lumaUrl} target="_blank">
@@ -80,7 +80,7 @@ export default async function AdminCheckInPage({
                   defaultValue={params?.q ?? ""}
                   id="admin-checkin-search"
                   name="q"
-                  placeholder="Buscar paisano…"
+                    placeholder="Buscar persona..."
                 />
               </form>
             </section>
@@ -101,7 +101,7 @@ export default async function AdminCheckInPage({
                       </span>
                     </div>
                     <span className="self-center text-sm text-a-ink/65">
-                      {checkedIn ? "Entrada sellada" : "Asiento confirmado"}
+                      {checkedIn ? "Check-in listo" : "Asistencia confirmada"}
                     </span>
                     <form action={checkInMember}>
                       <input name="event_id" type="hidden" value={event.id} />
@@ -111,7 +111,7 @@ export default async function AdminCheckInPage({
                         disabled={checkedIn}
                       >
                         <ShieldCheck size={16} />
-                        {checkedIn ? "Sellado" : "Sellar entrada"}
+                        {checkedIn ? "Registrado" : "Registrar entrada"}
                       </button>
                     </form>
                   </div>

@@ -11,7 +11,7 @@ export default async function AdminCheckInScanPage() {
 
   return (
     <AdminShell
-      eyebrow="Check-in"
+      eyebrow="Admin / check-in"
       title="Scanner"
       actions={
         <AdminSecondaryLink href="/admin/check-in">
@@ -36,7 +36,7 @@ export default async function AdminCheckInScanPage() {
             </p>
 
             <div className="mt-5 grid gap-3 border-t border-a-line pt-4 sm:grid-cols-3">
-              <Fact label="Punto" value={event.point} />
+              <Fact label="Check-in" value={event.point} />
               <Fact label="Entradas" value={`${event.checkedIn}`} />
               <Fact label="Pendientes" value={`${event.noShows}`} />
             </div>
@@ -46,7 +46,7 @@ export default async function AdminCheckInScanPage() {
             <AdminPanel className="p-5">
               <h2 className="text-xl font-black text-a-ink">Check-in externo</h2>
               <p className="mt-2 text-sm leading-6 text-a-ink/65">
-                Este evento usa Luma para registro y entrada. Paisanos queda como capa de identidad e historial importado.
+                Este evento usa Luma para registro y entrada. Paisaporte queda como capa de identidad e historial importado.
               </p>
               {event.lumaUrl ? (
                 <div className="mt-4">

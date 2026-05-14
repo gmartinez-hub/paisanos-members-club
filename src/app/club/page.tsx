@@ -56,15 +56,15 @@ export default async function ClubPage() {
 
   return (
     <AppShell
-      eyebrow="Bitacora privada"
+      eyebrow="Inicio privado"
       isAdmin={profile.is_admin}
-      title="Tu ruta Paisanos"
+      title="Inicio Paisaporte"
       actions={
         <div className="flex flex-wrap gap-2">
           {nextEvent ? (
             <PrimaryLink href={`/events/${nextEvent.id}`}>
               <QrCode size={17} />
-              Abrir escala
+              Abrir evento
             </PrimaryLink>
           ) : null}
           <SecondaryLink href="/passport">
@@ -78,9 +78,9 @@ export default async function ClubPage() {
         <div className="grid gap-5">
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             <DashboardMetric label="Paisanos" value={`${members.length}`} caption="Paisaportes activos" />
-            <DashboardMetric label="Escalas" value={`${events.length}`} caption={`${nativeEvents} Paisanos · ${lumaEvents} Luma`} />
+            <DashboardMetric label="Eventos" value={`${events.length}`} caption={`${nativeEvents} Paisanos · ${lumaEvents} Luma`} />
             <DashboardMetric label="Cruces" value={`${matches.length}`} caption="Sugeridos" />
-            <DashboardMetric label="Afinidad" value={`${confirmationRate}%`} caption="Proxima escala" />
+            <DashboardMetric label="Afinidad" value={`${confirmationRate}%`} caption="Proximo evento" />
           </div>
 
           {nextEvent ? (
@@ -92,28 +92,28 @@ export default async function ClubPage() {
                     <StatusBadge>{nextEvent.sourceLabel}</StatusBadge>
                   </div>
                   <p className="font-mono text-[9px] font-medium uppercase tracking-[0.2em] text-ink-muted">
-                    Proxima escala
+                    Proximo evento
                   </p>
                   <h2 className="mt-2 max-w-3xl text-4xl font-black leading-none">{nextEvent.title}</h2>
                   <p className="mt-3 max-w-3xl text-sm leading-6 text-ink-muted">
-                    {nextEvent.subtitle}. Cruces concretos, notas accionables y seguimiento despues de la escala.
+                    {nextEvent.subtitle}. Cruces concretos, notas accionables y seguimiento despues del evento.
                   </p>
                   <div className="mt-5 grid gap-3 md:grid-cols-3">
                     <TinyFact icon={CalendarDays} label="Fecha" value={nextEvent.date} />
-                    <TinyFact icon={ScanLine} label="Embarque" value={`${nextEvent.time} hs`} />
+                    <TinyFact icon={ScanLine} label="Horario" value={`${nextEvent.time} hs`} />
                     <TinyFact icon={UsersRound} label="Capacidad" value={`${nextEvent.confirmed}/${nextEvent.capacity || "-"}`} />
                   </div>
                 </div>
 
                 <div className="grid content-start gap-3">
                   <div className="bg-runway p-4 text-paper">
-                    <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-stamp">Puerta</p>
+                    <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-stamp">Check-in</p>
                     <p className="mt-2 text-5xl font-black leading-none">{nextEvent.point}</p>
                     <p className="mt-4 text-sm leading-6 text-paper/70">{nextEvent.location}</p>
                   </div>
                   <PrimaryLink href={`/events/${nextEvent.id}`}>
                     <QrCode size={17} />
-                    Abrir escala
+                    Abrir evento
                   </PrimaryLink>
                 </div>
               </div>
@@ -121,12 +121,12 @@ export default async function ClubPage() {
               <div className="flex flex-wrap items-center justify-between gap-3 bg-background px-5 py-3">
                 <div className="barcode h-5 min-w-48 flex-1" aria-hidden="true" />
                 <Link className="font-mono text-[9px] font-medium uppercase tracking-[0.16em] text-ink-muted hover:text-foreground" href="/events">
-                  Ver escalas
+                  Ver eventos
                 </Link>
               </div>
             </article>
           ) : (
-            <EmptyBlock title="Todavia no hay escalas publicadas" copy="Cuando el equipo publique una, aparece aca con asientos y asistentes reales." />
+            <EmptyBlock title="Todavia no hay eventos publicados" copy="Cuando el equipo publique uno, aparece aca con asistencia y contexto real." />
           )}
 
           <div className="grid gap-5 lg:grid-cols-2">
@@ -134,10 +134,10 @@ export default async function ClubPage() {
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <MessageCircle className="text-signal" size={21} />
-                  <h2 className="text-3xl font-black">Mapa de cruces</h2>
+                  <h2 className="text-3xl font-black">Miembros sugeridos</h2>
                 </div>
                 <Link className="text-sm font-black underline decoration-signal decoration-4 underline-offset-4" href="/directory">
-                  Ver mapa
+                  Ver miembros
                 </Link>
               </div>
               <div className="grid gap-3">
@@ -146,7 +146,7 @@ export default async function ClubPage() {
                     <MatchRow match={match} key={match.member.id} />
                   ))
                 ) : (
-                  <EmptyBlock title="Faltan paisanos para sugerir cruces" copy="Apenas haya mas Paisaportes activos, el mapa empieza a proponer conexiones." />
+                  <EmptyBlock title="Faltan miembros para sugerir cruces" copy="Apenas haya mas Paisaportes activos, el mapa empieza a proponer conexiones utiles." />
                 )}
               </div>
             </section>
@@ -155,23 +155,23 @@ export default async function ClubPage() {
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <Radar className="text-signal" size={21} />
-                  <h2 className="text-3xl font-black">Senales</h2>
+                  <h2 className="text-3xl font-black">Propuestas</h2>
                 </div>
                 <Link className="text-sm font-black underline decoration-signal decoration-4 underline-offset-4" href="/opportunities">
-                  Dejar senal
+                  Enviar propuesta
                 </Link>
               </div>
               <div className="grid gap-3">
                 {opportunities.length ? (
                   opportunities.map((item) => (
                     <article className="border-t border-line pt-4" key={item.id as string}>
-                      <p className="font-mono text-[9px] font-medium uppercase tracking-[0.16em] text-signal-dark">{String(item.category)}</p>
+                    <p className="font-mono text-[9px] font-medium uppercase tracking-[0.16em] text-signal-dark">{String(item.category)}</p>
                       <h3 className="mt-2 text-xl font-black">{String(item.title)}</h3>
                       <p className="mt-2 text-sm leading-6 text-ink-muted">{String(item.description)}</p>
                     </article>
                   ))
                 ) : (
-                  <EmptyBlock title="No hay senales aprobadas" copy="El equipo puede revisar propuestas y publicarlas cuando tengan contexto suficiente." />
+                  <EmptyBlock title="No hay propuestas aprobadas" copy="Cuando el equipo cure una propuesta, aparece aca con contexto y proximos pasos." />
                 )}
               </div>
             </section>
@@ -187,9 +187,9 @@ export default async function ClubPage() {
               <h2 className="text-2xl font-black">Ahora mismo</h2>
             </div>
             <div className="grid gap-3">
-              <MiniAction href="/passport" label="Paisaporte activo" value={currentMember.lastInteraction} />
-              <MiniAction href="/feedback" label="Notas de viaje" value={`${feedbackProcesses.length} lecturas visibles`} />
-              <MiniAction href="/directory" label="Mapa" value={`${members.length} perfiles con contexto`} />
+              <MiniAction href="/passport" label="Paisaporte" value={currentMember.lastInteraction} />
+              <MiniAction href="/feedback" label="Feedback" value={`${feedbackProcesses.length} procesos visibles`} />
+              <MiniAction href="/directory" label="Miembros" value={`${members.length} perfiles con contexto`} />
             </div>
           </section>
         </aside>

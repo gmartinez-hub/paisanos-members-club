@@ -29,8 +29,8 @@ export default async function AdminPage() {
 
   return (
     <AdminShell
-      eyebrow="Admin Paisanos"
-      title="Panel operativo"
+      eyebrow="Admin / operacion"
+      title="Torre de Control"
       actions={
         <div className="flex flex-wrap gap-2">
           <AdminPrimaryLink href="/admin/events">
@@ -45,18 +45,18 @@ export default async function AdminPage() {
       }
     >
       <div className="grid gap-4 md:grid-cols-3 xl:grid-cols-5">
-        <AdminMetricTile color="cel" label="Miembros" value={`${members.length}`} caption="Activos reales" />
+        <AdminMetricTile color="cel" label="Personas" value={`${members.length}`} caption="Miembros activos" />
         <AdminMetricTile color="och" label="Eventos" value={`${events.length}`} caption="Incluye borradores" />
         <AdminMetricTile color="ter" label="Accesos" value={`${pendingWaitlist}`} caption="Whitelist pendiente" />
         <AdminMetricTile color="mal" label="Feedback" value={`${feedbackProcesses.length}`} caption="Procesos abiertos" />
-        <AdminMetricTile color="sag" label="Check-in" value={`${checkedIn}/${confirmed}`} caption="Entradas / confirmados" />
+        <AdminMetricTile color="sag" label="Check-in" value={`${checkedIn}/${confirmed}`} caption="Entradas / asistencia" />
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
         <section className="border-t border-a-line pt-5">
           <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
             <div>
-              <h2 className="text-3xl font-black text-a-ink">Eventos próximos</h2>
+              <h2 className="text-3xl font-black text-a-ink">Eventos</h2>
               <p className="mt-1 font-mono text-[11px] text-a-ink/65">Ordenados por fecha</p>
             </div>
             <AdminStatusBadge>Real</AdminStatusBadge>
@@ -77,7 +77,7 @@ export default async function AdminPage() {
                 </div>
                 <div className="text-left md:text-right">
                   <p className="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-a-ink/60">
-                    Asientos
+                    Confirmados
                   </p>
                   <p className="mt-1 text-2xl font-black tabular-nums">
                     {event.confirmed}/{event.capacity}
@@ -92,14 +92,14 @@ export default async function AdminPage() {
           <div className="mb-4">
             <div className="flex items-center gap-2">
               <RadioTower className="text-a-och-t" size={20} />
-              <h2 className="text-3xl font-black text-a-ink">Acciones rápidas</h2>
+              <h2 className="text-3xl font-black text-a-ink">Acciones operativas</h2>
             </div>
-            <p className="mt-1 font-mono text-[11px] text-a-ink/65">Tareas P0 del equipo</p>
+            <p className="mt-1 font-mono text-[11px] text-a-ink/65">Lo que necesita seguimiento</p>
           </div>
           <div className="grid gap-3">
-            <Action title="Revisar accesos" copy={`${pendingWaitlist} solicitudes esperan revisión.`} href="/admin/waitlist" />
-            <Action title="Abrir check-in" copy="Confirmaciones y entradas ya escriben en Supabase." href="/admin/check-in" />
-            <Action title="Revisar feedback" copy="Lecturas reales listas para conectar respuestas." href="/admin/feedback" />
+            <Action title="Revisar accesos" copy={`${pendingWaitlist} solicitudes esperan revision.`} href="/admin/waitlist" />
+            <Action title="Abrir check-in" copy="Selecciona un evento y registra entradas desde Paisaporte." href="/admin/check-in" />
+            <Action title="Revisar feedback" copy="Procesos abiertos para eventos, productos o propuestas." href="/admin/feedback" />
           </div>
         </section>
       </div>

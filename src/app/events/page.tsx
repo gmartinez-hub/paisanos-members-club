@@ -13,20 +13,20 @@ export default async function EventsPage() {
 
   return (
     <AppShell
-      eyebrow="Escalas Paisanos"
+      eyebrow="Eventos / escalas"
       isAdmin={profile.is_admin}
-      title="Proximas escalas"
+      title="Eventos"
       actions={
         <PrimaryLink href="/opportunities">
           <Plus size={17} />
-          Dejar una senal
+          Enviar propuesta
         </PrimaryLink>
       }
     >
       <div className="grid gap-4 md:grid-cols-3">
-        <MetricTile icon={CalendarDays} label="Escalas" value={`${events.length}`} caption={nextEvent ? `Proxima: ${nextEvent.date}` : "Sin publicadas"} />
-        <MetricTile icon={UsersRound} label="Asientos" value={`${totalRsvps}`} caption="Confirmados" />
-        <MetricTile icon={TicketCheck} label="Puerta digital" value="Lista" caption="Sello + QR" />
+        <MetricTile icon={CalendarDays} label="Eventos" value={`${events.length}`} caption={nextEvent ? `Proximo: ${nextEvent.date}` : "Sin publicados"} />
+        <MetricTile icon={UsersRound} label="Asistencia" value={`${totalRsvps}`} caption="Confirmados" />
+        <MetricTile icon={TicketCheck} label="Check-in" value="Listo" caption="QR + entrada" />
       </div>
 
       <div className="grid gap-4">
@@ -34,9 +34,9 @@ export default async function EventsPage() {
           events.map((event) => <EventRow event={event} key={event.id} />)
         ) : (
           <div className="py-6">
-            <h2 className="text-2xl font-black">Todavia no hay escalas publicadas</h2>
+            <h2 className="text-2xl font-black">Todavia no hay eventos publicados</h2>
             <p className="mt-2 text-sm leading-6 text-ink-muted">
-              Cuando el equipo publique una, vas a poder confirmar asiento desde aca.
+              Cuando el equipo publique uno, vas a poder confirmar asistencia desde aca.
             </p>
           </div>
         )}
@@ -81,7 +81,7 @@ function EventRow({ event }: { event: EventView }) {
 
         <div className="grid content-start gap-3">
           <div className="bg-runway p-4 text-paper">
-            <p className="font-mono text-[9px] font-medium uppercase tracking-[0.18em] text-stamp">Asientos</p>
+            <p className="font-mono text-[9px] font-medium uppercase tracking-[0.18em] text-stamp">Confirmados</p>
             <p className="mt-2 text-4xl font-black leading-none">{event.confirmed}/{event.capacity}</p>
             {event.waitlisted ? (
               <p className="mt-2 font-mono text-[9px] font-medium uppercase tracking-[0.14em] text-paper/70">
@@ -93,18 +93,18 @@ function EventRow({ event }: { event: EventView }) {
             event.lumaUrl ? (
               <PrimaryLink href={event.lumaUrl} target="_blank">
                 <ExternalLink size={17} />
-                Reservar en Luma
+                Registrarme en Luma
               </PrimaryLink>
             ) : (
               <p className="rounded-sm border border-line bg-background px-3 py-3 text-sm font-semibold text-ink-muted">
-                Enlace Luma pendiente
+                Link de Luma pendiente
               </p>
             )
           ) : (
             <form action={hasNativeRsvp ? cancelRsvp : rsvpToEvent}>
               <input name="event_id" type="hidden" value={event.id} />
               <button className="flex h-11 w-full items-center justify-center rounded-sm bg-signal px-4 text-sm font-black text-foreground transition-colors hover:bg-stamp">
-                {hasNativeRsvp ? "Soltar asiento" : event.isFull ? "Entrar en espera" : "Confirmar asiento"}
+                {hasNativeRsvp ? "Cancelar asistencia" : event.isFull ? "Entrar en espera" : "Confirmar asistencia"}
               </button>
               {isWaitlisted ? (
                 <p className="mt-2 text-xs font-semibold text-ink-muted">
@@ -121,7 +121,7 @@ function EventRow({ event }: { event: EventView }) {
       <div className="flex flex-wrap items-center justify-between gap-3 bg-background px-5 py-3">
         <div className="barcode h-5 min-w-48 flex-1" aria-hidden="true" />
         <p className="font-mono text-[9px] font-medium uppercase tracking-[0.16em] text-ink-muted">
-          {event.usesLumaRegistration ? "Registro Luma" : "Asiento Paisanos"}
+          {event.usesLumaRegistration ? "Registro en Luma" : "Registro en Paisanos"}
         </p>
       </div>
     </article>

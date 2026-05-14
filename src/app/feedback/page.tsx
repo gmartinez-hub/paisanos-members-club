@@ -11,20 +11,20 @@ export default async function FeedbackPage() {
 
   return (
     <AppShell
-      eyebrow="Notas de viaje"
+      eyebrow="Feedback / notas"
       isAdmin={profile.is_admin}
-      title="Lecturas abiertas"
+      title="Feedback"
       actions={
         <PrimaryLink href="/opportunities">
           <Plus size={17} />
-          Dejar senal
+          Enviar propuesta
         </PrimaryLink>
       }
     >
       <div className="grid gap-4 md:grid-cols-3">
-        <MetricTile icon={ClipboardCheck} label="Lecturas" value={`${feedbackProcesses.length}`} caption="Abiertas" />
-        <MetricTile icon={UsersRound} label="Paisanos" value={`${targets}`} caption="Invitados" />
-        <MetricTile icon={MessageSquareText} label="Notas" value={`${responses}`} caption="Completadas" />
+        <MetricTile icon={ClipboardCheck} label="Procesos" value={`${feedbackProcesses.length}`} caption="Abiertos" />
+        <MetricTile icon={UsersRound} label="Personas" value={`${targets}`} caption="Invitadas" />
+        <MetricTile icon={MessageSquareText} label="Respuestas" value={`${responses}`} caption="Completadas" />
       </div>
 
       <div className="grid gap-4">
@@ -33,8 +33,8 @@ export default async function FeedbackPage() {
             <div className="grid gap-5 lg:grid-cols-[1fr_240px]">
               <div>
                 <div className="mb-3 flex items-center gap-2">
-                  <StatusBadge>{process.status}</StatusBadge>
-                  <span className="text-sm text-ink-muted">Bitacora Paisanos</span>
+                  <StatusBadge>{feedbackStatusLabel(process.status)}</StatusBadge>
+                  <span className="text-sm text-ink-muted">Paisanos</span>
                 </div>
                 <h2 className="text-2xl font-semibold">{process.title}</h2>
                 <div className="mt-5 grid gap-2">
@@ -47,7 +47,7 @@ export default async function FeedbackPage() {
               </div>
               <div className="rounded-sm border border-line bg-background p-4">
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-ink-muted">
-                  Avance
+                  Respuestas
                 </p>
                 <p className="mt-3 text-3xl font-semibold">
                   {process.responses}/{process.selectedMembers}
@@ -57,7 +57,25 @@ export default async function FeedbackPage() {
             </div>
           </Panel>
         ))}
+        {!feedbackProcesses.length ? (
+          <Panel className="p-5">
+            <h2 className="text-2xl font-black">No hay feedback activo</h2>
+            <p className="mt-2 text-sm leading-6 text-ink-muted">
+              Cuando el equipo abra feedback sobre un evento, propuesta o producto, aparece aca.
+            </p>
+          </Panel>
+        ) : null}
       </div>
     </AppShell>
   );
+}
+
+function feedbackStatusLabel(status: string) {
+  const labels: Record<string, string> = {
+    active: "Activo",
+    closed: "Cerrado",
+    draft: "Borrador",
+  };
+
+  return labels[status.toLowerCase()] ?? status;
 }

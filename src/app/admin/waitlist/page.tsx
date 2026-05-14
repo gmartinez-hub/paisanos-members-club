@@ -18,7 +18,7 @@ export default async function AdminWaitlistPage() {
   const requests = waitlist ?? [];
 
   return (
-    <AdminShell eyebrow="Solicitudes de acceso" title="Accesos">
+    <AdminShell eyebrow="Admin / accesos" title="Accesos">
       <div className="grid gap-4">
         {requests.length ? (
           requests.map((person) => (
@@ -26,7 +26,7 @@ export default async function AdminWaitlistPage() {
               <div className="grid gap-4 lg:grid-cols-[1fr_260px]">
                 <div className="min-w-0">
                   <div className="mb-2 flex items-center gap-2">
-                    <AdminStatusBadge>{person.status}</AdminStatusBadge>
+                    <AdminStatusBadge>{accessStatusLabel(String(person.status))}</AdminStatusBadge>
                     <span className="truncate text-sm text-a-ink/65">{person.company}</span>
                   </div>
                   <h2 className="break-words text-xl font-semibold text-a-ink">{person.full_name}</h2>
@@ -45,13 +45,13 @@ export default async function AdminWaitlistPage() {
                       </form>
                       <AdminSecondaryLink href={`mailto:${person.email}?subject=Paisaporte Paisanos`}>
                         <ShieldCheck size={17} />
-                        Pedir datos
+                          Pedir mas datos
                       </AdminSecondaryLink>
                       <form action={rejectWaitlistRequest}>
                         <input name="request_id" type="hidden" value={person.id} />
                         <button className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-sm border border-a-line px-4 font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-a-ink transition-colors hover:border-a-ink hover:bg-a-och/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-a-och-t">
                           <X size={17} />
-                          Mantener en espera
+                          No aprobar ahora
                         </button>
                       </form>
                     </>
@@ -73,4 +73,14 @@ export default async function AdminWaitlistPage() {
       </div>
     </AdminShell>
   );
+}
+
+function accessStatusLabel(status: string) {
+  const labels: Record<string, string> = {
+    approved: "Aprobado",
+    pending: "Pendiente",
+    rejected: "No aprobado",
+  };
+
+  return labels[status] ?? status;
 }

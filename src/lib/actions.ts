@@ -26,7 +26,7 @@ export async function requestMagicLink(formData: FormData): Promise<ActionResult
   const allowed = await emailCanRequestAccess(admin, email);
   if (!allowed) {
     return {
-      error: "Ese mail todavia no tiene sello de entrada.",
+      error: "Ese mail todavia no tiene acceso a Paisaporte.",
       ok: false,
     };
   }
@@ -117,7 +117,7 @@ export async function activateProfile(formData: FormData): Promise<ActionResult>
     full_name: fullName,
     is_active: true,
     is_admin: false,
-    last_interaction: "Primer sello del Paisaporte",
+    last_interaction: "Paisaporte activado",
     linkedin_url: stringValue(formData, "linkedin_url") || null,
     location: stringValue(formData, "location") || "Buenos Aires",
     looking_for: listValue(formData, "looking_for"),
@@ -133,7 +133,7 @@ export async function activateProfile(formData: FormData): Promise<ActionResult>
       error:
         error.code === "23505"
           ? "Este usuario ya tiene Paisaporte activo."
-          : "Tu mail todavia no tiene sello de entrada para abrir Paisaporte.",
+          : "Tu mail todavia no tiene acceso para abrir Paisaporte.",
       ok: false,
     };
   }
@@ -153,15 +153,15 @@ export async function rsvpToEvent(formData: FormData) {
   const event = await getActionEvent(supabase, eventId);
 
   if (!event) {
-    throw new Error("Escala no encontrada.");
+    throw new Error("Evento no encontrado.");
   }
 
   if (event.registration_mode !== "paisanos") {
-    throw new Error("Esta escala gestiona registros fuera de Paisanos.");
+    throw new Error("Este evento gestiona registros fuera de Paisanos.");
   }
 
   if (!["published", "active"].includes(event.status)) {
-    throw new Error("Esta escala todavia no esta abierta para confirmar asiento.");
+    throw new Error("Este evento todavia no esta abierto para confirmar asistencia.");
   }
 
   const { data: existingRsvp } = await supabase
@@ -285,12 +285,12 @@ export async function createEvent(formData: FormData) {
   const lumaEventId = stringValue(formData, "luma_event_id") || extractLumaEventId(lumaUrl);
 
   if (source === "luma" && !lumaUrl && !lumaEventId) {
-    throw new Error("Para una escala Luma necesitamos URL o event ID.");
+    throw new Error("Para un evento Luma necesitamos URL o event ID.");
   }
 
   const { error } = await supabase.from("events").insert({
     active_token: crypto.randomUUID().replaceAll("-", "").slice(0, 24),
-    checkin_label: source === "luma" ? "Luma" : "Puerta",
+    checkin_label: source === "luma" ? "Luma" : "Check-in",
     checkin_mode: source === "luma" ? "luma" : "paisanos",
     created_by: user.id,
     description: stringValue(formData, "description"),
@@ -456,15 +456,15 @@ async function checkInUserForEvent(
   const event = await getActionEvent(supabase, eventId);
 
   if (!event) {
-    throw new Error("Escala no encontrada.");
+    throw new Error("Evento no encontrado.");
   }
 
   if (event.checkin_mode === "luma") {
-    throw new Error("Esta escala usa puerta en Luma.");
+    throw new Error("Este evento usa check-in en Luma.");
   }
 
   if (!["published", "active"].includes(event.status)) {
-    throw new Error("Esta escala no tiene puerta abierta.");
+    throw new Error("Este evento no tiene check-in abierto.");
   }
 
   const { data: rsvp } = await supabase
@@ -476,7 +476,7 @@ async function checkInUserForEvent(
     .maybeSingle();
 
   if (!rsvp) {
-    throw new Error("El Paisaporte necesita asiento confirmado para sellar entrada.");
+    throw new Error("El Paisaporte necesita asistencia confirmada para registrar entrada.");
   }
 
   const { error } = await supabase.from("check_ins").upsert(

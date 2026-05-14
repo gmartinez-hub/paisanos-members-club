@@ -33,12 +33,12 @@ function OnboardingScreen() {
         <div className="grid w-full max-w-2xl gap-8 rounded-sm border border-line bg-paper p-6 shadow-[0_22px_80px_rgba(7,27,58,0.12)] sm:p-8">
           <div>
             <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-signal-dark">
-              Primer sello
+              Activacion
             </p>
-            <h1 className="text-3xl font-semibold sm:text-5xl">Abrir tu bitacora</h1>
+            <h1 className="text-3xl font-semibold sm:text-5xl">Crear tu Paisaporte</h1>
             <p className="mt-4 text-base leading-7 text-ink-muted">
-              Estas coordenadas arman tu Paisaporte: que estas construyendo, que podes
-              aportar y que cruces vale la pena abrir.
+              Estos datos ayudan a Paisanos a sugerirte personas, propuestas y eventos con
+              mejor contexto. La capa de viaje queda en el Paisaporte; la accion tiene que ser clara.
             </p>
           </div>
 

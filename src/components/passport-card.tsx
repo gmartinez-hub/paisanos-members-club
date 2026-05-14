@@ -38,7 +38,7 @@ export function PassportCard({ member }: { member: MemberView }) {
               Paisanos
             </p>
             <p className="mt-0.5 font-mono text-[8px] uppercase tracking-[0.16em] text-paper/25">
-              Paisaporte Digital · Bitacora activa
+              Paisaporte Digital · Perfil activo
             </p>
           </div>
           <div className="text-right">
@@ -53,15 +53,15 @@ export function PassportCard({ member }: { member: MemberView }) {
           <div className="flex-1">
             <div className="grid grid-cols-2 gap-x-6 gap-y-3">
               <BPField
-                label="Nombre en bitacora"
+                label="Nombre"
                 value={member.name}
                 className="col-span-2"
                 valueClassName="text-2xl font-black tracking-tight sm:text-3xl"
               />
               <BPField label="Oficio" value={member.role} />
               <BPField label="Proyecto" value={member.company} />
-              <BPField label="Base" value={member.location} />
-              <BPField label="Primer sello" value={member.memberSince} />
+              <BPField label="Ubicacion" value={member.location} />
+              <BPField label="Miembro desde" value={member.memberSince} />
             </div>
           </div>
           {/* QR code */}
@@ -78,7 +78,7 @@ export function PassportCard({ member }: { member: MemberView }) {
       <div className="grid grid-cols-3 divide-x divide-line bg-paper">
         <div className="px-4 py-3">
           <p className="font-mono text-[8px] font-medium uppercase tracking-[0.18em] text-ink-muted">
-            Escalas
+            Eventos
           </p>
           <p className="mt-1.5 font-sans text-3xl font-black text-foreground leading-none">
             {member.attendedEvents}
@@ -86,7 +86,7 @@ export function PassportCard({ member }: { member: MemberView }) {
         </div>
         <div className="px-4 py-3">
           <p className="font-mono text-[8px] font-medium uppercase tracking-[0.18em] text-ink-muted">
-            Notas
+            Feedback
           </p>
           <p className="mt-1.5 font-sans text-3xl font-black text-foreground leading-none">
             {member.feedbackGiven}
@@ -94,7 +94,7 @@ export function PassportCard({ member }: { member: MemberView }) {
         </div>
         <div className="px-4 py-3">
           <p className="font-mono text-[8px] font-medium uppercase tracking-[0.18em] text-ink-muted">
-            Sello
+            Estado
           </p>
           <p className="mt-1.5 font-sans text-sm font-black text-foreground leading-tight">
             En ruta
@@ -109,7 +109,7 @@ export function PassportCard({ member }: { member: MemberView }) {
       <div className="grid gap-4 px-5 pb-4 pt-4 bg-paper">
         <div>
           <p className="font-mono text-[8px] font-medium uppercase tracking-[0.18em] text-ink-muted">
-            Tramo actual
+            Foco actual
           </p>
           <p className="marker mt-2 inline font-sans text-lg font-black">
             {member.focus}
@@ -118,7 +118,7 @@ export function PassportCard({ member }: { member: MemberView }) {
 
         <div>
           <p className="font-mono text-[8px] font-medium uppercase tracking-[0.18em] text-ink-muted">
-            Carga actual
+            Que construye
           </p>
           <p className="mt-2 font-mono text-sm leading-6 text-ink-muted">
             {member.building}

@@ -17,7 +17,7 @@ export default async function PassportPage() {
 
   return (
     <AppShell
-      eyebrow="Identidad de ruta"
+      eyebrow="Identidad privada"
       isAdmin={profile.is_admin}
       title="Paisaporte"
     >
@@ -26,22 +26,22 @@ export default async function PassportPage() {
         <div className="grid content-start gap-6">
           <div className="grid gap-4 md:grid-cols-3">
             <MetricTile icon={BadgeCheck} label="Registro" value="Real" caption="Perfil en Supabase" />
-            <MetricTile icon={History} label="Escalas" value={`${currentMember.attendedEvents}`} caption="Entradas selladas" />
-            <MetricTile icon={ShieldCheck} label="Sello" value={profile.is_active ? "Activo" : "Pausado"} caption="Estado del Paisaporte" />
+            <MetricTile icon={History} label="Eventos" value={`${currentMember.attendedEvents}`} caption="Entradas registradas" />
+            <MetricTile icon={ShieldCheck} label="Estado" value={profile.is_active ? "Activo" : "Pausado"} caption="Paisaporte" />
           </div>
 
           <section className="border-y-2 border-foreground py-5">
-            <h2 className="text-3xl font-black">Hoja del Paisaporte</h2>
+            <h2 className="text-3xl font-black">Datos del Paisaporte</h2>
             <div className="mt-5 grid gap-4 md:grid-cols-2">
-              <Field label="Nombre en bitacora" value={currentMember.name} />
+              <Field label="Nombre" value={currentMember.name} />
               <Field label="Oficio" value={currentMember.role} />
               <Field label="Proyecto" value={currentMember.company} />
-              <Field label="Base" value={currentMember.location} />
-              <Field label="Tramo actual" value={currentMember.focus} />
+              <Field label="Ubicacion" value={currentMember.location} />
+              <Field label="Foco actual" value={currentMember.focus} />
               <Field label="Disponible para" value={currentMember.availability} />
             </div>
             <div className="mt-4">
-              <Field label="Carga actual" value={currentMember.building} />
+              <Field label="Que construye" value={currentMember.building} />
             </div>
             <div className="mt-4">
               <Field label="Busca" value={currentMember.lookingFor} />
@@ -53,7 +53,7 @@ export default async function PassportPage() {
       <section className="border-t-2 border-foreground pt-6">
         <div className="mb-5 flex items-center gap-2">
           <Link2 className="text-signal" size={20} />
-          <h2 className="text-3xl font-black">Bitacora de escalas</h2>
+          <h2 className="text-3xl font-black">Historial de eventos</h2>
         </div>
         <div className="grid gap-3 md:grid-cols-3">
           {memberEvents.length ? (
@@ -68,7 +68,7 @@ export default async function PassportPage() {
             ))
           ) : (
             <p className="text-sm leading-6 text-ink-muted">
-              Todavia no hay asientos ni entradas selladas para este Paisaporte.
+              Todavia no hay asistencias ni entradas registradas para este Paisaporte.
             </p>
           )}
         </div>

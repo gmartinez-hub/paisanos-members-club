@@ -18,8 +18,8 @@ export default async function AdminEventsPage() {
 
   return (
     <AdminShell
-      eyebrow="Eventos"
-      title="Gestion de eventos"
+      eyebrow="Admin / eventos"
+      title="Eventos"
     >
       <div className="grid min-w-0 gap-5 xl:grid-cols-[minmax(0,1fr)_430px]">
         <section className="grid gap-4">
@@ -53,7 +53,7 @@ export default async function AdminEventsPage() {
                 </div>
                 <div className="mt-4 grid gap-3 border-t border-a-line pt-3 md:grid-cols-[1fr_auto]">
                   <div className="grid gap-1 font-mono text-[9px] uppercase tracking-[0.14em] text-a-ink/55 sm:grid-cols-3">
-                    <span>ASIENTOS {event.confirmed}/{event.capacity || "-"}</span>
+                    <span>ASISTENCIA {event.confirmed}/{event.capacity || "-"}</span>
                     <span>SYNC {event.syncStatus}</span>
                     <span>{event.lumaLastSyncedAt ?? "Sin sync"}</span>
                   </div>
@@ -89,25 +89,25 @@ export default async function AdminEventsPage() {
           </p>
           <h2 className="mt-1 text-balance text-3xl font-black text-a-ink">Crear evento</h2>
           <form action={createEvent} className="mt-5 grid gap-4">
-            <Field label="Nombre del evento" name="title" placeholder="Founders Night…" />
-            <Field label="Nota breve" name="subtitle" placeholder="Mesa chica para builders…" />
+            <Field label="Nombre del evento" name="title" placeholder="Founders Night..." />
+            <Field label="Nota breve" name="subtitle" placeholder="Mesa chica para builders..." />
             <label className="grid gap-2 text-sm font-black text-foreground">
-              Origen del registro
+              Modo de registro
               <select className={adminControlClass} name="source" defaultValue="paisanos" autoComplete="off">
-                <option value="paisanos">Paisanos: asiento y puerta propios</option>
+                <option value="paisanos">Paisanos: registro y check-in propios</option>
                 <option value="luma">Luma: registro externo</option>
               </select>
             </label>
-            <Field label="URL de Luma" name="luma_url" placeholder="https://luma.com/…" required={false} type="url" />
-            <Field label="ID de Luma" name="luma_event_id" placeholder="evt-… para sync futura" required={false} />
+            <Field label="URL de Luma" name="luma_url" placeholder="https://luma.com/..." required={false} type="url" />
+            <Field label="ID de Luma" name="luma_event_id" placeholder="evt-... para sync futura" required={false} />
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Fecha" name="date" type="date" />
               <Field label="Hora" name="time" type="time" />
             </div>
             <Field label="Lugar" name="location" placeholder="Paisanos HQ…" />
             <Field label="Host" name="host" placeholder="Paisanos…" />
-            <Field label="Asientos" inputMode="numeric" name="capacity" placeholder="30" type="number" />
-            <Field label="Tags" name="tags" placeholder="Producto, AI, Founders…" required={false} />
+            <Field label="Capacidad" inputMode="numeric" name="capacity" placeholder="30" type="number" />
+            <Field label="Tags" name="tags" placeholder="Producto, AI, Founders..." required={false} />
             <label className="grid gap-2 text-sm font-black text-foreground">
               Estado
               <select className={adminControlClass} name="status" defaultValue="draft" autoComplete="off">
@@ -116,11 +116,11 @@ export default async function AdminEventsPage() {
               </select>
             </label>
             <label className="grid gap-2 text-sm font-black text-foreground">
-              Bitacora del evento
+              Descripcion del evento
               <textarea
                 className={`${adminControlClass} min-h-28 resize-none`}
                 name="description"
-                placeholder="Que va a pasar, por que suma y que cruces deberian abrirse…"
+                placeholder="Que va a pasar, por que suma y que cruces deberian abrirse..."
               />
             </label>
             <AdminPrimaryButton>

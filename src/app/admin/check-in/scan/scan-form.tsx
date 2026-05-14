@@ -151,7 +151,7 @@ export function ScanForm({ eventId }: { eventId: string }) {
                   Scanner
                 </p>
                 <p className="mt-2 text-sm font-black text-paper/90">
-                  QR de Paisaporte
+                  Escanear Paisaporte
                 </p>
               </div>
             </div>
@@ -199,7 +199,7 @@ export function ScanForm({ eventId }: { eventId: string }) {
         </label>
         <AdminPrimaryButton disabled={isPending || !manualValue.trim()}>
           <ScanLine size={16} />
-          Registrar entrada
+          Registrar check-in
         </AdminPrimaryButton>
       </form>
 

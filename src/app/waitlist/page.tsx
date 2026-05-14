@@ -15,11 +15,11 @@ export default function WaitlistPage() {
           <div>
             <p className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-signal-dark">
               <ClipboardCheck size={15} />
-              Solicitud de abordaje
+              Solicitud de acceso
             </p>
-            <h1 className="text-3xl font-semibold sm:text-5xl">Pedir sello de entrada</h1>
+            <h1 className="text-3xl font-semibold sm:text-5xl">Pedir acceso a Paisaporte</h1>
             <p className="mt-4 text-base leading-7 text-ink-muted">
-              Dejanos tus datos. El equipo revisa cada solicitud antes de abrir un Paisaporte.
+              Dejanos tus datos. El equipo revisa cada solicitud antes de habilitar un Paisaporte.
             </p>
           </div>
 

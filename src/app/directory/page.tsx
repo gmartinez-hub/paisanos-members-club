@@ -18,9 +18,9 @@ export default async function DirectoryPage({
 
   return (
     <AppShell
-      eyebrow="Mapa de ruta"
+      eyebrow="Miembros / mapa"
       isAdmin={profile.is_admin}
-      title="Paisanos, coordenadas y cruces"
+      title="Miembros y cruces"
     >
       <section className="grid gap-6 border-y-2 border-foreground py-6 lg:grid-cols-[360px_minmax(0,1fr)]">
         <div>
@@ -30,7 +30,7 @@ export default async function DirectoryPage({
               defaultValue={params?.q ?? ""}
               className="w-full bg-transparent text-lg font-black outline-none placeholder:text-ink-muted"
               name="q"
-              placeholder="Buscar persona, oficio o proyecto"
+              placeholder="Buscar miembro, rol, proyecto o necesidad"
             />
             {topic ? <input name="topic" type="hidden" value={topic} /> : null}
             <button className="grid size-10 shrink-0 place-items-center rounded-sm bg-foreground text-paper transition hover:bg-signal hover:text-foreground">
@@ -41,7 +41,7 @@ export default async function DirectoryPage({
           {topics.length ? (
             <div className="mt-6">
               <p className="text-xs font-black uppercase tracking-[0.18em] text-signal">
-                Senales activas
+                Filtros activos
               </p>
               <div className="mt-3 flex flex-wrap gap-2">
                 {topics.map((topic) => (
@@ -56,7 +56,7 @@ export default async function DirectoryPage({
               </div>
               {query || topic ? (
                 <Link className="mt-4 inline-block text-sm font-black underline decoration-signal decoration-4 underline-offset-4" href="/directory">
-                  Limpiar busqueda
+                  Limpiar filtros
                 </Link>
               ) : null}
             </div>
@@ -66,7 +66,7 @@ export default async function DirectoryPage({
             <UsersRound className="mb-4 text-signal" size={22} />
             <p className="text-4xl font-black leading-none">{members.length}</p>
             <p className="mt-2 text-sm leading-6 text-ink-muted">
-              Paisaportes activos con contexto editable. La unidad no es categoria: es tramo, aporte y necesidad.
+              Paisaportes activos con contexto util. La unidad no es categoria: es foco, aporte y necesidad.
             </p>
           </div>
         </div>
@@ -78,7 +78,7 @@ export default async function DirectoryPage({
             <div className="py-6">
               <h2 className="text-2xl font-black">Todavia no hay Paisaportes activos</h2>
               <p className="mt-2 text-sm leading-6 text-ink-muted">
-                A medida que se activen Paisaportes, este mapa empieza a mostrar contexto real.
+                A medida que se activen Paisaportes, este mapa empieza a mostrar personas y contexto real.
               </p>
             </div>
           )}
@@ -135,10 +135,10 @@ function DirectoryRow({ member }: { member: MemberView }) {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <InfoBlock label="Puede compartir" value={member.canHelpWith} />
+        <InfoBlock label="Puede aportar" value={member.canHelpWith} />
         <InfoBlock label="Busca" value={member.lookingFor} />
-        <InfoBlock label="Abierto a cruces" value={member.openTo} />
-        <InfoBlock label="Ultima senal" value={member.lastInteraction} />
+        <InfoBlock label="Cruces que le sirven" value={member.openTo} />
+        <InfoBlock label="Ultima actividad" value={member.lastInteraction} />
       </div>
     </article>
   );

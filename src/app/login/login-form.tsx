@@ -73,7 +73,7 @@ export function LoginForm() {
       </label>
 
       <label className="grid gap-2 text-sm font-semibold text-runway">
-        Clave de prueba
+        Clave QA o staff
         <span className="flex items-center gap-2 rounded-sm border border-line bg-paper px-3 py-3 text-foreground">
           <KeyRound size={18} className="text-ink-muted" />
           <input
@@ -93,7 +93,7 @@ export function LoginForm() {
         type="submit"
       >
         <Send size={18} />
-        {status === "loading" ? "Enviando..." : password.trim() ? "Abrir con clave" : "Enviar enlace"}
+        {status === "loading" ? "Enviando..." : password.trim() ? "Entrar con clave" : "Enviar magic link"}
       </button>
 
       {message ? (
@@ -103,9 +103,9 @@ export function LoginForm() {
       ) : null}
 
       <p className="text-sm text-ink-muted">
-        Si todavia no tenes sello de entrada,{" "}
+        Si todavia no tenes acceso,{" "}
         <Link className="font-semibold text-signal-dark" href="/waitlist">
-          pedi tu lugar
+          pedi acceso
         </Link>
         .
       </p>
@@ -115,13 +115,13 @@ export function LoginForm() {
           className="rounded-sm border border-line px-3 py-3 text-center text-sm font-black text-runway transition hover:bg-background"
           href="/demo?role=member"
         >
-          Ver Paisaporte demo
+          Demo miembro
         </Link>
         <Link
           className="rounded-sm border border-line px-3 py-3 text-center text-sm font-black text-runway transition hover:bg-background"
           href="/demo?role=admin"
         >
-          Ver admin demo
+          Demo admin
         </Link>
       </div>
     </form>

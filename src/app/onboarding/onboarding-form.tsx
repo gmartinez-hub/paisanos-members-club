@@ -37,7 +37,7 @@ export function OnboardingForm() {
     const result = await activateProfile(formData);
 
     if (!result.ok) {
-      setError(result.error ?? "No pudimos sellar tu Paisaporte.");
+      setError(result.error ?? "No pudimos crear tu Paisaporte.");
       setLoading(false);
       return;
     }
@@ -51,14 +51,14 @@ export function OnboardingForm() {
       <div className="grid gap-4 sm:grid-cols-2">
         <Field
           autoComplete="name"
-          label="Nombre en la bitacora"
+          label="Nombre visible"
           placeholder="Sofia Alvarez"
           value={form.full_name}
           onChange={(value) => setForm((current) => ({ ...current, full_name: value }))}
         />
         <Field
           autoComplete="organization-title"
-          label="Oficio / rol"
+          label="Rol u oficio"
           placeholder="Founder, PM, designer..."
           value={form.role}
           onChange={(value) => setForm((current) => ({ ...current, role: value }))}
@@ -75,20 +75,20 @@ export function OnboardingForm() {
       <div className="grid gap-4 sm:grid-cols-2">
         <Field
           autoComplete="address-level2"
-          label="Base de salida"
+          label="Ubicacion"
           placeholder="Buenos Aires"
           value={form.location}
           onChange={(value) => setForm((current) => ({ ...current, location: value }))}
         />
         <Field
-          label="Tramo actual"
+          label="Foco actual"
           placeholder="Conseguir los primeros clientes"
           value={form.focus}
           onChange={(value) => setForm((current) => ({ ...current, focus: value }))}
         />
       </div>
       <Field
-        label="Equipaje de habilidades"
+        label="Habilidades"
         placeholder="Producto, ventas, AI, operaciones"
         value={form.skills}
         onChange={(value) => setForm((current) => ({ ...current, skills: value }))}
@@ -101,25 +101,25 @@ export function OnboardingForm() {
         maxLength={140}
       />
       <Field
-        label="Que podes compartir en ruta"
+        label="Que podes aportar"
         placeholder="Discovery, GTM, automatizacion, research"
         value={form.can_help_with}
         onChange={(value) => setForm((current) => ({ ...current, can_help_with: value }))}
       />
       <Field
-        label="Que queres encontrar"
+        label="Que estas buscando"
         placeholder="Beta testers, advisors, clientes, talento"
         value={form.looking_for}
         onChange={(value) => setForm((current) => ({ ...current, looking_for: value }))}
       />
       <Field
-        label="A que cruces estas abierto"
+        label="Que tipo de cruces te sirven"
         placeholder="Demos tempranas, cafes, notas, presentaciones"
         value={form.open_to}
         onChange={(value) => setForm((current) => ({ ...current, open_to: value }))}
       />
       <Field
-        label="Disponibilidad para hacer escala"
+        label="Disponibilidad"
         placeholder="Viernes por la tarde o mañanas de la semana"
         value={form.availability}
         onChange={(value) => setForm((current) => ({ ...current, availability: value }))}
@@ -140,7 +140,7 @@ export function OnboardingForm() {
         type="submit"
       >
         <BadgeCheck size={18} />
-        {loading ? "Sellando..." : "Sellar Paisaporte"}
+        {loading ? "Creando..." : "Crear Paisaporte"}
       </button>
 
       {error ? <p className="text-sm text-signal-dark">{error}</p> : null}

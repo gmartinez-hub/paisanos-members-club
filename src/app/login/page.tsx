@@ -19,8 +19,8 @@ export default function LoginPage() {
             </p>
             <h1 className="text-3xl font-semibold sm:text-5xl">Abrir Paisaporte</h1>
             <p className="mt-4 text-base leading-7 text-ink-muted">
-              Tu bitacora vive dentro de Paisanos. Entra con magic link o con la clave QA
-              para revisar la experiencia completa.
+              Tu acceso privado a eventos, miembros, propuestas y cruces de Paisanos.
+              Entra con magic link o con clave QA/staff para revisar la experiencia completa.
             </p>
           </div>
 

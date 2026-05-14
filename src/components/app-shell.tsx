@@ -31,7 +31,7 @@ export function AppShell({
                 Paisanos
               </span>
               <span className="block font-sans text-sm font-black text-foreground">
-                Bitacora
+                Paisaporte
               </span>
             </span>
           </Link>

@@ -13,17 +13,17 @@ import {
 } from "lucide-react";
 
 const memberNavItems = [
-  { href: "/club", label: "Bitacora", code: "BIT" },
+  { href: "/club", label: "Inicio", code: "INI" },
   { href: "/passport", label: "Paisaporte", code: "PAS" },
-  { href: "/events", label: "Escalas", code: "ESC" },
-  { href: "/directory", label: "Mapa", code: "MAP" },
-  { href: "/feedback", label: "Notas", code: "NOT" },
-  { href: "/opportunities", label: "Radar", code: "RAD" },
+  { href: "/events", label: "Eventos", code: "ESC" },
+  { href: "/directory", label: "Miembros", code: "MAP" },
+  { href: "/opportunities", label: "Propuestas", code: "RAD" },
+  { href: "/feedback", label: "Feedback", code: "NOT" },
 ];
 
 const adminNavItems: Array<{ code: string; href: string; icon: LucideIcon; label: string }> = [
   { href: "/admin", label: "Panel", code: "OPS", icon: TowerControl },
-  { href: "/admin/members", label: "Miembros", code: "MEM", icon: BadgeCheck },
+  { href: "/admin/members", label: "Personas", code: "PER", icon: BadgeCheck },
   { href: "/admin/events", label: "Eventos", code: "EVT", icon: TicketsPlane },
   { href: "/admin/check-in", label: "Check-in", code: "CHK", icon: ScanLine },
   { href: "/admin/waitlist", label: "Accesos", code: "ACC", icon: UserPlus },
@@ -79,7 +79,7 @@ export function AdminNav() {
   return (
     <nav className="min-h-0 flex-1 overflow-y-auto p-3" aria-label="Navegacion de administracion">
       <p className="mb-2 px-2 font-mono text-[8px] font-medium uppercase tracking-[0.22em] text-ink-muted">
-        Operacion
+        Torre de Control
       </p>
       <div className="grid gap-0.5">
         {adminNavItems.map((item) => {

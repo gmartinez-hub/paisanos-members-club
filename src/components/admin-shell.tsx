@@ -47,7 +47,7 @@ export function AdminShell({
                   <span className="block font-mono text-[9px] font-medium uppercase tracking-[0.2em] text-ink-muted">
                     Paisanos
                   </span>
-                  <span className="block font-sans text-sm font-black text-foreground">Admin</span>
+                  <span className="block font-sans text-sm font-black text-foreground">Torre de Control</span>
                 </span>
               </Link>
             </div>
@@ -61,7 +61,7 @@ export function AdminShell({
                 href="/club"
                 className="block rounded-sm border border-line px-3 py-2.5 text-center font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-ink-muted transition-colors hover:border-runway hover:bg-runway hover:text-stamp focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stamp"
               >
-                Ver app miembro
+                Ver Paisaporte
               </Link>
             </div>
           </div>

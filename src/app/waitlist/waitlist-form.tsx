@@ -33,14 +33,14 @@ export function WaitlistForm() {
 
     setStatus("sent");
     setForm(initialForm);
-    setMessage("Listo. Tu solicitud quedo en la bitacora para revision del equipo.");
+    setMessage("Listo. Tu solicitud quedo pendiente de revision del equipo.");
   }
 
   return (
     <form className="grid gap-4" onSubmit={handleSubmit}>
       <div className="grid gap-4 sm:grid-cols-2">
         <Field
-          label="Nombre en bitacora"
+          label="Nombre"
           value={form.full_name}
           onChange={(value) => setForm((current) => ({ ...current, full_name: value }))}
           placeholder="Tu nombre"
@@ -62,7 +62,7 @@ export function WaitlistForm() {
       />
 
       <label className="grid gap-2 text-sm font-semibold text-runway">
-        Por que queres abrir Paisaporte
+        Por que queres acceder
         <textarea
           className="min-h-32 resize-none rounded-sm border border-line bg-paper px-3 py-3 text-foreground outline-none transition focus:border-runway"
           maxLength={300}
@@ -82,7 +82,7 @@ export function WaitlistForm() {
         type="submit"
       >
         <Send size={18} />
-        {status === "loading" ? "Guardando..." : "Pedir sello"}
+        {status === "loading" ? "Guardando..." : "Pedir acceso"}
       </button>
 
       {message ? (

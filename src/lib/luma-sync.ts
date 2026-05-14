@@ -24,7 +24,7 @@ export async function syncLumaGuestsForEvent(eventId: string): Promise<SyncResul
   }
 
   if (!event?.luma_event_id) {
-    throw new Error("Esta escala no tiene luma_event_id.");
+    throw new Error("Este evento no tiene luma_event_id.");
   }
 
   const guests = await getLumaGuests(event.luma_event_id as string);

@@ -24,8 +24,8 @@ export default async function AdminMembersPage({
 
   return (
     <AdminShell
-      eyebrow="Miembros"
-      title="Miembros"
+      eyebrow="Admin / personas"
+      title="Personas"
       actions={
         <AdminPrimaryLink href="/admin/waitlist">
           <UserPlus size={17} />
@@ -34,7 +34,7 @@ export default async function AdminMembersPage({
       }
     >
       <div className="grid gap-4 md:grid-cols-3">
-        <AdminMetricTile label="Paisaportes" value={`${allMembers.length}`} caption="Activos reales" />
+        <AdminMetricTile label="Paisaportes" value={`${allMembers.length}`} caption="Miembros activos" />
         <AdminMetricTile label="Accesos" value="-" caption="Desde solicitudes" />
         <AdminMetricTile label="Habilidades" value={`${new Set(members.flatMap((member) => member.skills)).size}`} caption="Tags distintos" />
       </div>
@@ -49,17 +49,17 @@ export default async function AdminMembersPage({
             defaultValue={params?.q ?? ""}
             id="admin-member-search"
             name="q"
-            placeholder="Buscar miembro..."
+            placeholder="Buscar persona..."
           />
         </form>
       </AdminPanel>
 
       <AdminPanel className="overflow-hidden">
         <div className="grid border-b border-a-line bg-parch px-4 py-3 text-xs font-bold uppercase tracking-[0.16em] text-a-ink/55 md:grid-cols-[1.2fr_1fr_0.6fr_1fr]">
-          <span>Miembro</span>
+          <span>Persona</span>
           <span>Foco</span>
           <span>Eventos</span>
-          <span>Ultima senal</span>
+          <span>Ultima actividad</span>
         </div>
         {members.length ? (
           members.map((member) => (
@@ -81,7 +81,7 @@ export default async function AdminMembersPage({
         ) : (
           <div className="grid place-items-center px-4 py-10 text-center text-a-ink/65">
             <BadgeCheck className="mb-3" size={20} />
-            <p className="text-sm font-semibold">No hay miembros para esta busqueda.</p>
+            <p className="text-sm font-semibold">No hay personas para esta busqueda.</p>
           </div>
         )}
       </AdminPanel>

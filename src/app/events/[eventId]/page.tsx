@@ -27,7 +27,7 @@ export default async function EventDetailPage({
 
   return (
     <AppShell
-      eyebrow="Escala Paisanos"
+      eyebrow="Evento / escala"
       isAdmin={profile.is_admin}
       title={event.title}
       actions={
@@ -36,7 +36,7 @@ export default async function EventDetailPage({
             event.lumaUrl ? (
               <PrimaryLink href={event.lumaUrl} target="_blank">
                 <ExternalLink size={17} />
-                Reservar en Luma
+                Registrarme en Luma
               </PrimaryLink>
             ) : null
           ) : (
@@ -44,23 +44,23 @@ export default async function EventDetailPage({
               <input name="event_id" type="hidden" value={event.id} />
               <PrimaryButton>
                 <QrCode size={17} />
-                {hasNativeRsvp ? "Soltar asiento" : event.isFull ? "Entrar en espera" : "Confirmar asiento"}
+                {hasNativeRsvp ? "Cancelar asistencia" : event.isFull ? "Entrar en espera" : "Confirmar asistencia"}
               </PrimaryButton>
             </form>
           )}
           {profile.is_admin && !event.usesLumaCheckIn ? (
             <SecondaryLink href="/admin/check-in">
               <ScanLine size={17} />
-              Abrir puerta
+              Abrir check-in
             </SecondaryLink>
           ) : null}
         </div>
       }
     >
       <div className="grid gap-4 md:grid-cols-4">
-        <MetricTile icon={UsersRound} label="Asientos" value={`${event.confirmed}`} caption={`Capacidad ${event.capacity}`} />
-        <MetricTile icon={CheckCircle2} label="Sellos" value={`${event.checkedIn}`} caption="Entrada registrada" />
-        <MetricTile icon={QrCode} label="Puerta" value={event.point} caption="Token de escala" />
+        <MetricTile icon={UsersRound} label="Confirmados" value={`${event.confirmed}`} caption={`Capacidad ${event.capacity}`} />
+        <MetricTile icon={CheckCircle2} label="Entradas" value={`${event.checkedIn}`} caption="Check-in registrado" />
+        <MetricTile icon={QrCode} label="Check-in" value={event.point} caption="Punto del evento" />
         <MetricTile icon={ScanLine} label="Espera" value={`${event.waitlisted}`} caption={isWaitlisted ? "En espera" : "Lista activa"} />
       </div>
 
@@ -79,7 +79,7 @@ export default async function EventDetailPage({
           </div>
         </div>
         <div className="rounded-sm bg-foreground p-5 text-paper">
-          <p className="text-xs font-black uppercase tracking-[0.2em] text-stamp">Puerta</p>
+          <p className="text-xs font-black uppercase tracking-[0.2em] text-stamp">Check-in</p>
           <p className="mt-3 text-5xl font-black">{event.point}</p>
           <p className="mt-6 text-sm leading-6 text-paper/70">{event.location}</p>
         </div>
@@ -87,7 +87,7 @@ export default async function EventDetailPage({
 
       <div className="grid gap-8 xl:grid-cols-[1fr_1fr]">
         <section>
-          <h2 className="mb-4 text-3xl font-black">Quienes hacen escala</h2>
+          <h2 className="mb-4 text-3xl font-black">Asistentes</h2>
           <div className="grid gap-0 border-y-2 border-foreground">
             {attendees.length ? (
               attendees.map(({ member, checkedIn }) => (
@@ -102,24 +102,24 @@ export default async function EventDetailPage({
                     </span>
                   </span>
                   <span className="self-center text-sm font-black text-signal">
-                    {checkedIn ? "Entrada sellada" : "Asiento"}
+                    {checkedIn ? "Check-in listo" : "Confirmado"}
                   </span>
                 </div>
               ))
             ) : (
               <p className="py-5 text-sm leading-6 text-ink-muted">
-                Todavia no hay asientos confirmados. El primer paisano aparece aca.
+                Todavia no hay asistentes confirmados. El primer miembro aparece aca.
               </p>
             )}
           </div>
         </section>
 
         <section>
-          <h2 className="mb-4 text-3xl font-black">Despues de la escala</h2>
+          <h2 className="mb-4 text-3xl font-black">Despues del evento</h2>
           <div className="grid gap-4 border-y-2 border-foreground py-5">
-          <Info label="Continuidad" value="Dejar notas y registrar aprendizajes" />
-            <Info label="Paisaporte" value={event.usesLumaCheckIn ? "La bitacora se importa desde Luma" : "La entrada sellada suma historial real al Paisaporte"} />
-            <Info label="Operacion" value={event.usesLumaCheckIn ? "Registro y puerta se gestionan desde Luma" : "El equipo puede hacer check-in desde Admin"} />
+          <Info label="Continuidad" value="Dejar notas, registrar cruces y pedir seguimiento" />
+            <Info label="Paisaporte" value={event.usesLumaCheckIn ? "El historial puede importarse desde Luma" : "La entrada registrada suma historial real al Paisaporte"} />
+            <Info label="Operacion" value={event.usesLumaCheckIn ? "Registro y check-in se gestionan desde Luma" : "El equipo puede hacer check-in desde Admin"} />
           </div>
         </section>
       </div>
