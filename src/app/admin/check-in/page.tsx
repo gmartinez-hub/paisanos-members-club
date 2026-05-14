@@ -25,8 +25,8 @@ export default async function AdminCheckInPage({
 
   return (
     <AdminShell
-      eyebrow="Puerta de embarque"
-      title="Sellar entradas"
+      eyebrow="Check-in"
+      title="Entradas"
     >
       {event ? (
         <>
@@ -43,7 +43,7 @@ export default async function AdminCheckInPage({
                 </p>
               </div>
               <div className="rounded-sm bg-a-ink p-4 text-parch">
-                <p className="text-xs font-black uppercase tracking-[0.18em] text-stamp">Puerta</p>
+                <p className="text-xs font-black uppercase tracking-[0.18em] text-stamp">Punto</p>
                 <p className="mt-2 text-4xl font-black">{event.point}</p>
               </div>
             </div>
@@ -53,7 +53,7 @@ export default async function AdminCheckInPage({
             <section className="border-b border-a-line pb-5">
               <div className="grid gap-3 rounded-sm border border-a-line bg-parch-2 p-4 md:grid-cols-[1fr_auto]">
                 <p className="text-sm leading-6 text-a-ink/70">
-                  Esta escala usa Luma como puerta. Paisanos queda como capa de identidad y bitacora importada.
+                  Este evento usa Luma para registro y check-in. Paisanos mantiene identidad y bitacora importada.
                 </p>
                 {event.lumaUrl ? (
                   <AdminSecondaryLink href={event.lumaUrl} target="_blank">
@@ -112,7 +112,7 @@ export default async function AdminCheckInPage({
                 ))
               ) : (
                 <p className="py-5 text-sm leading-6 text-a-ink/65">
-                  Todavia no hay asientos para esta escala. Cuando alguien confirme, aparece aca para sellar entrada.
+                  Todavia no hay confirmados para este evento. Cuando alguien confirme, aparece aca para hacer check-in.
                 </p>
               )}
             </section>
@@ -120,9 +120,9 @@ export default async function AdminCheckInPage({
         </>
       ) : (
         <section className="border-t border-a-line pt-5">
-          <h2 className="text-2xl font-black">No hay escalas creadas</h2>
+          <h2 className="text-2xl font-black">No hay eventos creados</h2>
           <p className="mt-2 text-sm leading-6 text-ink-muted">
-            Crea una escala desde Gestion de escalas para abrir puerta.
+            Crea un evento desde Gestion de eventos para abrir check-in.
           </p>
         </section>
       )}

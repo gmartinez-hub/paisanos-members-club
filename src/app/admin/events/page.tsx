@@ -18,8 +18,8 @@ export default async function AdminEventsPage() {
 
   return (
     <AdminShell
-      eyebrow="Operacion"
-      title="Gestion de escalas"
+      eyebrow="Eventos"
+      title="Gestion de eventos"
     >
       <div className="grid min-w-0 gap-5 xl:grid-cols-[minmax(0,1fr)_430px]">
         <section className="grid gap-4">
@@ -31,8 +31,8 @@ export default async function AdminEventsPage() {
 
           <div className="flex items-end justify-between gap-4 border-t border-a-line pt-5">
             <div>
-              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-a-och-t">Tablero de torre</p>
-              <h2 className="mt-1 text-3xl font-black text-a-ink">Escalas cargadas</h2>
+              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-a-och-t">Listado</p>
+              <h2 className="mt-1 text-3xl font-black text-a-ink">Eventos cargados</h2>
             </div>
             <AdminStatusBadge>{events.length} total</AdminStatusBadge>
           </div>
@@ -85,11 +85,11 @@ export default async function AdminEventsPage() {
         <AdminPanel className="p-5">
           <p className="flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.18em] text-a-och-t">
             <TicketsPlane size={15} />
-            Nueva escala
+            Nuevo evento
           </p>
-          <h2 className="mt-1 text-balance text-3xl font-black text-a-ink">Crear escala</h2>
+          <h2 className="mt-1 text-balance text-3xl font-black text-a-ink">Crear evento</h2>
           <form action={createEvent} className="mt-5 grid gap-4">
-            <Field label="Nombre de la escala" name="title" placeholder="Founders Night…" />
+            <Field label="Nombre del evento" name="title" placeholder="Founders Night…" />
             <Field label="Nota breve" name="subtitle" placeholder="Mesa chica para builders…" />
             <label className="grid gap-2 text-sm font-black text-foreground">
               Origen del registro
@@ -116,7 +116,7 @@ export default async function AdminEventsPage() {
               </select>
             </label>
             <label className="grid gap-2 text-sm font-black text-foreground">
-              Bitacora de la escala
+              Bitacora del evento
               <textarea
                 className={`${adminControlClass} min-h-28 resize-none`}
                 name="description"
@@ -125,7 +125,7 @@ export default async function AdminEventsPage() {
             </label>
             <AdminPrimaryButton>
               <Save size={17} />
-              Guardar escala
+              Guardar evento
             </AdminPrimaryButton>
           </form>
         </AdminPanel>

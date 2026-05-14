@@ -36,7 +36,7 @@ export default async function EventsPage() {
           <div className="py-6">
             <h2 className="text-2xl font-black">Todavia no hay escalas publicadas</h2>
             <p className="mt-2 text-sm leading-6 text-ink-muted">
-              Cuando la torre publique una, vas a poder confirmar asiento desde aca.
+              Cuando el equipo publique una, vas a poder confirmar asiento desde aca.
             </p>
           </div>
         )}

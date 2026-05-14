@@ -33,7 +33,7 @@ export function WaitlistForm() {
 
     setStatus("sent");
     setForm(initialForm);
-    setMessage("Listo. Tu solicitud quedo en la bitacora para revision de la torre.");
+    setMessage("Listo. Tu solicitud quedo en la bitacora para revision del equipo.");
   }
 
   return (

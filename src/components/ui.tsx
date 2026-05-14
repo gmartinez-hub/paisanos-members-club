@@ -27,13 +27,13 @@ export function MetricTile({
   );
 }
 
-/* ── Admin metric tile — Argentine pastel palette ── */
+/* ── Admin metric tile — operations console ── */
 const ADMIN_TILE_COLORS = {
-  och: "bg-a-och text-a-och-t border-a-och-t/15",
-  cel: "bg-a-cel text-a-cel-t border-a-cel-t/15",
-  sag: "bg-a-sag text-a-sag-t border-a-sag-t/15",
-  mal: "bg-a-mal text-a-mal-t border-a-mal-t/15",
-  ter: "bg-a-ter text-a-ter-t border-a-ter-t/15",
+  och: "text-a-och-t",
+  cel: "text-a-cel-t",
+  sag: "text-a-sag-t",
+  mal: "text-a-mal-t",
+  ter: "text-a-ter-t",
 } as const;
 
 export function AdminMetricTile({
@@ -48,13 +48,13 @@ export function AdminMetricTile({
   value: string;
 }) {
   return (
-    <div className={`rounded-sm border p-4 ${ADMIN_TILE_COLORS[color]}`}>
-      <p className="font-mono text-[8.5px] font-medium uppercase tracking-[0.16em] opacity-70">
+    <div className="rounded-sm border border-a-line bg-paper p-4 text-a-ink">
+      <p className={`font-mono text-[8.5px] font-medium uppercase tracking-[0.16em] ${ADMIN_TILE_COLORS[color]}`}>
         {label}
       </p>
       <p className="mt-2 font-sans text-3xl font-black leading-none tabular-nums">{value}</p>
       {caption ? (
-        <p className="mt-2 font-mono text-[9px] leading-snug opacity-70">{caption}</p>
+        <p className="mt-2 font-mono text-[9px] leading-snug text-a-ink/55">{caption}</p>
       ) : null}
     </div>
   );
@@ -198,7 +198,7 @@ export function AdminSecondaryLink({
 
 export function AdminStatusBadge({ children }: { children: React.ReactNode }) {
   return (
-    <span className="rounded-sm border border-a-line bg-a-och px-2 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.1em] text-a-och-t">
+    <span className="rounded-sm border border-a-line bg-paper px-2 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.1em] text-a-ink/70">
       {children}
     </span>
   );
@@ -212,7 +212,7 @@ export function AdminPanel({
   className?: string;
 }) {
   return (
-    <section className={`rounded-sm border border-a-line bg-parch-2 ${className}`}>
+    <section className={`rounded-sm border border-a-line bg-paper ${className}`}>
       {children}
     </section>
   );

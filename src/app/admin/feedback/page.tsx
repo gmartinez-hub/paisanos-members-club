@@ -11,12 +11,12 @@ export default async function AdminFeedbackPage() {
 
   return (
     <AdminShell
-      eyebrow="Lecturas de viaje"
+      eyebrow="Feedback"
       title="Notas abiertas"
     >
       <div className="grid gap-4 xl:grid-cols-[1fr_390px]">
         <AdminPanel className="p-5">
-          <h2 className="mb-4 text-xl font-semibold text-a-ink">Lecturas</h2>
+          <h2 className="mb-4 text-xl font-semibold text-a-ink">Procesos activos</h2>
           <div className="grid gap-3">
             {feedbackProcesses.length ? (
               feedbackProcesses.map((process) => (

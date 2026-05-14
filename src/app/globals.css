@@ -15,20 +15,20 @@
   --signal-dark:#802060;
   --sky:        #7ab8cc;
   --runway:     #0c1a26;
-  --parch:      #f0e6cc;
-  --parch-2:    #e2d4b0;
-  --a-ink:      #5c3e20;
-  --a-line:     #c8aa70;
-  --a-och:      #f2d898;
-  --a-och-t:    #6a3c00;
-  --a-cel:      #cce4f0;
+  --parch:      #edf4f9;
+  --parch-2:    #f8f6f4;
+  --a-ink:      #0c1a26;
+  --a-line:     #b8d0e2;
+  --a-och:      #c8ec7c;
+  --a-och-t:    #3a6000;
+  --a-cel:      #dcecf5;
   --a-cel-t:    #1a4a64;
-  --a-sag:      #c8e4c0;
+  --a-sag:      #e5f5df;
   --a-sag-t:    #1e4820;
-  --a-mal:      #e8ccd4;
-  --a-mal-t:    #5a1828;
-  --a-ter:      #f0d0c0;
-  --a-ter-t:    #6a1808;
+  --a-mal:      #f8e3ec;
+  --a-mal-t:    #802060;
+  --a-ter:      #eef6fb;
+  --a-ter-t:    #0c1a26;
 }
 
 @theme inline {

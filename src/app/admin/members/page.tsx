@@ -24,8 +24,8 @@ export default async function AdminMembersPage({
 
   return (
     <AdminShell
-      eyebrow="Curaduria de ruta"
-      title="Paisaportes"
+      eyebrow="Miembros"
+      title="Miembros"
       actions={
         <AdminPrimaryLink href="/admin/waitlist">
           <UserPlus size={17} />
@@ -41,7 +41,7 @@ export default async function AdminMembersPage({
 
       <AdminPanel className="p-4">
         <form action="/admin/members" className="flex items-center gap-3 rounded-sm border border-a-line bg-parch px-3 py-3">
-          <label className="sr-only" htmlFor="admin-member-search">Buscar Paisaporte</label>
+          <label className="sr-only" htmlFor="admin-member-search">Buscar miembro</label>
           <Search className="text-a-ink/55" size={18} />
           <input
             autoComplete="off"
@@ -49,16 +49,16 @@ export default async function AdminMembersPage({
             defaultValue={params?.q ?? ""}
             id="admin-member-search"
             name="q"
-            placeholder="Buscar Paisaporte…"
+            placeholder="Buscar miembro..."
           />
         </form>
       </AdminPanel>
 
       <AdminPanel className="overflow-hidden">
         <div className="grid border-b border-a-line bg-parch px-4 py-3 text-xs font-bold uppercase tracking-[0.16em] text-a-ink/55 md:grid-cols-[1.2fr_1fr_0.6fr_1fr]">
-          <span>Paisano</span>
-          <span>Tramo</span>
-          <span>Escalas</span>
+          <span>Miembro</span>
+          <span>Foco</span>
+          <span>Eventos</span>
           <span>Ultima senal</span>
         </div>
         {members.length ? (
@@ -81,7 +81,7 @@ export default async function AdminMembersPage({
         ) : (
           <div className="grid place-items-center px-4 py-10 text-center text-a-ink/65">
             <BadgeCheck className="mb-3" size={20} />
-            <p className="text-sm font-semibold">No hay Paisaportes para esta busqueda.</p>
+            <p className="text-sm font-semibold">No hay miembros para esta busqueda.</p>
           </div>
         )}
       </AdminPanel>

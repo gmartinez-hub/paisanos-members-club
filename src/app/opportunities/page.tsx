@@ -86,7 +86,7 @@ export default async function OpportunitiesPage() {
           <Panel className="p-5 lg:col-span-3">
             <h2 className="text-2xl font-black">Todavia no hay senales aprobadas</h2>
             <p className="mt-2 text-sm leading-6 text-ink-muted">
-              Cuando un paisano proponga una beta, recurso o escala y la torre lo apruebe, aparece aca.
+              Cuando un paisano proponga una beta, recurso o escala y el equipo lo apruebe, aparece aca.
             </p>
           </Panel>
         )}

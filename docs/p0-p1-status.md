@@ -1,6 +1,6 @@
 # P0 / P1 Status
 
-Actualizado: 2026-05-11.
+Actualizado: 2026-05-14.
 
 ## P0 - Done en codigo
 
@@ -8,20 +8,20 @@ Actualizado: 2026-05-11.
 2. Home de miembro redisenada como app operativa, no como presentacion.
 3. Paisaporte visual con lenguaje boarding pass, MRZ, perforacion y datos reales.
 4. Eventos publicados con RSVP/check-in nativo cuando `source = paisanos`.
-5. Admin protegido para metricas, miembros, eventos, waitlist, feedback y check-in.
+5. Admin protegido y simplificado para metricas, miembros, eventos, accesos, feedback y check-in.
 6. Luma preparado como fuente externa por evento: URL, event id, sync status, snapshots, webhook y accion manual de sync.
 7. Login con magic link controlado por backend y opcion email/password para QA/staff.
 8. Seed QA reproducible con usuarios admin, miembros, onboarding, eventos nativos y evento Luma simulado.
 9. Variables esperadas documentadas para Vercel/local.
-10. Visual ajustada hacia Paisanos + aviacion: menos British Airways literal, mas herramienta sobria con papel, celeste, lima, rosa y bordes documentales.
+10. Visual ajustada hacia Paisanos + aviacion: menos British Airways literal, mas herramienta sobria con papel, celeste, lima, rosa, bordes documentales y admin operativo.
 
 ## P0 - Bloqueado fuera del codigo
 
-1. Aplicar SQL final en Supabase o confirmar que la integracion GitHub de Supabase aplica migrations al merge.
-2. Cargar valores reales en Vercel: las variables existen, pero `vercel env pull` las trajo vacias.
-3. Agregar `SUPABASE_SERVICE_ROLE_KEY` real en `.env.local` para correr `npm run seed:qa`.
-4. Configurar Supabase Auth URLs y branding de magic link.
-5. Correr `npm run seed:qa` y validar login por usuario QA.
+1. Confirmar que el SQL final de P0 quedo aplicado en Supabase.
+2. Reemplazar `SUPABASE_SERVICE_ROLE_KEY` local/Vercel por una key valida del proyecto. El seed QA hoy falla con `Invalid API key`.
+3. Correr `npm run seed:qa` y validar login por usuario QA.
+4. Configurar o validar Supabase Auth URLs y branding de magic link.
+5. Pushear el commit local a GitHub para alinear repo, GitHub Desktop y deploys automaticos de Vercel.
 
 ## P1 - Siguiente
 

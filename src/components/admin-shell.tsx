@@ -29,25 +29,25 @@ export function AdminShell({
   title: string;
 }) {
   return (
-    <main className="coord-grid min-h-[100dvh] overflow-x-hidden bg-parch text-foreground">
+    <main className="route-grid min-h-[100dvh] overflow-x-hidden bg-background text-foreground">
       <div className="mx-auto grid w-full max-w-[1480px] gap-4 px-4 py-4 lg:grid-cols-[230px_minmax(0,1fr)]">
 
         {/* ── SIDEBAR ── */}
         <aside className="lg:sticky lg:top-4 lg:h-[calc(100dvh-32px)]">
-          <div className="ticket-edge-parch relative flex h-full min-h-0 flex-col justify-between overflow-hidden rounded-sm border border-a-line bg-parch-2">
+          <div className="relative flex h-full min-h-0 flex-col justify-between overflow-hidden rounded-sm border border-line bg-paper">
 
             {/* Brand header */}
-            <div className="relative border-b border-a-line p-5">
-              <RunwayMark className="absolute right-4 top-4 h-10 w-10 text-a-ink opacity-25" />
+            <div className="relative border-b border-line p-5">
+              <RunwayMark className="absolute right-4 top-4 h-10 w-10 text-runway opacity-20" />
               <Link className="flex items-center gap-3" href="/admin">
-                <span className="grid h-10 w-10 flex-shrink-0 place-items-center rounded-sm border-2 border-a-ink bg-a-ink font-mono text-sm font-black text-parch">
+                <span className="grid h-10 w-10 flex-shrink-0 place-items-center rounded-sm bg-runway font-mono text-sm font-black text-stamp">
                   P
                 </span>
                 <span>
-                  <span className="block font-mono text-[9px] font-medium uppercase tracking-[0.2em] text-a-ink opacity-60">
+                  <span className="block font-mono text-[9px] font-medium uppercase tracking-[0.2em] text-ink-muted">
                     Paisanos
                   </span>
-                  <span className="block font-sans text-sm font-black text-a-ink">Torre AEP</span>
+                  <span className="block font-sans text-sm font-black text-foreground">Admin</span>
                 </span>
               </Link>
             </div>
@@ -56,12 +56,12 @@ export function AdminShell({
             <AdminNav />
 
             {/* Footer */}
-            <div className="border-t border-a-line p-4">
+            <div className="border-t border-line p-4">
               <Link
                 href="/club"
-                className="block rounded-sm border border-a-ink/30 px-3 py-2.5 text-center font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-a-ink transition-colors hover:bg-a-ink hover:text-parch focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-a-och-t"
+                className="block rounded-sm border border-line px-3 py-2.5 text-center font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-ink-muted transition-colors hover:border-runway hover:bg-runway hover:text-stamp focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stamp"
               >
-                Ver bitacora
+                Ver app miembro
               </Link>
             </div>
           </div>
@@ -69,12 +69,12 @@ export function AdminShell({
 
         {/* ── MAIN CONTENT ── */}
         <section className="grid min-w-0 gap-4">
-          <header className="flex flex-wrap items-end justify-between gap-4 border-b border-a-line pb-5">
+          <header className="flex flex-wrap items-end justify-between gap-4 border-b border-line pb-5">
             <div className="min-w-0">
-              <p className="font-mono text-[9px] font-medium uppercase tracking-[0.2em] text-a-och-t opacity-70">
+              <p className="font-mono text-[9px] font-medium uppercase tracking-[0.2em] text-signal-dark">
                 {eyebrow}
               </p>
-              <h1 className="mt-1 text-balance font-sans text-3xl font-black text-a-ink sm:text-5xl">
+              <h1 className="mt-1 text-balance font-sans text-3xl font-black text-foreground sm:text-5xl">
                 {title}
               </h1>
             </div>

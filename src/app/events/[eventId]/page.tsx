@@ -119,7 +119,7 @@ export default async function EventDetailPage({
           <div className="grid gap-4 border-y-2 border-foreground py-5">
           <Info label="Continuidad" value="Dejar notas y registrar aprendizajes" />
             <Info label="Paisaporte" value={event.usesLumaCheckIn ? "La bitacora se importa desde Luma" : "La entrada sellada suma historial real al Paisaporte"} />
-            <Info label="Operacion" value={event.usesLumaCheckIn ? "Registro y puerta se gestionan desde Luma" : "La torre puede sellar asistencia desde Puerta"} />
+            <Info label="Operacion" value={event.usesLumaCheckIn ? "Registro y puerta se gestionan desde Luma" : "El equipo puede hacer check-in desde Admin"} />
           </div>
         </section>
       </div>

@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { AdminShell } from "@/components/admin-shell";
 import {
+  AdminPanel,
   AdminMetricTile,
   AdminPrimaryLink,
   AdminSecondaryLink,
@@ -28,41 +29,41 @@ export default async function AdminPage() {
 
   return (
     <AdminShell
-      eyebrow="Torre Paisanos · Panel de operación"
-      title="Operación de la bitácora"
+      eyebrow="Admin Paisanos"
+      title="Panel operativo"
       actions={
         <div className="flex flex-wrap gap-2">
           <AdminPrimaryLink href="/admin/events">
             <PlaneTakeoff size={17} />
-            Crear escala · evento
+            Crear evento
           </AdminPrimaryLink>
           <AdminSecondaryLink href="/admin/check-in">
             <ScanLine size={17} />
-            Abrir puerta · check-in
+            Abrir check-in
           </AdminSecondaryLink>
         </div>
       }
     >
       <div className="grid gap-4 md:grid-cols-3 xl:grid-cols-5">
-        <AdminMetricTile color="cel" label="Paisaportes" value={`${members.length}`} caption="Miembros activos" />
-        <AdminMetricTile color="och" label="Escalas" value={`${events.length}`} caption="Eventos (incluye borradores)" />
+        <AdminMetricTile color="cel" label="Miembros" value={`${members.length}`} caption="Activos reales" />
+        <AdminMetricTile color="och" label="Eventos" value={`${events.length}`} caption="Incluye borradores" />
         <AdminMetricTile color="ter" label="Accesos" value={`${pendingWaitlist}`} caption="Whitelist pendiente" />
-        <AdminMetricTile color="mal" label="Notas" value={`${feedbackProcesses.length}`} caption="Procesos de feedback" />
-        <AdminMetricTile color="sag" label="Sellos" value={`${checkedIn}/${confirmed}`} caption="Check-ins / asientos confirmados" />
+        <AdminMetricTile color="mal" label="Feedback" value={`${feedbackProcesses.length}`} caption="Procesos abiertos" />
+        <AdminMetricTile color="sag" label="Check-in" value={`${checkedIn}/${confirmed}`} caption="Entradas / confirmados" />
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
         <section className="border-t border-a-line pt-5">
           <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
             <div>
-              <h2 className="text-3xl font-black text-a-ink">Operación de escalas</h2>
-              <p className="mt-1 font-mono text-[11px] text-a-ink/65">Próximos eventos · ordenados por fecha</p>
+              <h2 className="text-3xl font-black text-a-ink">Eventos próximos</h2>
+              <p className="mt-1 font-mono text-[11px] text-a-ink/65">Ordenados por fecha</p>
             </div>
             <AdminStatusBadge>Real</AdminStatusBadge>
           </div>
           <div className="grid gap-3">
             {events.map((event) => (
-              <article className="grid min-w-0 gap-3 rounded-sm border border-a-line bg-parch-2 p-4 md:grid-cols-[1fr_140px]" key={event.id}>
+              <AdminPanel className="grid min-w-0 gap-3 p-4 md:grid-cols-[1fr_140px]" key={event.id}>
                 <div>
                   <div className="mb-2 flex flex-wrap items-center gap-2">
                     <AdminStatusBadge>{event.status}</AdminStatusBadge>
@@ -76,13 +77,13 @@ export default async function AdminPage() {
                 </div>
                 <div className="text-left md:text-right">
                   <p className="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-a-ink/60">
-                    Asientos · cupo
+                    Asientos
                   </p>
                   <p className="mt-1 text-2xl font-black tabular-nums">
                     {event.confirmed}/{event.capacity}
                   </p>
                 </div>
-              </article>
+              </AdminPanel>
             ))}
           </div>
         </section>
@@ -91,14 +92,14 @@ export default async function AdminPage() {
           <div className="mb-4">
             <div className="flex items-center gap-2">
               <RadioTower className="text-a-och-t" size={20} />
-              <h2 className="text-3xl font-black text-a-ink">Atajos de torre</h2>
+              <h2 className="text-3xl font-black text-a-ink">Acciones rápidas</h2>
             </div>
-            <p className="mt-1 font-mono text-[11px] text-a-ink/65">Acciones rápidas de operación</p>
+            <p className="mt-1 font-mono text-[11px] text-a-ink/65">Tareas P0 del equipo</p>
           </div>
           <div className="grid gap-3">
-            <Action title="Revisar accesos · whitelist" copy={`${pendingWaitlist} solicitudes esperan revisión de la torre.`} href="/admin/waitlist" />
-            <Action title="Sellar entradas · check-in" copy="Asientos y entradas ya escriben en Supabase." href="/admin/check-in" />
-            <Action title="Cerrar notas de viaje · feedback" copy="Lecturas reales listas para conectar respuestas." href="/admin/feedback" />
+            <Action title="Revisar accesos" copy={`${pendingWaitlist} solicitudes esperan revisión.`} href="/admin/waitlist" />
+            <Action title="Abrir check-in" copy="Confirmaciones y entradas ya escriben en Supabase." href="/admin/check-in" />
+            <Action title="Revisar feedback" copy="Lecturas reales listas para conectar respuestas." href="/admin/feedback" />
           </div>
         </section>
       </div>

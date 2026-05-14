@@ -19,7 +19,7 @@ export default function WaitlistPage() {
             </p>
             <h1 className="text-3xl font-semibold sm:text-5xl">Pedir sello de entrada</h1>
             <p className="mt-4 text-base leading-7 text-ink-muted">
-              Dejanos tus coordenadas. La torre revisa cada solicitud antes de abrir un Paisaporte.
+              Dejanos tus datos. El equipo revisa cada solicitud antes de abrir un Paisaporte.
             </p>
           </div>
 

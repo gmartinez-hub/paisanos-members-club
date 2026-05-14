@@ -48,7 +48,7 @@ export function AppShell({
               <span aria-hidden="true" className="grid h-5 min-w-7 place-items-center rounded-sm border border-line px-1 text-[8px]">
                 IJ
               </span>
-              Torre
+              Admin
             </Link>
           ) : null}
         </div>

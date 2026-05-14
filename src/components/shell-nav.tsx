@@ -22,12 +22,12 @@ const memberNavItems = [
 ];
 
 const adminNavItems: Array<{ code: string; href: string; icon: LucideIcon; label: string }> = [
-  { href: "/admin", label: "Torre", code: "OPS", icon: TowerControl },
-  { href: "/admin/members", label: "Paisaportes", code: "PAS", icon: BadgeCheck },
-  { href: "/admin/events", label: "Escalas", code: "ESC", icon: TicketsPlane },
-  { href: "/admin/check-in", label: "Puerta", code: "PUE", icon: ScanLine },
+  { href: "/admin", label: "Panel", code: "OPS", icon: TowerControl },
+  { href: "/admin/members", label: "Miembros", code: "MEM", icon: BadgeCheck },
+  { href: "/admin/events", label: "Eventos", code: "EVT", icon: TicketsPlane },
+  { href: "/admin/check-in", label: "Check-in", code: "CHK", icon: ScanLine },
   { href: "/admin/waitlist", label: "Accesos", code: "ACC", icon: UserPlus },
-  { href: "/admin/feedback", label: "Notas", code: "NOT", icon: ClipboardCheck },
+  { href: "/admin/feedback", label: "Feedback", code: "FDB", icon: ClipboardCheck },
 ];
 
 function isActive(pathname: string, href: string) {
@@ -78,8 +78,8 @@ export function AdminNav() {
 
   return (
     <nav className="min-h-0 flex-1 overflow-y-auto p-3" aria-label="Navegacion de administracion">
-      <p className="mb-2 px-2 font-mono text-[8px] font-medium uppercase tracking-[0.22em] text-a-ink opacity-40">
-        Terminal PMC
+      <p className="mb-2 px-2 font-mono text-[8px] font-medium uppercase tracking-[0.22em] text-ink-muted">
+        Operacion
       </p>
       <div className="grid gap-0.5">
         {adminNavItems.map((item) => {
@@ -93,8 +93,8 @@ export function AdminNav() {
               href={item.href}
               className={`grid grid-cols-[22px_minmax(0,1fr)_32px] items-center gap-2 rounded-sm px-3 py-2.5 font-mono text-[11px] font-medium transition-colors ${
                 active
-                  ? "bg-a-ink text-parch"
-                  : "text-a-ink hover:bg-a-och/45 hover:text-a-och-t"
+                  ? "bg-runway text-stamp"
+                  : "text-ink-muted hover:bg-background hover:text-foreground"
               }`}
             >
               <Icon aria-hidden="true" size={15} />
@@ -102,7 +102,7 @@ export function AdminNav() {
               <span
                 aria-hidden="true"
                 className={`grid h-5 min-w-8 place-items-center rounded-sm border px-1 text-[8px] uppercase tracking-[0.12em] ${
-                  active ? "border-parch/35 text-parch" : "border-a-line/70 opacity-70"
+                  active ? "border-stamp/35 text-stamp" : "border-line opacity-70"
                 }`}
               >
                 {item.code}
@@ -113,8 +113,8 @@ export function AdminNav() {
       </div>
 
       <div className="mt-6 px-2">
-        <p className="font-mono text-[8px] leading-5 tracking-[0.12em] text-a-ink opacity-25">
-          AEP → PMC<br />
+        <p className="font-mono text-[8px] leading-5 tracking-[0.12em] text-ink-muted">
+          AEP -&gt; PMC<br />
           Buenos Aires · ARG
         </p>
       </div>

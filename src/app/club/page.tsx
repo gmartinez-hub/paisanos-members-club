@@ -126,7 +126,7 @@ export default async function ClubPage() {
               </div>
             </article>
           ) : (
-            <EmptyBlock title="Todavia no hay escalas publicadas" copy="Cuando la torre publique una, aparece aca con asientos y asistentes reales." />
+            <EmptyBlock title="Todavia no hay escalas publicadas" copy="Cuando el equipo publique una, aparece aca con asientos y asistentes reales." />
           )}
 
           <div className="grid gap-5 lg:grid-cols-2">
@@ -171,7 +171,7 @@ export default async function ClubPage() {
                     </article>
                   ))
                 ) : (
-                  <EmptyBlock title="No hay senales aprobadas" copy="La torre puede revisar propuestas y publicarlas cuando tengan contexto suficiente." />
+                  <EmptyBlock title="No hay senales aprobadas" copy="El equipo puede revisar propuestas y publicarlas cuando tengan contexto suficiente." />
                 )}
               </div>
             </section>

@@ -121,7 +121,7 @@ export function LoginForm() {
           className="rounded-sm border border-line px-3 py-3 text-center text-sm font-black text-runway transition hover:bg-background"
           href="/demo?role=admin"
         >
-          Ver torre demo
+          Ver admin demo
         </Link>
       </div>
     </form>

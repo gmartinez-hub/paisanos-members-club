@@ -18,7 +18,7 @@ export default async function AdminWaitlistPage() {
   const requests = waitlist ?? [];
 
   return (
-    <AdminShell eyebrow="Solicitudes de abordaje" title="Accesos">
+    <AdminShell eyebrow="Solicitudes de acceso" title="Accesos">
       <div className="grid gap-4">
         {requests.length ? (
           requests.map((person) => (
@@ -40,18 +40,18 @@ export default async function AdminWaitlistPage() {
                         <input name="request_id" type="hidden" value={person.id} />
                         <AdminPrimaryButton>
                           <Check size={17} />
-                          Dar sello
+                          Aprobar acceso
                         </AdminPrimaryButton>
                       </form>
                       <AdminSecondaryLink href={`mailto:${person.email}?subject=Paisaporte Paisanos`}>
                         <ShieldCheck size={17} />
-                        Pedir coordenadas
+                        Pedir datos
                       </AdminSecondaryLink>
                       <form action={rejectWaitlistRequest}>
                         <input name="request_id" type="hidden" value={person.id} />
                         <button className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-sm border border-a-line px-4 font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-a-ink transition-colors hover:border-a-ink hover:bg-a-och/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-a-och-t">
                           <X size={17} />
-                          Dejar en espera
+                          Mantener en espera
                         </button>
                       </form>
                     </>
