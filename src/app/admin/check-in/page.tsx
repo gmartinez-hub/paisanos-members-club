@@ -1,6 +1,6 @@
-import { ExternalLink, Search, ShieldCheck } from "lucide-react";
+import { Camera, ExternalLink, Search, ShieldCheck } from "lucide-react";
 import { AdminShell } from "@/components/admin-shell";
-import { AdminPanel, AdminSecondaryLink, AdminStatusBadge } from "@/components/ui";
+import { AdminPanel, AdminPrimaryLink, AdminSecondaryLink, AdminStatusBadge } from "@/components/ui";
 import { checkInMember } from "@/lib/actions";
 import { getEventAttendees, getEvents, requireAdmin } from "@/lib/community";
 
@@ -27,6 +27,12 @@ export default async function AdminCheckInPage({
     <AdminShell
       eyebrow="Check-in"
       title="Entradas"
+      actions={
+        <AdminPrimaryLink href="/admin/check-in/scan">
+          <Camera size={17} />
+          Scanner
+        </AdminPrimaryLink>
+      }
     >
       {event ? (
         <>

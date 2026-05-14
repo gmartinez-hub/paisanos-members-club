@@ -222,49 +222,55 @@ export async function checkInMember(formData: FormData) {
   const eventId = requiredString(formData, "event_id");
   const userId = requiredString(formData, "user_id");
   const { supabase } = await requireAdmin();
-  const event = await getActionEvent(supabase, eventId);
+  await checkInUserForEvent(supabase, eventId, userId);
+}
 
-  if (!event) {
-    throw new Error("Escala no encontrada.");
+export async function checkInScannedPassport(formData: FormData): Promise<ActionResult> {
+  const eventId = requiredString(formData, "event_id");
+  const qrValue = requiredString(formData, "qr_value");
+  const { supabase } = await requireAdmin();
+  const scannedUserId = parsePassportQr(qrValue);
+
+  if (!scannedUserId) {
+    return {
+      error: "QR invalido. Escanea un Paisaporte o pega una URL /p/...",
+      ok: false,
+    };
   }
 
-  if (event.checkin_mode === "luma") {
-    throw new Error("Esta escala usa puerta en Luma.");
-  }
-
-  if (!["published", "active"].includes(event.status)) {
-    throw new Error("Esta escala no tiene puerta abierta.");
-  }
-
-  const { data: rsvp } = await supabase
-    .from("rsvps")
-    .select("status")
-    .eq("event_id", eventId)
-    .eq("user_id", userId)
-    .eq("status", "confirmed")
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("user_id,full_name")
+    .eq("user_id", scannedUserId)
+    .eq("is_active", true)
     .maybeSingle();
 
-  if (!rsvp) {
-    throw new Error("El Paisaporte necesita asiento confirmado para sellar entrada.");
+  if (profileError) {
+    return {
+      error: profileError.message,
+      ok: false,
+    };
   }
 
-  const { error } = await supabase.from("check_ins").upsert(
-    {
-      checked_in_at: new Date().toISOString(),
-      event_id: eventId,
-      method: "scanned_by_staff",
-      user_id: userId,
-    },
-    { onConflict: "event_id,user_id" },
-  );
-
-  if (error) {
-    throw new Error(error.message);
+  if (!profile) {
+    return {
+      error: "No encontramos un Paisaporte activo para ese QR.",
+      ok: false,
+    };
   }
 
-  revalidatePath("/admin");
-  revalidatePath("/admin/check-in");
-  revalidateEventPaths(eventId);
+  try {
+    await checkInUserForEvent(supabase, eventId, profile.user_id as string);
+  } catch (error) {
+    return {
+      error: error instanceof Error ? error.message : "No pudimos hacer check-in.",
+      ok: false,
+    };
+  }
+
+  return {
+    ok: true,
+  };
 }
 
 export async function createEvent(formData: FormData) {
@@ -440,6 +446,78 @@ async function getActionEvent(supabase: Awaited<ReturnType<typeof createClient>>
         status: "draft" | "published" | "active" | "closed";
       }
     | null;
+}
+
+async function checkInUserForEvent(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  eventId: string,
+  userId: string,
+) {
+  const event = await getActionEvent(supabase, eventId);
+
+  if (!event) {
+    throw new Error("Escala no encontrada.");
+  }
+
+  if (event.checkin_mode === "luma") {
+    throw new Error("Esta escala usa puerta en Luma.");
+  }
+
+  if (!["published", "active"].includes(event.status)) {
+    throw new Error("Esta escala no tiene puerta abierta.");
+  }
+
+  const { data: rsvp } = await supabase
+    .from("rsvps")
+    .select("status")
+    .eq("event_id", eventId)
+    .eq("user_id", userId)
+    .eq("status", "confirmed")
+    .maybeSingle();
+
+  if (!rsvp) {
+    throw new Error("El Paisaporte necesita asiento confirmado para sellar entrada.");
+  }
+
+  const { error } = await supabase.from("check_ins").upsert(
+    {
+      checked_in_at: new Date().toISOString(),
+      event_id: eventId,
+      method: "scanned_by_staff",
+      user_id: userId,
+    },
+    { onConflict: "event_id,user_id" },
+  );
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/admin");
+  revalidatePath("/admin/check-in");
+  revalidatePath("/admin/check-in/scan");
+  revalidateEventPaths(eventId);
+}
+
+function parsePassportQr(value: string) {
+  const cleaned = value.trim();
+  const path = pathFromQr(cleaned);
+  const segment = path.match(/\/p\/([^/?#]+)/)?.[1] ?? cleaned;
+  const decoded = decodeURIComponent(segment);
+
+  return isUuid(decoded) ? decoded : null;
+}
+
+function pathFromQr(value: string) {
+  try {
+    return new URL(value).pathname;
+  } catch {
+    return value;
+  }
+}
+
+function isUuid(value: string) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 }
 
 async function emailCanRequestAccess(

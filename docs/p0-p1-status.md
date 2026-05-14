@@ -16,6 +16,8 @@ Actualizado: 2026-05-14.
 10. Visual ajustada hacia Paisanos + aviacion: menos British Airways literal, mas herramienta sobria con papel, celeste, lima, rosa, bordes documentales y admin operativo.
 11. Supabase local validado con Admin API y seed QA aplicado.
 12. Vercel Production/Development sincronizado con variables P0 y redeploy de produccion listo.
+13. QR check-in admin implementado con scanner por camara y fallback manual.
+14. Credenciales PostHog cargadas en local y Vercel Production/Development; falta instrumentar eventos.
 
 ## P0 - Bloqueado fuera del codigo
 
@@ -23,6 +25,7 @@ Actualizado: 2026-05-14.
 2. Configurar o validar Supabase Auth URLs y branding de magic link.
 3. Autenticar GitHub CLI con `gh auth login` y `gh auth setup-git` para que Codex pueda pushear sin GitHub Desktop.
 4. Vercel Preview conserva variables antiguas para algunas keys; Production y Development ya quedaron sincronizados. Preview puede esperar si trabajamos directo en `main`.
+5. Probar QR scanner en dispositivo real con camara y permiso HTTPS.
 
 ## P1 - Siguiente
 
@@ -30,7 +33,7 @@ Actualizado: 2026-05-14.
 2. Mejorar directorio: filtros utiles, busqueda por intencion, disponibilidad y skills.
 3. Completar admin operativo: edicion de eventos, estados, aprobacion de propuestas y detalle de miembro.
 4. Feedback loops: formularios/respondientes reales y vista de resultados.
-5. PostHog: eventos clave de activacion, RSVP, check-in, directorio y contribuciones.
+5. PostHog: instrumentar eventos clave de activacion, RSVP, check-in, directorio y contribuciones.
 6. QA visual mobile/desktop con usuarios reales y ajustes finos de densidad.
 
 ## P2
