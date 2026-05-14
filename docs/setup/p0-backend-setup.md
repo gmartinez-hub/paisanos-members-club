@@ -2,6 +2,22 @@
 
 Checklist corto para dejar el backend P0 listo en produccion y local.
 
+## 0. Verify local config
+
+From the repo root:
+
+```bash
+npm run verify:p0
+```
+
+When Supabase keys look correct, run the online check:
+
+```bash
+npm run verify:p0 -- --online
+```
+
+The online check validates Supabase Auth Admin with `SUPABASE_SERVICE_ROLE_KEY` without writing data.
+
 ## 1. Apply Supabase SQL
 
 Open Supabase Dashboard, then:

@@ -59,10 +59,12 @@ Migraciones locales principales:
 ```bash
 npm run lint
 npm run build
+npm run verify:p0
 npm run seed:qa
 ```
 
 `npm run seed:qa` requiere `SUPABASE_SERVICE_ROLE_KEY` real en `.env.local`.
+`npm run verify:p0 -- --online` valida la Admin API de Supabase sin escribir datos.
 
 ## Producto
 
