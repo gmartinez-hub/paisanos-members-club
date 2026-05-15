@@ -153,6 +153,69 @@ export type FeedbackProcessView = {
   questions: string[];
 };
 
+export type PersonSubjectType = "profile" | "prospect" | "whitelist_request" | "luma_guest";
+
+export type ProspectRow = {
+  id: string;
+  full_name: string;
+  email: string | null;
+  company: string;
+  role: string;
+  context: string;
+  source: "manual" | "event" | "luma" | "referral" | "proposal";
+  status: "active" | "archived";
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type PersonTagRow = {
+  id: string;
+  subject_type: PersonSubjectType;
+  subject_id: string;
+  tag: string;
+  created_by: string | null;
+  created_at: string;
+};
+
+export type PersonNoteRow = {
+  id: string;
+  subject_type: PersonSubjectType;
+  subject_id: string;
+  body: string;
+  created_by: string | null;
+  created_at: string;
+};
+
+export type AdminPersonView = {
+  id: string;
+  subjectType: PersonSubjectType;
+  subjectId: string;
+  kind: "member" | "guest" | "prospect";
+  kindLabel: string;
+  name: string;
+  email?: string;
+  company: string;
+  role: string;
+  context: string;
+  sourceLabel: string;
+  statusLabel: string;
+  updatedAt: string;
+  href?: string;
+  tags: string[];
+  notes: Array<{
+    body: string;
+    createdAt: string;
+  }>;
+  latestNote?: string;
+};
+
+export type AdminPeopleResult = {
+  people: AdminPersonView[];
+  signalGraphReady: boolean;
+  setupMessage?: string;
+};
+
 export const requireMember = cache(async () => {
   const demoRole = getDemoRole(await cookies());
 
@@ -221,6 +284,172 @@ export async function getMembers(supabase: SupabaseServerClient) {
   const stats = await getMemberStats(supabase, profiles.map((profile) => profile.user_id));
 
   return profiles.map((profile) => profileToMember(profile, stats[profile.user_id]));
+}
+
+export async function getAdminPeople(supabase: SupabaseServerClient): Promise<AdminPeopleResult> {
+  if (isDemoSupabase(supabase)) {
+    const people = getDemoMembers().map((member) => ({
+      company: member.company,
+      context: member.focus,
+      email: member.email,
+      href: `/p/${member.userId}`,
+      id: member.id,
+      kind: "member" as const,
+      kindLabel: "Miembro",
+      latestNote: "Dato demo para revisar la vista.",
+      name: member.name,
+      notes: [{ body: "Dato demo para revisar la vista.", createdAt: new Date().toISOString() }],
+      role: member.role,
+      sourceLabel: "Paisaporte",
+      statusLabel: "Activo",
+      subjectId: member.id,
+      subjectType: "profile" as const,
+      tags: ["Alta senal"],
+      updatedAt: new Date().toISOString(),
+    }));
+
+    return { people, signalGraphReady: true };
+  }
+
+  const [
+    profilesResult,
+    prospectsResult,
+    waitlistResult,
+    lumaGuestsResult,
+    tagsResult,
+    notesResult,
+  ] = await Promise.all([
+    selectRows<ProfileRow>(
+      supabase
+        .from("profiles")
+        .select("*")
+        .eq("is_active", true)
+        .order("updated_at", { ascending: false }),
+    ),
+    selectRows<ProspectRow>(
+      supabase
+        .from("prospects")
+        .select("*")
+        .order("updated_at", { ascending: false }),
+    ),
+    selectRows<WaitlistRequestRow>(
+      supabase
+        .from("whitelist_requests")
+        .select("id,email,full_name,company,reason,status,created_at,reviewed_at")
+        .order("created_at", { ascending: false }),
+    ),
+    selectRows<LumaGuestPersonRow>(
+      supabase
+        .from("luma_guest_snapshots")
+        .select("id,email,full_name,approval_status,registered_at,checked_in_at,created_at,matched_user_id")
+        .order("created_at", { ascending: false })
+        .limit(100),
+    ),
+    selectRows<PersonTagRow>(
+      supabase
+        .from("person_tags")
+        .select("*")
+        .order("created_at", { ascending: false }),
+    ),
+    selectRows<PersonNoteRow>(
+      supabase
+        .from("person_notes")
+        .select("*")
+        .order("created_at", { ascending: false }),
+    ),
+  ]);
+
+  const signalGraphReady = prospectsResult.ready && tagsResult.ready && notesResult.ready;
+  const tagsBySubject = groupTags(tagsResult.rows);
+  const notesBySubject = groupNotes(notesResult.rows);
+  const activeProfileUserIds = new Set(profilesResult.rows.map((profile) => profile.user_id));
+
+  const members = profilesResult.rows.map((profile) =>
+    makeAdminPerson({
+      company: profile.company,
+      context: profile.focus || profile.building || profile.open_to || "Paisaporte activo",
+      email: profile.email ?? undefined,
+      href: `/p/${profile.user_id}`,
+      id: profile.id,
+      kind: "member",
+      kindLabel: "Miembro",
+      name: profile.full_name,
+      role: profile.role,
+      sourceLabel: "Paisaporte",
+      statusLabel: profile.is_admin ? "Admin" : "Activo",
+      subjectId: profile.id,
+      subjectType: "profile",
+      updatedAt: profile.updated_at,
+    }, tagsBySubject, notesBySubject),
+  );
+
+  const prospects = prospectsResult.rows.map((prospect) =>
+    makeAdminPerson({
+      company: prospect.company || "Sin organizacion",
+      context: prospect.context || "Sin contexto cargado",
+      email: prospect.email ?? undefined,
+      id: prospect.id,
+      kind: "prospect",
+      kindLabel: "Prospecto",
+      name: prospect.full_name,
+      role: prospect.role || "A mapear",
+      sourceLabel: prospectSourceLabel(prospect.source),
+      statusLabel: prospect.status === "active" ? "Activo" : "Archivado",
+      subjectId: prospect.id,
+      subjectType: "prospect",
+      updatedAt: prospect.updated_at,
+    }, tagsBySubject, notesBySubject),
+  );
+
+  const guestsFromWaitlist = waitlistResult.rows.map((request) =>
+    makeAdminPerson({
+      company: request.company || "Sin organizacion",
+      context: request.reason || "Solicitud de acceso",
+      email: request.email,
+      id: request.id,
+      kind: "guest",
+      kindLabel: "Invitado",
+      name: request.full_name,
+      role: "Solicitud de acceso",
+      sourceLabel: "Accesos",
+      statusLabel: accessStatusLabel(request.status),
+      subjectId: request.id,
+      subjectType: "whitelist_request",
+      updatedAt: request.reviewed_at ?? request.created_at,
+    }, tagsBySubject, notesBySubject),
+  );
+
+  const guestsFromLuma = lumaGuestsResult.rows
+    .filter((guest) => !guest.matched_user_id || !activeProfileUserIds.has(guest.matched_user_id))
+    .map((guest) =>
+      makeAdminPerson({
+        company: "Luma",
+        context: guest.checked_in_at ? "Check-in registrado en Luma" : "Registro externo",
+        email: guest.email ?? undefined,
+        id: guest.id,
+        kind: "guest",
+        kindLabel: "Invitado",
+        name: guest.full_name || guest.email || "Invitado Luma",
+        role: "Invitado de evento",
+        sourceLabel: "Luma",
+        statusLabel: lumaGuestStatusLabel(guest.approval_status),
+        subjectId: guest.id,
+        subjectType: "luma_guest",
+        updatedAt: guest.checked_in_at ?? guest.registered_at ?? guest.created_at,
+      }, tagsBySubject, notesBySubject),
+    );
+
+  const people = [...members, ...prospects, ...guestsFromWaitlist, ...guestsFromLuma].sort(
+    (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+  );
+
+  return {
+    people,
+    setupMessage: signalGraphReady
+      ? undefined
+      : "Falta aplicar docs/setup/apply-signal-graph-v0.sql para crear prospectos, tags y notas internas.",
+    signalGraphReady,
+  };
 }
 
 export async function getEvents(
@@ -342,6 +571,151 @@ export async function getFeedbackProcesses(supabase: SupabaseServerClient) {
       questions: normalizeQuestions(process.questions),
     };
   }) satisfies FeedbackProcessView[];
+}
+
+type WaitlistRequestRow = {
+  id: string;
+  email: string;
+  full_name: string;
+  company: string;
+  reason: string;
+  status: string;
+  created_at: string;
+  reviewed_at: string | null;
+};
+
+type LumaGuestPersonRow = {
+  id: string;
+  email: string | null;
+  full_name: string | null;
+  approval_status: string | null;
+  registered_at: string | null;
+  checked_in_at: string | null;
+  created_at: string;
+  matched_user_id: string | null;
+};
+
+type QueryError = {
+  code?: string;
+  details?: string;
+  message?: string;
+};
+
+type SelectRowsResult<T> = {
+  error?: string;
+  ready: boolean;
+  rows: T[];
+};
+
+type SelectRowsQuery = PromiseLike<{
+  data: unknown[] | null;
+  error: QueryError | null;
+}>;
+
+type AdminPersonBase = Omit<AdminPersonView, "latestNote" | "notes" | "tags">;
+
+async function selectRows<T>(query: SelectRowsQuery): Promise<SelectRowsResult<T>> {
+  const { data, error } = await query;
+
+  if (error) {
+    if (tableIsMissing(error)) {
+      return { error: error.message, ready: false, rows: [] };
+    }
+
+    return { error: error.message, ready: true, rows: [] };
+  }
+
+  return { ready: true, rows: (data ?? []) as T[] };
+}
+
+function tableIsMissing(error: QueryError) {
+  const message = `${error.code ?? ""} ${error.message ?? ""} ${error.details ?? ""}`.toLowerCase();
+
+  return (
+    message.includes("42p01") ||
+    message.includes("pgrst205") ||
+    message.includes("could not find the table") ||
+    message.includes("does not exist") ||
+    message.includes("schema cache")
+  );
+}
+
+function makeAdminPerson(
+  person: AdminPersonBase,
+  tagsBySubject: Map<string, string[]>,
+  notesBySubject: Map<string, PersonNoteRow[]>,
+): AdminPersonView {
+  const key = subjectKey(person.subjectType, person.subjectId);
+  const notes = (notesBySubject.get(key) ?? []).map((note) => ({
+    body: note.body,
+    createdAt: note.created_at,
+  }));
+
+  return {
+    ...person,
+    latestNote: notes[0]?.body,
+    notes,
+    tags: tagsBySubject.get(key) ?? [],
+  };
+}
+
+function groupTags(tags: PersonTagRow[]) {
+  const grouped = new Map<string, string[]>();
+
+  tags.forEach((tag) => {
+    const key = subjectKey(tag.subject_type, tag.subject_id);
+    grouped.set(key, [...(grouped.get(key) ?? []), tag.tag]);
+  });
+
+  return grouped;
+}
+
+function groupNotes(notes: PersonNoteRow[]) {
+  const grouped = new Map<string, PersonNoteRow[]>();
+
+  notes.forEach((note) => {
+    const key = subjectKey(note.subject_type, note.subject_id);
+    grouped.set(key, [...(grouped.get(key) ?? []), note]);
+  });
+
+  return grouped;
+}
+
+function subjectKey(type: PersonSubjectType, id: string) {
+  return `${type}:${id}`;
+}
+
+function prospectSourceLabel(source: ProspectRow["source"]) {
+  const labels: Record<ProspectRow["source"], string> = {
+    event: "Evento",
+    luma: "Luma",
+    manual: "Manual",
+    proposal: "Propuesta",
+    referral: "Referido",
+  };
+
+  return labels[source];
+}
+
+function accessStatusLabel(status: string) {
+  const labels: Record<string, string> = {
+    approved: "Aprobado",
+    pending: "Pendiente",
+    rejected: "No aprobado",
+  };
+
+  return labels[status] ?? status;
+}
+
+function lumaGuestStatusLabel(status: string | null) {
+  const labels: Record<string, string> = {
+    approved: "Aprobado",
+    checked_in: "Check-in",
+    registered: "Registrado",
+    waitlist: "Espera",
+  };
+
+  return labels[status ?? ""] ?? "Luma";
 }
 
 async function enrichEvents(

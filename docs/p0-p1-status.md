@@ -18,20 +18,22 @@ Actualizado: 2026-05-14.
 12. Vercel Production/Development sincronizado con variables P0 y redeploy de produccion listo.
 13. QR check-in admin implementado con scanner por camara y fallback manual.
 14. Credenciales PostHog cargadas en local y Vercel Production/Development; falta instrumentar eventos.
+15. Admin Personas evolucionado a Signal Graph v0: miembros, invitados/solicitudes, prospectos, tags internos y notas internas.
 
 ## P0 - Bloqueado fuera del codigo
 
 1. Confirmar que el SQL final de P0 quedo aplicado en Supabase.
-2. Configurar o validar Supabase Auth URLs y branding de magic link.
-3. Autenticar GitHub CLI con `gh auth login` y `gh auth setup-git` para que Codex pueda pushear sin GitHub Desktop.
-4. Vercel Preview conserva variables antiguas para algunas keys; Production y Development ya quedaron sincronizados. Preview puede esperar si trabajamos directo en `main`.
-5. Probar QR scanner en dispositivo real con camara y permiso HTTPS.
+2. Aplicar `docs/setup/apply-signal-graph-v0.sql` en Supabase para activar prospectos/tags/notas admin en produccion.
+3. Configurar o validar Supabase Auth URLs y branding de magic link.
+4. Autenticar GitHub CLI con `gh auth login` y `gh auth setup-git` para que Codex pueda pushear sin GitHub Desktop.
+5. Vercel Preview conserva variables antiguas para algunas keys; Production y Development ya quedaron sincronizados. Preview puede esperar si trabajamos directo en `main`.
+6. Probar QR scanner en dispositivo real con camara y permiso HTTPS.
 
 ## P1 - Siguiente
 
 1. Integrar Luma real: `LUMA_API_KEY`, `LUMA_WEBHOOK_SECRET`, endpoint webhook en Luma y prueba con evento real.
 2. Mejorar directorio: filtros utiles, busqueda por intencion, disponibilidad y skills.
-3. Completar admin operativo: edicion de eventos, estados, aprobacion de propuestas y detalle de miembro.
+3. Completar admin operativo: edicion de eventos, estados, aprobacion de propuestas y detalle profundo de persona.
 4. Feedback loops: formularios/respondientes reales y vista de resultados.
 5. PostHog: instrumentar eventos clave de activacion, RSVP, check-in, directorio y contribuciones.
 6. QA visual mobile/desktop con usuarios reales y ajustes finos de densidad.

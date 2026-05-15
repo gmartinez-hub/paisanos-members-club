@@ -38,7 +38,25 @@ This applies:
 - profile email mapping for access control
 - QA defaults without the old community copy
 
-## 2. Configure Supabase Auth URLs
+## 2. Apply Signal Graph SQL
+
+Open Supabase Dashboard, then:
+
+1. Go to `SQL Editor`.
+2. Create a new query.
+3. Paste the full contents of `docs/setup/apply-signal-graph-v0.sql`.
+4. Click `Run`.
+
+This adds the private admin layer for:
+
+- prospects
+- internal person tags
+- internal person notes
+- admin-only RLS and explicit Data API grants
+
+The app can still render before this SQL is applied, but creating prospectos/tags/notas will stay disabled.
+
+## 3. Configure Supabase Auth URLs
 
 Open Supabase Dashboard, then:
 
@@ -57,7 +75,7 @@ https://paisanos-members-club.vercel.app/auth/callback
 http://localhost:3000/auth/callback
 ```
 
-## 3. Add Server Secrets
+## 4. Add Server Secrets
 
 Open Supabase Dashboard, then:
 
@@ -90,7 +108,7 @@ SUPABASE_SERVICE_ROLE_KEY=...
 QA_SEED_PASSWORD=PaisanosQA2026!
 ```
 
-## 4. Configure Magic Link Branding
+## 5. Configure Magic Link Branding
 
 Open Supabase Dashboard, then:
 
@@ -105,7 +123,7 @@ Keep the link variable intact, usually:
 {{ .ConfirmationURL }}
 ```
 
-## 5. Seed QA Users
+## 6. Seed QA Users
 
 After the SQL is applied and `SUPABASE_SERVICE_ROLE_KEY` exists locally:
 

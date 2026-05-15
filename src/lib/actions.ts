@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { extractLumaEventId, isLumaApiConfigured } from "@/lib/luma";
 import { syncLumaGuestsForEvent } from "@/lib/luma-sync";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { requireAdmin, requireMember } from "@/lib/community";
+import { requireAdmin, requireMember, type PersonSubjectType } from "@/lib/community";
 
 type ActionResult = {
   error?: string;
@@ -188,6 +188,72 @@ export async function updateProfile(formData: FormData): Promise<ActionResult> {
   revalidatePath("/admin/members");
 
   return { ok: true };
+}
+
+export async function createProspect(formData: FormData) {
+  const { supabase, user } = await requireAdmin();
+  const fullName = requiredString(formData, "full_name");
+  const email = optionalEmail(formData, "email");
+  const source = prospectSourceValue(formData);
+
+  const { error } = await supabase.from("prospects").insert({
+    company: stringValue(formData, "company") || "A mapear",
+    context: stringValue(formData, "context") || "Cargado desde admin",
+    created_by: user.id,
+    email,
+    full_name: fullName,
+    role: stringValue(formData, "role") || "A mapear",
+    source,
+    status: "active",
+  });
+
+  if (error) {
+    throw new Error(signalGraphErrorMessage(error.message));
+  }
+
+  revalidateAdminPeoplePaths();
+}
+
+export async function addPersonTag(formData: FormData) {
+  const { supabase, user } = await requireAdmin();
+  const subject = personSubjectFromForm(formData);
+  const tag = requiredString(formData, "tag").slice(0, 80);
+
+  const { error } = await supabase.from("person_tags").insert({
+    created_by: user.id,
+    subject_id: subject.id,
+    subject_type: subject.type,
+    tag,
+  });
+
+  if (error && error.code !== "23505") {
+    throw new Error(signalGraphErrorMessage(error.message));
+  }
+
+  revalidateAdminPeoplePaths();
+}
+
+export async function addPersonNote(formData: FormData) {
+  const { supabase, user } = await requireAdmin();
+  const subject = personSubjectFromForm(formData);
+  const body = requiredString(formData, "body");
+
+  if (body.length > 1000) {
+    throw new Error("La nota puede tener hasta 1000 caracteres.");
+  }
+
+  const { error } = await supabase.from("person_notes").insert({
+    body,
+    created_by: user.id,
+    subject_id: subject.id,
+    subject_type: subject.type,
+  });
+
+  if (error) {
+    throw new Error(signalGraphErrorMessage(error.message));
+  }
+
+  revalidateAdminPeoplePaths();
 }
 
 export async function rsvpToEvent(formData: FormData) {
@@ -469,6 +535,11 @@ function revalidateEventPaths(eventId: string) {
   revalidatePath("/admin/check-in");
 }
 
+function revalidateAdminPeoplePaths() {
+  revalidatePath("/admin");
+  revalidatePath("/admin/members");
+}
+
 async function getActionEvent(supabase: Awaited<ReturnType<typeof createClient>>, eventId: string) {
   const { data, error } = await supabase
     .from("events")
@@ -561,6 +632,56 @@ function pathFromQr(value: string) {
 
 function isUuid(value: string) {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+}
+
+function personSubjectFromForm(formData: FormData): { id: string; type: PersonSubjectType } {
+  const type = stringValue(formData, "subject_type");
+  const id = requiredString(formData, "subject_id");
+
+  if (!["profile", "prospect", "whitelist_request", "luma_guest"].includes(type)) {
+    throw new Error("Tipo de persona invalido.");
+  }
+
+  return { id, type: type as PersonSubjectType };
+}
+
+function prospectSourceValue(formData: FormData) {
+  const source = stringValue(formData, "source");
+
+  if (["event", "luma", "manual", "proposal", "referral"].includes(source)) {
+    return source;
+  }
+
+  return "manual";
+}
+
+function optionalEmail(formData: FormData, key: string) {
+  const email = stringValue(formData, key).toLowerCase();
+
+  if (!email) {
+    return null;
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    throw new Error("Email invalido.");
+  }
+
+  return email;
+}
+
+function signalGraphErrorMessage(message: string) {
+  const normalized = message.toLowerCase();
+
+  if (
+    normalized.includes("prospects") ||
+    normalized.includes("person_tags") ||
+    normalized.includes("person_notes") ||
+    normalized.includes("schema cache")
+  ) {
+    return "Falta aplicar docs/setup/apply-signal-graph-v0.sql en Supabase.";
+  }
+
+  return message;
 }
 
 async function emailCanRequestAccess(
