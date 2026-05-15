@@ -200,7 +200,9 @@ export type AdminPersonView = {
   context: string;
   sourceLabel: string;
   statusLabel: string;
+  createdAt: string;
   updatedAt: string;
+  userId?: string;
   href?: string;
   tags: string[];
   notes: Array<{
@@ -214,6 +216,29 @@ export type AdminPeopleResult = {
   people: AdminPersonView[];
   signalGraphReady: boolean;
   setupMessage?: string;
+};
+
+export type AdminPersonActivityView = {
+  contributions: Array<{
+    createdAt: string;
+    id: string;
+    status: string;
+    title: string;
+    type: string;
+  }>;
+  events: Array<{
+    checkedIn: boolean;
+    date: string;
+    id: string;
+    rsvpStatus: string;
+    sourceLabel: string;
+    title: string;
+  }>;
+};
+
+export type AdminPersonDetailResult = AdminPeopleResult & {
+  activity: AdminPersonActivityView;
+  person: AdminPersonView | null;
 };
 
 export const requireMember = cache(async () => {
@@ -292,6 +317,7 @@ export async function getAdminPeople(supabase: SupabaseServerClient): Promise<Ad
       company: member.company,
       context: member.focus,
       email: member.email,
+      createdAt: new Date().toISOString(),
       href: `/p/${member.userId}`,
       id: member.id,
       kind: "member" as const,
@@ -306,6 +332,7 @@ export async function getAdminPeople(supabase: SupabaseServerClient): Promise<Ad
       subjectType: "profile" as const,
       tags: ["Alta senal"],
       updatedAt: new Date().toISOString(),
+      userId: member.userId,
     }));
 
     return { people, signalGraphReady: true };
@@ -368,6 +395,7 @@ export async function getAdminPeople(supabase: SupabaseServerClient): Promise<Ad
     makeAdminPerson({
       company: profile.company,
       context: profile.focus || profile.building || profile.open_to || "Paisaporte activo",
+      createdAt: profile.created_at,
       email: profile.email ?? undefined,
       href: `/p/${profile.user_id}`,
       id: profile.id,
@@ -380,6 +408,7 @@ export async function getAdminPeople(supabase: SupabaseServerClient): Promise<Ad
       subjectId: profile.id,
       subjectType: "profile",
       updatedAt: profile.updated_at,
+      userId: profile.user_id,
     }, tagsBySubject, notesBySubject),
   );
 
@@ -387,6 +416,7 @@ export async function getAdminPeople(supabase: SupabaseServerClient): Promise<Ad
     makeAdminPerson({
       company: prospect.company || "Sin organizacion",
       context: prospect.context || "Sin contexto cargado",
+      createdAt: prospect.created_at,
       email: prospect.email ?? undefined,
       id: prospect.id,
       kind: "prospect",
@@ -405,6 +435,7 @@ export async function getAdminPeople(supabase: SupabaseServerClient): Promise<Ad
     makeAdminPerson({
       company: request.company || "Sin organizacion",
       context: request.reason || "Solicitud de acceso",
+      createdAt: request.created_at,
       email: request.email,
       id: request.id,
       kind: "guest",
@@ -425,6 +456,7 @@ export async function getAdminPeople(supabase: SupabaseServerClient): Promise<Ad
       makeAdminPerson({
         company: "Luma",
         context: guest.checked_in_at ? "Check-in registrado en Luma" : "Registro externo",
+        createdAt: guest.created_at,
         email: guest.email ?? undefined,
         id: guest.id,
         kind: "guest",
@@ -436,6 +468,7 @@ export async function getAdminPeople(supabase: SupabaseServerClient): Promise<Ad
         subjectId: guest.id,
         subjectType: "luma_guest",
         updatedAt: guest.checked_in_at ?? guest.registered_at ?? guest.created_at,
+        userId: guest.matched_user_id ?? undefined,
       }, tagsBySubject, notesBySubject),
     );
 
@@ -449,6 +482,34 @@ export async function getAdminPeople(supabase: SupabaseServerClient): Promise<Ad
       ? undefined
       : "Falta aplicar docs/setup/apply-signal-graph-v0.sql para crear prospectos, tags y notas internas.",
     signalGraphReady,
+  };
+}
+
+export async function getAdminPersonDetail(
+  supabase: SupabaseServerClient,
+  subjectType: PersonSubjectType,
+  subjectId: string,
+): Promise<AdminPersonDetailResult> {
+  const peopleResult = await getAdminPeople(supabase);
+  const person =
+    peopleResult.people.find(
+      (item) => item.subjectType === subjectType && item.subjectId === subjectId,
+    ) ?? null;
+
+  if (!person) {
+    return {
+      ...peopleResult,
+      activity: { contributions: [], events: [] },
+      person: null,
+    };
+  }
+
+  const activity = await getAdminPersonActivity(supabase, person);
+
+  return {
+    ...peopleResult,
+    activity,
+    person,
   };
 }
 
@@ -595,6 +656,24 @@ type LumaGuestPersonRow = {
   matched_user_id: string | null;
 };
 
+type RsvpPersonRow = {
+  event_id: string;
+  status: string;
+};
+
+type CheckInPersonRow = {
+  checked_in_at: string;
+  event_id: string;
+};
+
+type ContributionPersonRow = {
+  created_at: string;
+  id: string;
+  status: string;
+  title: string;
+  type: string;
+};
+
 type QueryError = {
   code?: string;
   details?: string;
@@ -613,6 +692,93 @@ type SelectRowsQuery = PromiseLike<{
 }>;
 
 type AdminPersonBase = Omit<AdminPersonView, "latestNote" | "notes" | "tags">;
+
+async function getAdminPersonActivity(
+  supabase: SupabaseServerClient,
+  person: AdminPersonView,
+): Promise<AdminPersonActivityView> {
+  if (isDemoSupabase(supabase)) {
+    const events = getDemoEvents(person.userId).slice(0, 2).map((event, index) => ({
+      checkedIn: index === 0,
+      date: `${event.date} · ${event.time}`,
+      id: event.id,
+      rsvpStatus: index === 0 ? "confirmed" : "waitlist",
+      sourceLabel: event.sourceLabel,
+      title: event.title,
+    }));
+
+    return {
+      contributions: [
+        {
+          createdAt: new Date().toISOString(),
+          id: `contribution-${person.id}`,
+          status: "pending",
+          title: "Idea para validar en el proximo encuentro",
+          type: "proposal",
+        },
+      ],
+      events: person.kind === "member" ? events : [],
+    };
+  }
+
+  if (!person.userId) {
+    return { contributions: [], events: [] };
+  }
+
+  const [rsvpsResult, checkInsResult, contributionsResult, events] = await Promise.all([
+    selectRows<RsvpPersonRow>(
+      supabase
+        .from("rsvps")
+        .select("event_id,status")
+        .eq("user_id", person.userId),
+    ),
+    selectRows<CheckInPersonRow>(
+      supabase
+        .from("check_ins")
+        .select("event_id,checked_in_at")
+        .eq("user_id", person.userId),
+    ),
+    selectRows<ContributionPersonRow>(
+      supabase
+        .from("contributions")
+        .select("id,title,type,status,created_at")
+        .eq("user_id", person.userId)
+        .order("created_at", { ascending: false }),
+    ),
+    getEvents(supabase, { includeDrafts: true }),
+  ]);
+  const checkedEventIds = new Set(checkInsResult.rows.map((checkIn) => checkIn.event_id));
+  const eventsById = new Map(events.map((event) => [event.id, event]));
+  const personEvents = rsvpsResult.rows
+    .map((rsvp) => {
+      const event = eventsById.get(rsvp.event_id);
+
+      if (!event) {
+        return null;
+      }
+
+      return {
+        checkedIn: checkedEventIds.has(event.id),
+        date: `${event.date} · ${event.time}`,
+        id: event.id,
+        rsvpStatus: rsvp.status,
+        sourceLabel: event.sourceLabel,
+        title: event.title,
+      };
+    })
+    .filter((event): event is AdminPersonActivityView["events"][number] => Boolean(event));
+
+  return {
+    contributions: contributionsResult.rows.map((contribution) => ({
+      createdAt: contribution.created_at,
+      id: contribution.id,
+      status: contribution.status,
+      title: contribution.title,
+      type: contribution.type,
+    })),
+    events: personEvents,
+  };
+}
 
 async function selectRows<T>(query: SelectRowsQuery): Promise<SelectRowsResult<T>> {
   const { data, error } = await query;

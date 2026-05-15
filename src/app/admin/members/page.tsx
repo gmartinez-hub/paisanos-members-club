@@ -202,6 +202,10 @@ function PersonRow({
         <p className="mt-1 break-words text-sm text-a-ink/65">{person.role}</p>
         <p className="mt-1 break-words text-sm text-a-ink/65">{person.company}</p>
         <div className="mt-3 flex flex-wrap gap-2">
+          <AdminSecondaryLink href={`/admin/members/${person.subjectType}/${encodeURIComponent(person.subjectId)}`}>
+            <NotebookPen size={16} />
+            Ficha interna
+          </AdminSecondaryLink>
           {person.href ? (
             <AdminSecondaryLink href={person.href}>
               <BadgeCheck size={16} />

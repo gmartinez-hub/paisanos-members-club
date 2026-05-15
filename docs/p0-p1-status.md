@@ -19,6 +19,7 @@ Actualizado: 2026-05-14.
 13. QR check-in admin implementado con scanner por camara y fallback manual.
 14. Credenciales PostHog cargadas en local y Vercel Production/Development; falta instrumentar eventos.
 15. Admin Personas evolucionado a Signal Graph v0: miembros, invitados/solicitudes, prospectos, tags internos y notas internas.
+16. Ficha interna de persona en admin con contexto, tags, notas, eventos asociados, propuestas y follow-up por mail.
 
 ## P0 - Bloqueado fuera del codigo
 
@@ -33,7 +34,7 @@ Actualizado: 2026-05-14.
 
 1. Integrar Luma real: `LUMA_API_KEY`, `LUMA_WEBHOOK_SECRET`, endpoint webhook en Luma y prueba con evento real.
 2. Mejorar directorio: filtros utiles, busqueda por intencion, disponibilidad y skills.
-3. Completar admin operativo: edicion de eventos, estados, aprobacion de propuestas y detalle profundo de persona.
+3. Completar admin operativo: edicion de eventos, estados, aprobacion de propuestas y conversion invitado/prospecto a miembro.
 4. Feedback loops: formularios/respondientes reales y vista de resultados.
 5. PostHog: instrumentar eventos clave de activacion, RSVP, check-in, directorio y contribuciones.
 6. QA visual mobile/desktop con usuarios reales y ajustes finos de densidad.
